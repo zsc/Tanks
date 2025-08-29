@@ -43,18 +43,26 @@ export default class Model3DManager {
     createBullet3D() {
         const bulletModel = this.resourceLoader.getModel('bullet');
         if (!bulletModel) {
-            // Fallback to basic geometry
-            const geometry = new THREE.SphereGeometry(0.1, 8, 8);
+            // Fallback to basic geometry with better visibility
+            const geometry = new THREE.SphereGeometry(0.2, 8, 8);
             const material = new THREE.MeshPhongMaterial({ 
                 color: 0xFFD700,
                 emissive: 0xFFD700,
-                emissiveIntensity: 0.5
+                emissiveIntensity: 0.8
             });
             return new THREE.Mesh(geometry, material);
         }
         
-        // Scale bullet appropriately for the game scale
-        bulletModel.scale.set(0.15, 0.15, 0.15);
+        // Scale bullet larger for better visibility
+        bulletModel.scale.set(0.5, 0.5, 0.5);
+        
+        // Make bullet material emissive for better visibility
+        bulletModel.traverse((child) => {
+            if (child.isMesh && child.material) {
+                child.material.emissive = new THREE.Color(0xFFAA00);
+                child.material.emissiveIntensity = 0.5;
+            }
+        });
         
         return bulletModel;
     }

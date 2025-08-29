@@ -314,6 +314,11 @@ export default class GameView3D {
             position.z - 13
         );
         
+        // Add a point light to make bullet more visible
+        const light = new THREE.PointLight(0xFFAA00, 0.5, 3);
+        light.position.set(0, 0, 0);
+        bullet.add(light);
+        
         // Enable shadows for the bullet
         bullet.traverse((child) => {
             if (child.isMesh) {
@@ -330,8 +335,12 @@ export default class GameView3D {
         const bullet = this.bulletMeshes.get(id);
         if (bullet) {
             bullet.position.x = position.x - 13;
-            bullet.position.y = 0.5; // Keep bullet at fixed height
+            bullet.position.y = 0.8; // Keep bullet at consistent height with addBullet
             bullet.position.z = position.z - 13;
+            
+            // Add rotation for visual effect
+            bullet.rotation.x += 0.1;
+            bullet.rotation.y += 0.1;
         }
     }
     
