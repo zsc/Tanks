@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
+<X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd">
+    <Scene>
+        <!-- 敌方坦克模型 - 红色涂装 -->
+        <Transform DEF="EnemyTank">
+            <!-- 坦克底盘 -->
+            <Transform DEF="Chassis">
+                <!-- 主底盘 -->
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.6 0.2 0.2" specularColor="0.3 0.1 0.1" shininess="0.3"/>
+                    </Appearance>
+                    <Box size="2.8 0.9 3.8"/>
+                </Shape>
+                
+                <!-- 前装甲倾斜板 -->
+                <Transform translation="0 0.3 1.95" rotation="1 0 0 -0.2">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.65 0.22 0.22" specularColor="0.35 0.12 0.12"/>
+                        </Appearance>
+                        <Box size="2.6 0.5 0.2"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 后装甲板 -->
+                <Transform translation="0 0.2 -1.95">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.58 0.18 0.18" specularColor="0.28 0.08 0.08"/>
+                        </Appearance>
+                        <Box size="2.6 0.6 0.2"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 侧装甲加强筋 -->
+                <Transform translation="1.5 0.3 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.15 0.15"/>
+                        </Appearance>
+                        <Box size="0.1 0.4 3.6"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-1.5 0.3 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.15 0.15"/>
+                        </Appearance>
+                        <Box size="0.1 0.4 3.6"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 左侧履带 -->
+            <Transform DEF="LeftTrack" translation="-1.7 -0.3 0">
+                <!-- 履带主体 -->
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.15 0.15 0.15" specularColor="0.25 0.25 0.25" shininess="0.5"/>
+                    </Appearance>
+                    <Box size="0.4 0.7 4"/>
+                </Shape>
+                
+                <!-- 驱动轮 -->
+                <Transform translation="0 0 1.7">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.35 0.35 0.35"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.32"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 0 -1.7">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.35 0.35 0.35"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.32"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 负重轮 -->
+                <Transform translation="0 -0.1 0.85">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 -0.1 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 -0.1 -0.85">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 右侧履带 -->
+            <Transform DEF="RightTrack" translation="1.7 -0.3 0">
+                <!-- 履带主体 -->
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.15 0.15 0.15" specularColor="0.25 0.25 0.25" shininess="0.5"/>
+                    </Appearance>
+                    <Box size="0.4 0.7 4"/>
+                </Shape>
+                
+                <!-- 驱动轮 -->
+                <Transform translation="0 0 1.7">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.35 0.35 0.35"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.32"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 0 -1.7">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.35 0.35 0.35"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.32"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 负重轮 -->
+                <Transform translation="0 -0.1 0.85">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 -0.1 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 -0.1 -0.85">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.18 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.45" radius="0.25"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 球形炮塔 -->
+            <Transform DEF="Turret" translation="0 0.9 0">
+                <!-- 炮塔主体（球形） -->
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.7 0.25 0.25" specularColor="0.4 0.15 0.15" shininess="0.5"/>
+                    </Appearance>
+                    <Sphere radius="1.1"/>
+                </Shape>
+                
+                <!-- 炮塔装甲带 -->
+                <Transform translation="0 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.65 0.2 0.2" specularColor="0.35 0.1 0.1"/>
+                        </Appearance>
+                        <Cylinder height="0.3" radius="1.15"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 指挥塔 -->
+                <Transform translation="0 1 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.75 0.28 0.28" specularColor="0.45 0.18 0.18"/>
+                        </Appearance>
+                        <Cylinder height="0.3" radius="0.35"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 舱盖 -->
+                <Transform translation="0 1.2 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.8 0.3 0.3" specularColor="0.5 0.2 0.2" shininess="0.7"/>
+                        </Appearance>
+                        <Cylinder height="0.08" radius="0.3"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 观察镜 -->
+                <Transform translation="0 0.3 1">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.1 0.1 0.2" specularColor="0.6 0.6 0.8" shininess="0.9" transparency="0.2"/>
+                        </Appearance>
+                        <Box size="0.5 0.2 0.1"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 主炮 -->
+            <Transform DEF="MainGun" translation="0 0.9 1.5">
+                <!-- 炮座 -->
+                <Transform>
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.5 0.15 0.15" specularColor="0.25 0.08 0.08"/>
+                        </Appearance>
+                        <Sphere radius="0.25"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 主炮管 -->
+                <Transform translation="0 0 1.2" rotation="1 0 0 1.57">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.45 0.12 0.12" specularColor="0.3 0.08 0.08" shininess="0.6"/>
+                        </Appearance>
+                        <Cylinder height="2.8" radius="0.16"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 炮口 -->
+                <Transform translation="0 0 2.5" rotation="1 0 0 1.57">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.1 0.1" specularColor="0.25 0.06 0.06"/>
+                        </Appearance>
+                        <Cylinder height="0.2" radius="0.2"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 排气管 -->
+            <Transform DEF="Exhaust" translation="-1.2 0.5 -1.8">
+                <Transform rotation="0 0 1 0.3">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.1 0.1 0.1"/>
+                        </Appearance>
+                        <Cylinder height="0.8" radius="0.08"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            <Transform translation="1.2 0.5 -1.8">
+                <Transform rotation="0 0 1 -0.3">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.2 0.2 0.2" specularColor="0.1 0.1 0.1"/>
+                        </Appearance>
+                        <Cylinder height="0.8" radius="0.08"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 战术标记 -->
+            <Transform DEF="TacticalMarking" translation="0 0.5 1.85">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="1 1 1" emissiveColor="0.2 0.2 0.2"/>
+                    </Appearance>
+                    <Text string='"★"'>
+                        <FontStyle size="0.3" style="BOLD"/>
+                    </Text>
+                </Shape>
+            </Transform>
+        </Transform>
+    </Scene>
+</X3D>

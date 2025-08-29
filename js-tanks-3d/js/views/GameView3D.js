@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import ResourceLoader from '../utils/ResourceLoader.js';
-import SpriteManager from './SpriteManager.js';
-import MapRenderer from './MapRenderer.js';
+import Model3DManager from './Model3DManager.js';
+import Map3DRenderer from './Map3DRenderer.js';
 
 export default class GameView3D {
     constructor() {
@@ -12,9 +12,9 @@ export default class GameView3D {
         this.canvas = null;
         this.controls = null;
         
-        // Managers
+        // Managers - Only 3D, no sprites
         this.resourceLoader = new ResourceLoader();
-        this.spriteManager = null;
+        this.modelManager = null;
         this.mapRenderer = null;
         
         // Game object meshes
@@ -44,20 +44,12 @@ export default class GameView3D {
         // Setup resize handler
         this.setupResizeHandler();
         
-        // Load resources
+        // Load resources (only X3D models now)
         await this.resourceLoader.loadAll();
         
-        // Initialize managers - Use Model3DManager for Phase 2
-        // this.spriteManager = new SpriteManager(this.resourceLoader);
-        // this.mapRenderer = new MapRenderer(this.scene, this.spriteManager);
-        
-        // Phase 2: Use 3D models
-        const Model3DManager = (await import('./Model3DManager.js')).default;
+        // Initialize 3D managers only
         this.modelManager = new Model3DManager(this.resourceLoader);
-        
-        // For now, keep using MapRenderer with sprites until we create Map3DRenderer
-        this.spriteManager = new SpriteManager(this.resourceLoader);
-        this.mapRenderer = new MapRenderer(this.scene, this.spriteManager);
+        this.mapRenderer = new Map3DRenderer(this.scene, this.modelManager);
         
         console.log('GameView3D initialized');
     }
@@ -94,7 +86,8 @@ export default class GameView3D {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            alpha: true
+            alpha: true,
+            powerPreference: "high-performance"
         });
         
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -305,8 +298,8 @@ export default class GameView3D {
             this.scene.remove(tank);
             this.tankMeshes.delete(id);
             
-            // Create explosion effect
-            const explosion = this.spriteManager.createExplosion(tank.position);
+            // Create explosion effect using 3D model
+            const explosion = this.modelManager.createExplosion3D(tank.position);
             this.scene.add(explosion);
             this.explosions.push(explosion);
         }

@@ -1,77 +1,228 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
-<X3D profile='Interchange' version='3.2'>
-  <head>
-    <meta name='title' content='Steel Wall Model'/>
-    <meta name='description' content='3D steel wall tile for Tanks game'/>
-    <meta name='creator' content='Claude'/>
-  </head>
-  <Scene>
-    <!-- Main Steel Block -->
-    <Transform DEF='SteelWall'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.5 0.5 0.6' specularColor='0.8 0.8 0.9' shininess='0.8' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='1 1 1'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Rivets for detail -->
-    <!-- Top row of rivets -->
-    <Transform translation='-0.3 0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0 0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0.3 0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Bottom row of rivets -->
-    <Transform translation='-0.3 -0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0 -0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0.3 -0.3 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.3 0.3 0.35' specularColor='0.6 0.6 0.65' shininess='0.9'/>
-        </Appearance>
-        <Sphere radius='0.03'/>
-      </Shape>
-    </Transform>
-  </Scene>
+<X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd">
+    <Scene>
+        <!-- 钢墙 - 不可破坏 -->
+        <Transform DEF="SteelWall">
+            <!-- 主钢板 -->
+            <Shape>
+                <Appearance>
+                    <Material diffuseColor="0.6 0.6 0.65" specularColor="0.8 0.8 0.85" shininess="0.8"/>
+                </Appearance>
+                <Box size="1 1 0.5"/>
+            </Shape>
+            
+            <!-- 钢板纹理细节 -->
+            <Transform translation="0 0 0.26">
+                <!-- 铆钉行1 -->
+                <Transform translation="-0.375 0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.125 0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.125 0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.375 0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 铆钉行2 -->
+                <Transform translation="-0.375 0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.125 0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.125 0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.375 0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 铆钉行3 -->
+                <Transform translation="-0.375 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.125 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.125 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.375 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 铆钉行4 -->
+                <Transform translation="-0.375 -0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.125 -0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.125 -0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.375 -0.175 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 铆钉行5 -->
+                <Transform translation="-0.375 -0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.125 -0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.125 -0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.375 -0.35 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65" shininess="0.9"/>
+                        </Appearance>
+                        <Cylinder height="0.05" radius="0.025"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 加强筋 -->
+            <Transform translation="0 0 0.2">
+                <!-- 横向加强筋 -->
+                <Transform translation="0 0.25 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.55 0.6" specularColor="0.75 0.75 0.8"/>
+                        </Appearance>
+                        <Box size="0.9 0.03 0.08"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 -0.25 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.55 0.6" specularColor="0.75 0.75 0.8"/>
+                        </Appearance>
+                        <Box size="0.9 0.03 0.08"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 竖向加强筋 -->
+                <Transform translation="0.25 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.55 0.6" specularColor="0.75 0.75 0.8"/>
+                        </Appearance>
+                        <Box size="0.03 0.5 0.08"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.25 0 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.55 0.55 0.6" specularColor="0.75 0.75 0.8"/>
+                        </Appearance>
+                        <Box size="0.03 0.5 0.08"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+        </Transform>
+    </Scene>
 </X3D>

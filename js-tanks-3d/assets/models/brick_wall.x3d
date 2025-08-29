@@ -1,80 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
-<X3D profile='Interchange' version='3.2'>
-  <head>
-    <meta name='title' content='Brick Wall Model'/>
-    <meta name='description' content='3D brick wall tile for Tanks game'/>
-    <meta name='creator' content='Claude'/>
-  </head>
-  <Scene>
-    <!-- Main Brick Structure -->
-    <Transform DEF='BrickWall'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.6 0.2 0.1' specularColor='0.1 0.05 0.02' shininess='0.1' ambientIntensity='0.2'/>
-          <ImageTexture url='"../images/brick_texture.png"'/>
-        </Appearance>
-        <Box size='1 1 1'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Mortar Lines (simplified) -->
-    <!-- Horizontal mortar line 1 -->
-    <Transform translation='0 0.25 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='1 0.02 0.02'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Horizontal mortar line 2 -->
-    <Transform translation='0 0 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='1 0.02 0.02'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Horizontal mortar line 3 -->
-    <Transform translation='0 -0.25 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='1 0.02 0.02'/>
-      </Shape>
-    </Transform>
-    
-    <!-- Vertical mortar lines -->
-    <Transform translation='-0.25 0.125 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='0.02 0.25 0.02'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0.25 0.125 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='0.02 0.25 0.02'/>
-      </Shape>
-    </Transform>
-    
-    <Transform translation='0 -0.125 0.51'>
-      <Shape>
-        <Appearance>
-          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
-        </Appearance>
-        <Box size='0.02 0.25 0.02'/>
-      </Shape>
-    </Transform>
-  </Scene>
+<X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd">
+    <Scene>
+        <!-- 砖墙组合 - 可破坏的单元 -->
+        <Transform DEF="BrickWall">
+            <!-- 第一排砖块 -->
+            <Transform translation="-0.375 0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.7 0.3 0.2" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="-0.125 0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.75 0.32 0.22" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.125 0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.72 0.31 0.21" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.375 0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.68 0.29 0.19" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            
+            <!-- 第二排砖块（错位排列） -->
+            <Transform translation="-0.25 0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.73 0.33 0.23" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0 0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.71 0.31 0.21" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.25 0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.69 0.30 0.20" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            
+            <!-- 第三排砖块 -->
+            <Transform translation="-0.375 0 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.74 0.34 0.24" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="-0.125 0 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.70 0.30 0.20" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.125 0 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.72 0.32 0.22" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.375 0 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.68 0.28 0.18" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            
+            <!-- 第四排砖块（错位排列） -->
+            <Transform translation="-0.25 -0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.71 0.31 0.21" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0 -0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.73 0.33 0.23" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.25 -0.125 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.70 0.30 0.20" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            
+            <!-- 第五排砖块 -->
+            <Transform translation="-0.375 -0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.69 0.29 0.19" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="-0.125 -0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.72 0.32 0.22" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.125 -0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.70 0.30 0.20" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+            <Transform translation="0.375 -0.25 0">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.74 0.34 0.24" specularColor="0.1 0.05 0.03" shininess="0.1"/>
+                    </Appearance>
+                    <Box size="0.25 0.125 0.5"/>
+                </Shape>
+            </Transform>
+        </Transform>
+    </Scene>
 </X3D>

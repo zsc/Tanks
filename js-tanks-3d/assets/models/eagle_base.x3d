@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
+<X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd">
+    <Scene>
+        <!-- 基地鹰雕像 - 需要保护的目标 -->
+        <Transform DEF="EagleBase">
+            <!-- 多层基座 -->
+            <!-- 底层基座 -->
+            <Transform DEF="BasePlatform">
+                <Shape>
+                    <Appearance>
+                        <Material diffuseColor="0.7 0.7 0.7" specularColor="0.8 0.8 0.8"/>
+                    </Appearance>
+                    <Box size="2.5 0.15 2.5"/>
+                </Shape>
+                
+                <!-- 中层基座 -->
+                <Transform translation="0 0.125 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.75 0.75 0.75" specularColor="0.85 0.85 0.85"/>
+                        </Appearance>
+                        <Box size="2.25 0.1 2.25"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 上层基座 -->
+                <Transform translation="0 0.2 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.8 0.8 0.8" specularColor="0.9 0.9 0.9"/>
+                        </Appearance>
+                        <Box size="2 0.1 2"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 基座装饰纹路 -->
+                <Transform translation="0 0.255 0.9">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.6 0.6 0.6"/>
+                        </Appearance>
+                        <Box size="1.75 0.01 0.05"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0 0.255 -0.9">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.6 0.6 0.6"/>
+                        </Appearance>
+                        <Box size="1.75 0.01 0.05"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="0.9 0.255 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.6 0.6 0.6"/>
+                        </Appearance>
+                        <Box size="0.05 0.01 1.75"/>
+                    </Shape>
+                </Transform>
+                <Transform translation="-0.9 0.255 0">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.6 0.6 0.6"/>
+                        </Appearance>
+                        <Box size="0.05 0.01 1.75"/>
+                    </Shape>
+                </Transform>
+            </Transform>
+            
+            <!-- 鹰雕像主体 -->
+            <Transform DEF="Eagle" translation="0 1.1 0">
+                <!-- 腹部（椭球形） -->
+                <Transform scale="0.5 0.6 0.4">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.85 0.75 0.55" specularColor="0.9 0.8 0.6" shininess="0.3"/>
+                        </Appearance>
+                        <Sphere radius="0.9"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 胸部 -->
+                <Transform translation="0 0.15 0.15">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.88 0.78 0.58" specularColor="0.93 0.83 0.63" shininess="0.3"/>
+                        </Appearance>
+                        <Sphere radius="0.35"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 颈部 -->
+                <Transform translation="0 0.35 0.2">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.9 0.8 0.6" specularColor="0.95 0.85 0.65"/>
+                        </Appearance>
+                        <Cylinder height="0.2" radius="0.15"/>
+                    </Shape>
+                </Transform>
+                
+                <!-- 头部 -->
+                <Transform translation="0 0.55 0.25">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.95 0.9 0.8" specularColor="1 0.95 0.85" shininess="0.4"/>
+                        </Appearance>
+                        <Sphere radius="0.225"/>
+                    </Shape>
+                    
+                    <!-- 左眼 -->
+                    <Transform translation="-0.075 0.05 0.175">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.1 0.1 0.1" specularColor="0.8 0.8 0.8" shininess="0.9"/>
+                            </Appearance>
+                            <Sphere radius="0.04"/>
+                        </Shape>
+                    </Transform>
+                    
+                    <!-- 右眼 -->
+                    <Transform translation="0.075 0.05 0.175">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.1 0.1 0.1" specularColor="0.8 0.8 0.8" shininess="0.9"/>
+                            </Appearance>
+                            <Sphere radius="0.04"/>
+                        </Shape>
+                    </Transform>
+                    
+                    <!-- 瞳孔发光效果 -->
+                    <Transform translation="-0.075 0.05 0.19">
+                        <Shape>
+                            <Appearance>
+                                <Material emissiveColor="0.8 0.6 0.2"/>
+                            </Appearance>
+                            <Sphere radius="0.015"/>
+                        </Shape>
+                    </Transform>
+                    <Transform translation="0.075 0.05 0.19">
+                        <Shape>
+                            <Appearance>
+                                <Material emissiveColor="0.8 0.6 0.2"/>
+                            </Appearance>
+                            <Sphere radius="0.015"/>
+                        </Shape>
+                    </Transform>
+                </Transform>
+                
+                <!-- 鹰喙（弯曲） -->
+                <Transform translation="0 0.525 0.425">
+                    <!-- 上喙 -->
+                    <Transform rotation="1 0 0 1.8">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.7"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.06" height="0.175"/>
+                        </Shape>
+                    </Transform>
+                    <!-- 下喙 -->
+                    <Transform translation="0 -0.04 0" rotation="1 0 0 1.4">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.05" height="0.125"/>
+                        </Shape>
+                    </Transform>
+                </Transform>
+                
+                <!-- 左翼（多层羽毛） -->
+                <Transform translation="-0.6 0 0">
+                    <!-- 主翼 -->
+                    <Transform rotation="0 0 1 -0.25">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.75 0.65 0.45" specularColor="0.8 0.7 0.5"/>
+                            </Appearance>
+                            <Box size="1.1 0.075 0.6"/>
+                        </Shape>
+                        
+                        <!-- 翼尖羽毛1 -->
+                        <Transform translation="-0.5 0 -0.15" rotation="0 0 1 -0.1">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.7 0.6 0.4" specularColor="0.75 0.65 0.45"/>
+                                </Appearance>
+                                <Box size="0.4 0.05 0.15"/>
+                            </Shape>
+                        </Transform>
+                        
+                        <!-- 翼尖羽毛2 -->
+                        <Transform translation="-0.5 0 0" rotation="0 0 1 -0.15">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.72 0.62 0.42" specularColor="0.77 0.67 0.47"/>
+                                </Appearance>
+                                <Box size="0.45 0.05 0.175"/>
+                            </Shape>
+                        </Transform>
+                        
+                        <!-- 翼尖羽毛3 -->
+                        <Transform translation="-0.5 0 0.15" rotation="0 0 1 -0.2">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.68 0.58 0.38" specularColor="0.73 0.63 0.43"/>
+                                </Appearance>
+                                <Box size="0.425 0.05 0.16"/>
+                            </Shape>
+                        </Transform>
+                    </Transform>
+                </Transform>
+                
+                <!-- 右翼（多层羽毛） -->
+                <Transform translation="0.6 0 0">
+                    <!-- 主翼 -->
+                    <Transform rotation="0 0 1 0.25">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.75 0.65 0.45" specularColor="0.8 0.7 0.5"/>
+                            </Appearance>
+                            <Box size="1.1 0.075 0.6"/>
+                        </Shape>
+                        
+                        <!-- 翼尖羽毛1 -->
+                        <Transform translation="0.5 0 -0.15" rotation="0 0 1 0.1">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.7 0.6 0.4" specularColor="0.75 0.65 0.45"/>
+                                </Appearance>
+                                <Box size="0.4 0.05 0.15"/>
+                            </Shape>
+                        </Transform>
+                        
+                        <!-- 翼尖羽毛2 -->
+                        <Transform translation="0.5 0 0" rotation="0 0 1 0.15">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.72 0.62 0.42" specularColor="0.77 0.67 0.47"/>
+                                </Appearance>
+                                <Box size="0.45 0.05 0.175"/>
+                            </Shape>
+                        </Transform>
+                        
+                        <!-- 翼尖羽毛3 -->
+                        <Transform translation="0.5 0 0.15" rotation="0 0 1 0.2">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.68 0.58 0.38" specularColor="0.73 0.63 0.43"/>
+                                </Appearance>
+                                <Box size="0.425 0.05 0.16"/>
+                            </Shape>
+                        </Transform>
+                    </Transform>
+                </Transform>
+                
+                <!-- 尾羽 -->
+                <Transform translation="0 -0.25 -0.4">
+                    <!-- 中央尾羽 -->
+                    <Transform rotation="1 0 0 -0.3">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.78 0.68 0.48" specularColor="0.83 0.73 0.53"/>
+                            </Appearance>
+                            <Box size="0.3 0.05 0.6"/>
+                        </Shape>
+                    </Transform>
+                    
+                    <!-- 左尾羽 -->
+                    <Transform translation="-0.15 0 0" rotation="1 0 0 -0.3">
+                        <Transform rotation="0 1 0 -0.2">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.76 0.66 0.46" specularColor="0.81 0.71 0.51"/>
+                                </Appearance>
+                                <Box size="0.25 0.05 0.5"/>
+                            </Shape>
+                        </Transform>
+                    </Transform>
+                    
+                    <!-- 右尾羽 -->
+                    <Transform translation="0.15 0 0" rotation="1 0 0 -0.3">
+                        <Transform rotation="0 1 0 0.2">
+                            <Shape>
+                                <Appearance>
+                                    <Material diffuseColor="0.76 0.66 0.46" specularColor="0.81 0.71 0.51"/>
+                                </Appearance>
+                                <Box size="0.25 0.05 0.5"/>
+                            </Shape>
+                        </Transform>
+                    </Transform>
+                </Transform>
+                
+                <!-- 爪子 -->
+                <!-- 左爪 -->
+                <Transform translation="-0.2 -0.65 0.1">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.8"/>
+                        </Appearance>
+                        <Sphere radius="0.075"/>
+                    </Shape>
+                    <!-- 爪趾 -->
+                    <Transform translation="-0.025 -0.05 0.075" rotation="1 0 0 0.5">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                    <Transform translation="0.025 -0.05 0.075" rotation="1 0 0 0.5">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                    <Transform translation="0 -0.05 -0.05" rotation="1 0 0 -0.3">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                </Transform>
+                
+                <!-- 右爪 -->
+                <Transform translation="0.2 -0.65 0.1">
+                    <Shape>
+                        <Appearance>
+                            <Material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.8"/>
+                        </Appearance>
+                        <Sphere radius="0.075"/>
+                    </Shape>
+                    <!-- 爪趾 -->
+                    <Transform translation="-0.025 -0.05 0.075" rotation="1 0 0 0.5">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                    <Transform translation="0.025 -0.05 0.075" rotation="1 0 0 0.5">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                    <Transform translation="0 -0.05 -0.05" rotation="1 0 0 -0.3">
+                        <Shape>
+                            <Appearance>
+                                <Material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"/>
+                            </Appearance>
+                            <Cone bottomRadius="0.025" height="0.1"/>
+                        </Shape>
+                    </Transform>
+                </Transform>
+            </Transform>
+        </Transform>
+    </Scene>
+</X3D>

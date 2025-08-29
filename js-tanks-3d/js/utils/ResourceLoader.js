@@ -160,10 +160,14 @@ export default class ResourceLoader {
     
     async loadModels() {
         const modelList = {
-            tank: 'assets/models/tank.x3d',
+            playerTank: 'assets/models/player_tank.x3d',
+            enemyTank: 'assets/models/enemy_tank.x3d',
             bullet: 'assets/models/bullet.x3d',
             brickWall: 'assets/models/brick_wall.x3d',
-            steelWall: 'assets/models/steel_wall.x3d'
+            steelWall: 'assets/models/steel_wall.x3d',
+            eagleBase: 'assets/models/eagle_base.x3d',
+            // Legacy models for compatibility
+            tank: 'assets/models/tank.x3d'
         };
         
         const loadPromises = Object.entries(modelList).map(([name, path]) => {

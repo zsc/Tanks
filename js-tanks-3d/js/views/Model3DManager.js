@@ -14,18 +14,28 @@ export default class Model3DManager {
     }
     
     createTank3D(type = 'player1') {
-        const tankModel = this.resourceLoader.getModel('tank');
+        // Use new detailed models
+        let modelName = (type === 'player1' || type === 'player2') ? 'playerTank' : 'enemyTank';
+        let tankModel = this.resourceLoader.getModel(modelName);
+        
         if (!tankModel) {
-            // Fallback to basic geometry
-            return this.createBasicTank(type);
+            // Fallback to legacy tank model
+            tankModel = this.resourceLoader.getModel('tank');
+            if (!tankModel) {
+                // Final fallback to basic geometry
+                return this.createBasicTank(type);
+            }
         }
         
-        // Apply color based on tank type
-        const color = this.tankColors[type] || new THREE.Color(0x808080);
-        this.applyColorToModel(tankModel, color);
+        // For player tanks, we keep the original colors from the model
+        // For enemy tanks, we might want to tint them based on type
+        if (type.startsWith('enemy')) {
+            const color = this.tankColors[type] || new THREE.Color(0x808080);
+            this.applyColorToModel(tankModel, color);
+        }
         
-        // Scale the model appropriately
-        tankModel.scale.set(0.8, 0.8, 0.8);
+        // Scale the model appropriately for the game
+        tankModel.scale.set(0.4, 0.4, 0.4);
         
         return tankModel;
     }
@@ -43,8 +53,8 @@ export default class Model3DManager {
             return new THREE.Mesh(geometry, material);
         }
         
-        // Scale bullet appropriately
-        bulletModel.scale.set(0.5, 0.5, 0.5);
+        // Scale bullet appropriately for the game scale
+        bulletModel.scale.set(0.15, 0.15, 0.15);
         
         return bulletModel;
     }
@@ -114,6 +124,38 @@ export default class Model3DManager {
         group.add(rightTrack);
         
         return group;
+    }
+    
+    createEagleBase3D() {
+        const eagleModel = this.resourceLoader.getModel('eagleBase');
+        if (!eagleModel) {
+            // Fallback to basic geometry
+            const group = new THREE.Group();
+            
+            // Base platform
+            const baseGeometry = new THREE.BoxGeometry(2, 0.2, 2);
+            const baseMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x808080
+            });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            group.add(base);
+            
+            // Eagle statue (simplified)
+            const eagleGeometry = new THREE.ConeGeometry(0.5, 1.5, 8);
+            const eagleMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xFFD700
+            });
+            const eagle = new THREE.Mesh(eagleGeometry, eagleMaterial);
+            eagle.position.y = 1;
+            group.add(eagle);
+            
+            return group;
+        }
+        
+        // Scale eagle base appropriately
+        eagleModel.scale.set(0.5, 0.5, 0.5);
+        
+        return eagleModel;
     }
     
     createExplosion3D(position) {
