@@ -279,16 +279,16 @@ export default class Model3DManager {
     rotateTankToDirection(tankMesh, direction) {
         switch(direction) {
             case 'up':
-                tankMesh.rotation.y = 0;
+                tankMesh.rotation.y = 0 + Math.PI;
                 break;
             case 'down':
-                tankMesh.rotation.y = Math.PI;
+                tankMesh.rotation.y = Math.PI + Math.PI;
                 break;
             case 'left':
-                tankMesh.rotation.y = -Math.PI / 2;
+                tankMesh.rotation.y = -Math.PI / 2 + Math.PI;
                 break;
             case 'right':
-                tankMesh.rotation.y = Math.PI / 2;
+                tankMesh.rotation.y = Math.PI / 2 + Math.PI;
                 break;
         }
     }
