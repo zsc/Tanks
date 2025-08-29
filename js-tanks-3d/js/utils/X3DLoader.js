@@ -73,7 +73,11 @@ export default class X3DLoader {
         const rotation = transformNode.getAttribute('rotation');
         if (rotation) {
             const [x, y, z, angle] = rotation.split(' ').map(Number);
-            group.rotation.setFromAxisAngle(new THREE.Vector3(x, y, z), angle);
+            // Create a quaternion from axis-angle and apply to group
+            const axis = new THREE.Vector3(x, y, z).normalize();
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle(axis, angle);
+            group.quaternion.copy(quaternion);
         }
         
         // Parse scale
