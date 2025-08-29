@@ -145,8 +145,13 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(player.id)) {
                     this.view.addTank(player.id, player.type, player.position);
                 }
-                // Always update position, even if velocity is 0
+                // Always update position and animation, even if velocity is 0
                 this.view.updateTank(player.id, player.position, player.rotation);
+                // Update tank sprite animation
+                const tankMesh = this.view.tankMeshes.get(player.id);
+                if (tankMesh) {
+                    this.view.spriteManager.updateTankAnimation(tankMesh, player.direction, 16.67);
+                }
             } else {
                 if (this.view.tankMeshes.has(player.id)) {
                     this.view.removeTank(player.id);
@@ -160,8 +165,13 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(enemy.id)) {
                     this.view.addTank(enemy.id, enemy.type, enemy.position);
                 }
-                // Always update position
+                // Always update position and animation
                 this.view.updateTank(enemy.id, enemy.position, enemy.rotation);
+                // Update tank sprite animation
+                const tankMesh = this.view.tankMeshes.get(enemy.id);
+                if (tankMesh) {
+                    this.view.spriteManager.updateTankAnimation(tankMesh, enemy.direction, 16.67);
+                }
             } else {
                 if (this.view.tankMeshes.has(enemy.id)) {
                     this.view.removeTank(enemy.id);
@@ -169,8 +179,18 @@ export default class GameController {
             }
         });
         
-        // Remove dead enemies from array
-        this.model.enemies = this.model.enemies.filter(e => e.alive);
+        // Mark enemies for removal after explosion animation (1 second delay)
+        this.model.enemies.forEach(enemy => {
+            if (!enemy.alive && !enemy.removalTimer) {
+                enemy.removalTimer = Date.now();
+            }
+            if (enemy.removalTimer && Date.now() - enemy.removalTimer > 1000) {
+                enemy.toRemove = true;
+            }
+        });
+        
+        // Only remove enemies that are marked for removal
+        this.model.enemies = this.model.enemies.filter(e => !e.toRemove);
         
         // Sync bullets
         this.model.bullets.forEach(bullet => {

@@ -10,7 +10,6 @@ export default class SpriteManager {
         
         // Map tank type to sprite name
         let spriteName;
-        let frameIndex = 0; // Use first frame for now
         
         if (type === 'player1') {
             spriteName = 'player_1';
@@ -25,6 +24,11 @@ export default class SpriteManager {
         } else if (type === 'enemy_d') {
             spriteName = 'tank_d';
         }
+        
+        // Calculate frame index based on direction and animation frame
+        // Each direction has 2 frames: up(0,1), left(2,3), down(4,5), right(6,7)
+        const directionOffsets = { 'up': 0, 'left': 2, 'down': 4, 'right': 6 };
+        let frameIndex = directionOffsets[direction] || 0;
         
         // Get material from sprite sheet
         let material = null;
@@ -56,6 +60,8 @@ export default class SpriteManager {
         sprite.userData.animationFrame = 0;
         sprite.userData.animationTimer = 0;
         sprite.userData.spriteName = spriteName;
+        sprite.userData.direction = direction;
+        sprite.userData.baseFrameIndex = frameIndex;
         
         return sprite;
     }
@@ -219,6 +225,39 @@ export default class SpriteManager {
         particles.userData.createdAt = Date.now();
         
         return particles;
+    }
+    
+    updateTankAnimation(tank, direction, deltaTime) {
+        if (!tank.userData.spriteName) return;
+        
+        // Update direction if changed
+        if (tank.userData.direction !== direction) {
+            tank.userData.direction = direction;
+            tank.userData.animationFrame = 0;
+            tank.userData.animationTimer = 0;
+        }
+        
+        // Update animation timer
+        tank.userData.animationTimer += deltaTime;
+        
+        // Switch animation frame every 100ms
+        if (tank.userData.animationTimer >= 100) {
+            tank.userData.animationTimer = 0;
+            tank.userData.animationFrame = (tank.userData.animationFrame + 1) % 2;
+            
+            // Calculate new frame index
+            const directionOffsets = { 'up': 0, 'left': 2, 'down': 4, 'right': 6 };
+            const frameIndex = (directionOffsets[direction] || 0) + tank.userData.animationFrame;
+            
+            // Update material with new frame
+            const material = this.resourceLoader.createSpriteMaterialFromSheet(
+                tank.userData.spriteName, 
+                frameIndex
+            );
+            if (material) {
+                tank.material = material;
+            }
+        }
     }
     
     updateExplosion(explosion, deltaTime) {

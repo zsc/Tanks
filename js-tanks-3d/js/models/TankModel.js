@@ -150,6 +150,7 @@ export default class TankModel {
     destroy() {
         this.alive = false;
         this.velocity = { x: 0, z: 0 };
+        this.toRemove = false; // Don't immediately remove, wait for explosion animation
     }
     
     respawn(position) {

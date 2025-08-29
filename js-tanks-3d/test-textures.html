@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texture Test - Tanks Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: monospace;
+            background: #222;
+            color: #fff;
+        }
+        canvas {
+            border: 1px solid #444;
+            display: block;
+            margin: 20px 0;
+        }
+        .info {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Texture Loading Test</h1>
+    <div class="info">Testing sprite extraction from graphics.png</div>
+    <canvas id="test-canvas" width="800" height="600"></canvas>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script type="module">
+        import ResourceLoader from './js/utils/ResourceLoader.js';
+        
+        const canvas = document.getElementById('test-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        async function testTextures() {
+            console.log('Starting texture test...');
+            
+            const loader = new ResourceLoader();
+            await loader.loadAll();
+            
+            // Test extracting sprites
+            const sprites = [
+                { name: 'player_1', label: 'Player 1' },
+                { name: 'player_2', label: 'Player 2' },
+                { name: 'tank_a', label: 'Enemy A' },
+                { name: 'tank_b', label: 'Enemy B' },
+                { name: 'tank_c', label: 'Enemy C' },
+                { name: 'tank_d', label: 'Enemy D' }
+            ];
+            
+            let y = 50;
+            
+            sprites.forEach(sprite => {
+                const spriteData = loader.sprites[sprite.name];
+                if (spriteData) {
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(`${sprite.label}: x=${spriteData.x}, y=${spriteData.y}, w=${spriteData.w}, h=${spriteData.h}`, 10, y);
+                    
+                    // Draw each frame
+                    for (let frame = 0; frame < Math.min(spriteData.frames, 8); frame++) {
+                        const texture = loader.extractSpriteTexture(sprite.name, frame);
+                        if (texture) {
+                            // Draw frame info
+                            const frameX = 200 + frame * 40;
+                            ctx.fillStyle = '#0f0';
+                            ctx.fillText(`F${frame}`, frameX, y);
+                        }
+                    }
+                    
+                    y += 30;
+                }
+            });
+            
+            // Test Three.js material creation
+            console.log('Testing Three.js materials...');
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 800/600, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.createElement('canvas') });
+            
+            sprites.forEach(sprite => {
+                for (let i = 0; i < 4; i++) {
+                    const material = loader.createSpriteMaterialFromSheet(sprite.name, i);
+                    if (material && material.map) {
+                        console.log(`✓ ${sprite.label} frame ${i} material created`);
+                    } else {
+                        console.log(`✗ ${sprite.label} frame ${i} failed`);
+                    }
+                }
+            });
+            
+            ctx.fillStyle = '#0f0';
+            ctx.fillText('Check console for detailed results', 10, y + 50);
+        }
+        
+        testTextures().catch(console.error);
+    </script>
+</body>
+</html>

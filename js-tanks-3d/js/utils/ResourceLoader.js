@@ -96,16 +96,19 @@ export default class ResourceLoader {
     
     async loadSprites() {
         // Sprite coordinates from original C++ code (spriteconfig.cpp)
+        // Note: Each tank has 8 sprites (4 directions × 2 animation frames)
         const spriteSheet = {
-            // Enemy tanks (each has 2 frames for animation)
-            tank_a: { x: 128, y: 0, w: 32, h: 32, frames: 2 },
-            tank_b: { x: 128, y: 64, w: 32, h: 32, frames: 2 },
-            tank_c: { x: 128, y: 128, w: 32, h: 32, frames: 2 },
-            tank_d: { x: 128, y: 192, w: 32, h: 32, frames: 2 },
+            // Enemy tanks - each row has 8 sprites (4 directions, 2 frames each)
+            tank_a: { x: 128, y: 0, w: 32, h: 32, frames: 8 },
+            tank_b: { x: 128, y: 64, w: 32, h: 32, frames: 8 },
+            tank_c: { x: 128, y: 128, w: 32, h: 32, frames: 8 },
+            tank_d: { x: 128, y: 192, w: 32, h: 32, frames: 8 },
             
-            // Player tanks
-            player_1: { x: 640, y: 0, w: 32, h: 32, frames: 2 },
-            player_2: { x: 768, y: 0, w: 32, h: 32, frames: 2 },
+            // Player tanks - from spriteconfig.cpp
+            // Player 1 starts at x=640, Player 2 at x=768
+            // Each has 8 sprites total (4 directions × 2 frames)
+            player_1: { x: 640, y: 0, w: 32, h: 32, frames: 8 },
+            player_2: { x: 768, y: 0, w: 32, h: 32, frames: 8 },
             
             // Map tiles
             brick_wall: { x: 928, y: 0, w: 16, h: 16, frames: 1 },
@@ -257,18 +260,28 @@ export default class ResourceLoader {
         const textureWidth = 1232; // graphics.png width
         const textureHeight = 332;  // graphics.png height
         
-        const offsetX = spriteData.x + (frameIndex * spriteData.w);
+        // Calculate sprite position with frame offset
+        const frameWidth = spriteData.w;
+        const offsetX = spriteData.x + (frameIndex * frameWidth);
         const offsetY = spriteData.y;
         
-        // Set texture repeat and offset
+        // Set texture repeat and offset for correct UV mapping
+        // Repeat defines how much of the texture to use (sprite size / texture size)
         texture.repeat.set(
             spriteData.w / textureWidth,
             spriteData.h / textureHeight
         );
+        
+        // Offset defines where to start in the texture (sprite position / texture size)
+        // Note: Three.js uses bottom-left origin for textures, so we need to invert Y
         texture.offset.set(
             offsetX / textureWidth,
-            1 - (offsetY + spriteData.h) / textureHeight
+            1 - ((offsetY + spriteData.h) / textureHeight)
         );
+        
+        // Ensure wrapping is set correctly
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
         
         return texture;
     }
