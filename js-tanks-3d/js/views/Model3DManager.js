@@ -171,20 +171,31 @@ export default class Model3DManager {
         // Chess Queen needs specific scaling and styling
         eagleModel.scale.set(2, 2, 2);  // Make it prominent as the base to protect
         
-        /*
-        // Add golden material to make it stand out
+        // Add lighting effects while keeping original colors
         eagleModel.traverse((child) => {
-            if (child.isMesh) {
+            if (child.isMesh && child.material) {
+                // Keep original color but add emissive glow
+                const originalColor = child.material.color ? child.material.color.clone() : new THREE.Color(0xffffff);
+                
+                // Create new material with enhanced lighting
                 child.material = new THREE.MeshPhongMaterial({
-                    color: 0xFFD700,  // Golden color
-                    emissive: 0xFFAA00,
-                    emissiveIntensity: 0.2,
-                    metalness: 0.8,
-                    roughness: 0.2
+                    color: originalColor,  // Keep original color
+                    emissive: originalColor,  // Emit same color as base
+                    emissiveIntensity: 0.3,  // Subtle glow
+                    shininess: 100,  // Make it shiny
+                    specular: new THREE.Color(0xffffff),  // White specular highlights
                 });
+                
+                // Make sure it casts and receives shadows
+                child.castShadow = true;
+                child.receiveShadow = true;
             }
         });
-        */
+        
+        // Add a point light to the queen to make it glow
+        const light = new THREE.PointLight(0xffffff, 0.5, 5);
+        light.position.set(0, 1, 0);
+        eagleModel.add(light);
         
         return eagleModel;
     }
