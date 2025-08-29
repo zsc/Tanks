@@ -67,8 +67,15 @@ export default class TankModel {
         
         // Update fire cooldown
         if (!this.canFire) {
-            if (Date.now() - this.lastFireTime > this.fireRate) {
+            const timeSinceFire = Date.now() - this.lastFireTime;
+            if (this.type.startsWith('player')) {
+                console.log(`[DEBUG] Player ${this.id} cooldown check - time since fire: ${timeSinceFire}ms, fireRate: ${this.fireRate}ms`);
+            }
+            if (timeSinceFire > this.fireRate) {
                 this.canFire = true;
+                if (this.type.startsWith('player')) {
+                    console.log(`[DEBUG] Player ${this.id} can fire again!`);
+                }
             }
         }
     }
@@ -105,17 +112,18 @@ export default class TankModel {
     fire() {
         // Only log for players, not enemies
         if (this.type.startsWith('player')) {
-            console.log(`[DEBUG] Player ${this.id} fire() - alive: ${this.alive}, canFire: ${this.canFire}`);
+            console.log(`[DEBUG] Player ${this.id} fire() - alive: ${this.alive}, canFire: ${this.canFire}, lastFireTime: ${this.lastFireTime}`);
         }
         if (!this.alive || !this.canFire) {
             if (this.type.startsWith('player')) {
-                console.log(`[DEBUG] Player cannot fire - canFire: ${this.canFire}, timeSince: ${Date.now() - this.lastFireTime}`);
+                console.log(`[DEBUG] Player cannot fire - canFire: ${this.canFire}, timeSince: ${Date.now() - this.lastFireTime}ms, fireRate: ${this.fireRate}ms`);
             }
             return null;
         }
         
         this.canFire = false;
         this.lastFireTime = Date.now();
+        console.log(`[DEBUG] Player ${this.id} fired! Setting canFire=false, lastFireTime=${this.lastFireTime}`);
         
         // Calculate bullet spawn position
         const bulletOffset = 0.5;

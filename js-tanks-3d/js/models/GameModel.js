@@ -100,8 +100,11 @@ export default class GameModel {
     }
     
     updatePlayers(deltaTime) {
-        this.players.forEach(player => {
+        this.players.forEach((player, index) => {
             if (player.alive) {
+                if (index === 0 && !player.canFire) {
+                    console.log(`[DEBUG] Updating player ${index} with deltaTime: ${deltaTime}ms`);
+                }
                 player.update(deltaTime);
             }
         });
@@ -175,6 +178,7 @@ export default class GameModel {
     }
     
     createBullet(bulletData) {
+        console.log(`[DEBUG] createBullet called with data:`, bulletData);
         const bullet = new BulletModel(
             `bullet_${this.nextBulletId++}`,
             bulletData.position,
@@ -183,7 +187,9 @@ export default class GameModel {
             bulletData.power,
             bulletData.owner
         );
+        console.log(`[DEBUG] Bullet created:`, bullet);
         this.bullets.push(bullet);
+        console.log(`[DEBUG] Total bullets in array: ${this.bullets.length}`);
         return bullet;
     }
     
