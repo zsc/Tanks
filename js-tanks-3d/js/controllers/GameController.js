@@ -211,7 +211,22 @@ export default class GameController {
         this.model.bullets = this.model.bullets.filter(b => b.active);
         
         // Update map tiles if destroyed
-        // This would be triggered by collision events
+        if (this.model.destroyedTiles && this.model.destroyedTiles.length > 0) {
+            this.model.destroyedTiles.forEach(tile => {
+                // Update the visual representation
+                if (tile.result.destroyed) {
+                    const explosion = this.view.mapRenderer.destroyTile(tile.x, tile.z);
+                    if (explosion) {
+                        this.view.explosions.push(explosion);
+                    }
+                } else if (tile.result.partial) {
+                    // Handle partial destruction (for future implementation)
+                    this.view.mapRenderer.updateTile(tile.x, tile.z, 0);
+                }
+            });
+            // Clear the destroyed tiles array
+            this.model.destroyedTiles = [];
+        }
         
         // Update UI
         this.updateUI();

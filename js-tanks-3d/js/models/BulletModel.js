@@ -1,7 +1,7 @@
 export default class BulletModel {
     constructor(id, position, direction, speed = 8, power = 1, owner = null) {
         this.id = id;
-        this.position = { ...position };
+        this.position = { ...position, y: 0 }; // Ensure y is always 0 for 2D game
         this.direction = direction;
         this.speed = speed;
         this.power = power;

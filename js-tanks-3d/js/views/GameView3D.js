@@ -134,7 +134,7 @@ export default class GameView3D {
         const bullet = this.spriteManager.createBulletSprite();
         bullet.position.set(
             position.x - 13,
-            bullet.position.y,
+            0.5, // Fixed height for bullet
             position.z - 13
         );
         this.scene.add(bullet);
@@ -145,6 +145,7 @@ export default class GameView3D {
         const bullet = this.bulletMeshes.get(id);
         if (bullet) {
             bullet.position.x = position.x - 13;
+            bullet.position.y = 0.5; // Keep bullet at fixed height
             bullet.position.z = position.z - 13;
         }
     }

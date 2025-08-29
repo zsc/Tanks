@@ -67,15 +67,16 @@ export default class SpriteManager {
     }
     
     createBulletSprite() {
-        const geometry = new THREE.SphereGeometry(0.05, 4, 4);
+        // Make bullet more visible - larger size and brighter color
+        const geometry = new THREE.SphereGeometry(0.15, 8, 6);
         const material = new THREE.MeshBasicMaterial({
             color: 0xffff00,
             emissive: 0xffff00,
-            emissiveIntensity: 0.5
+            emissiveIntensity: 1.0
         });
         
         const bullet = new THREE.Mesh(geometry, material);
-        bullet.position.y = 0.3;
+        bullet.position.y = 0.5; // Same height as tanks
         
         return bullet;
     }

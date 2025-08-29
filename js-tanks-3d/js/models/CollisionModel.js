@@ -266,6 +266,16 @@ export default class CollisionModel {
                 if (map.isDestructible(mapCollision.tileX, mapCollision.tileZ)) {
                     const result = map.destroyTile(mapCollision.tileX, mapCollision.tileZ, bullet.direction);
                     
+                    // Store destroyed tile info for view update
+                    if (!gameModel.destroyedTiles) {
+                        gameModel.destroyedTiles = [];
+                    }
+                    gameModel.destroyedTiles.push({
+                        x: mapCollision.tileX,
+                        z: mapCollision.tileZ,
+                        result: result
+                    });
+                    
                     // Check if eagle was destroyed
                     if (!map.eagleAlive) {
                         gameModel.gameOver();
