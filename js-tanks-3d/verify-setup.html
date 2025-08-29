@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Verification</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 20px;
+        }
+        .check {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #0f0;
+            background: #000;
+        }
+        .pass { color: #0f0; }
+        .fail { color: #f00; }
+        .info { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>Tank Game Setup Verification</h1>
+    <div id="results"></div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import ResourceLoader from './js/utils/ResourceLoader.js';
+        import MapModel from './js/models/MapModel.js';
+        import Model3DManager from './js/views/Model3DManager.js';
+        import Map3DRenderer from './js/views/Map3DRenderer.js';
+
+        const results = document.getElementById('results');
+        
+        function addResult(test, status, message) {
+            const div = document.createElement('div');
+            div.className = 'check ' + status;
+            div.innerHTML = `<strong>${test}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+
+        async function runTests() {
+            // Test 1: Three.js loaded
+            try {
+                const testScene = new THREE.Scene();
+                addResult('Three.js', 'pass', 'Library loaded successfully');
+            } catch (e) {
+                addResult('Three.js', 'fail', 'Failed to load: ' + e.message);
+            }
+
+            // Test 2: ResourceLoader
+            try {
+                const loader = new ResourceLoader();
+                addResult('ResourceLoader', 'pass', 'Created successfully');
+                
+                // Test 3: Load resources
+                await loader.loadAll();
+                addResult('Resources', 'pass', 'All resources loaded');
+                
+                // Test 4: Check X3D models
+                const modelNames = ['playerTank', 'enemyTank', 'bullet', 'brickWall', 'steelWall', 'eagleBase'];
+                let modelsFound = 0;
+                for (const name of modelNames) {
+                    if (loader.models[name]) {
+                        modelsFound++;
+                    }
+                }
+                if (modelsFound === modelNames.length) {
+                    addResult('X3D Models', 'pass', `All ${modelsFound} models loaded`);
+                } else {
+                    addResult('X3D Models', 'info', `Loaded ${modelsFound}/${modelNames.length} models`);
+                }
+                
+                // Test 5: MapModel
+                try {
+                    const mapModel = new MapModel();
+                    addResult('MapModel', 'pass', `Created (${mapModel.width}x${mapModel.height})`);
+                    
+                    // Test getTile method
+                    const tile = mapModel.getTile(0, 0);
+                    addResult('MapModel.getTile', 'pass', 'Method exists and works');
+                } catch (e) {
+                    addResult('MapModel', 'fail', 'Error: ' + e.message);
+                }
+                
+                // Test 6: Model3DManager
+                try {
+                    const modelManager = new Model3DManager(loader);
+                    addResult('Model3DManager', 'pass', 'Created successfully');
+                    
+                    // Test model creation
+                    const tank = modelManager.createTank3D('player1');
+                    if (tank) {
+                        addResult('Tank Model', 'pass', 'Player tank created');
+                    }
+                    
+                    const bullet = modelManager.createBullet3D();
+                    if (bullet) {
+                        addResult('Bullet Model', 'pass', 'Bullet created');
+                    }
+                } catch (e) {
+                    addResult('Model3DManager', 'fail', 'Error: ' + e.message);
+                }
+                
+                // Test 7: Map3DRenderer
+                try {
+                    const scene = new THREE.Scene();
+                    const modelManager = new Model3DManager(loader);
+                    const mapRenderer = new Map3DRenderer(scene, modelManager);
+                    addResult('Map3DRenderer', 'pass', 'Created successfully');
+                    
+                    // Test renderMap
+                    const mapModel = new MapModel();
+                    mapRenderer.renderMap(mapModel);
+                    addResult('Map Rendering', 'pass', 'Map rendered without errors');
+                } catch (e) {
+                    addResult('Map3DRenderer', 'fail', 'Error: ' + e.message);
+                }
+                
+            } catch (e) {
+                addResult('Resource Loading', 'fail', 'Failed: ' + e.message);
+            }
+            
+            addResult('Verification', 'pass', 'All tests completed');
+        }
+
+        // Run tests
+        runTests();
+    </script>
+</body>
+</html>

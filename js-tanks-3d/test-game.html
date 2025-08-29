@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Test - Console Output</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: monospace;
+            background: #222;
+            color: #0f0;
+            padding: 20px;
+        }
+        #console {
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0a0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #0f0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Game Test Console</h1>
+    <div>
+        <button onclick="loadGame()">Load Game</button>
+        <button onclick="testModels()">Test 3D Models</button>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+    <div id="console"></div>
+    <iframe id="gameFrame" src="" style="display:none;"></iframe>
+
+    <script>
+        const consoleDiv = document.getElementById('console');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f00' : (type === 'success' ? '#0f0' : '#fff');
+            consoleDiv.innerHTML += `<span style="color:${color}">[${timestamp}] ${message}</span>\n`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        function clearConsole() {
+            consoleDiv.innerHTML = '';
+            log('Console cleared', 'info');
+        }
+        
+        function loadGame() {
+            log('Loading game...', 'info');
+            const iframe = document.getElementById('gameFrame');
+            iframe.style.display = 'block';
+            iframe.src = 'index.html';
+            
+            // Listen for messages from the iframe
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'console') {
+                    log(event.data.message, event.data.level);
+                }
+            });
+            
+            // Monitor iframe load
+            iframe.onload = function() {
+                log('Game frame loaded', 'success');
+                
+                // Inject console interceptor
+                try {
+                    const script = iframe.contentDocument.createElement('script');
+                    script.textContent = `
+                        (function() {
+                            const originalLog = console.log;
+                            const originalError = console.error;
+                            const originalWarn = console.warn;
+                            
+                            console.log = function(...args) {
+                                originalLog.apply(console, args);
+                                parent.postMessage({
+                                    type: 'console',
+                                    level: 'info',
+                                    message: args.join(' ')
+                                }, '*');
+                            };
+                            
+                            console.error = function(...args) {
+                                originalError.apply(console, args);
+                                parent.postMessage({
+                                    type: 'console',
+                                    level: 'error',
+                                    message: 'ERROR: ' + args.join(' ')
+                                }, '*');
+                            };
+                            
+                            console.warn = function(...args) {
+                                originalWarn.apply(console, args);
+                                parent.postMessage({
+                                    type: 'console',
+                                    level: 'warn',
+                                    message: 'WARN: ' + args.join(' ')
+                                }, '*');
+                            };
+                            
+                            window.addEventListener('error', function(event) {
+                                parent.postMessage({
+                                    type: 'console',
+                                    level: 'error',
+                                    message: 'ERROR: ' + event.message + ' at ' + event.filename + ':' + event.lineno
+                                }, '*');
+                            });
+                        })();
+                    `;
+                    iframe.contentDocument.head.appendChild(script);
+                    log('Console interceptor injected', 'success');
+                } catch (e) {
+                    log('Failed to inject console interceptor: ' + e.message, 'error');
+                }
+            };
+        }
+        
+        function testModels() {
+            log('Testing 3D model loading...', 'info');
+            
+            // Open test page in new window
+            window.open('test-x3d-models.html', '_blank');
+            log('Opened X3D model test page in new window', 'success');
+        }
+        
+        // Initial message
+        log('Game Test Console Ready', 'success');
+        log('Click "Load Game" to start the game', 'info');
+        log('Click "Test 3D Models" to test individual models', 'info');
+    </script>
+</body>
+</html>
