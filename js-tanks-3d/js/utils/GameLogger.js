@@ -5,6 +5,14 @@ export default class GameLogger {
         this.logToConsole = options.logToConsole !== false;
         this.maxLogSize = options.maxLogSize || 1000; // Max number of entries in memory
         
+        // Debug flags to control specific logging
+        this.debugFlags = {
+            ENEMY_ACTIONS: false,  // Disable enemy movement/spawn logs
+            PLAYER_FIRE: true,     // Enable detailed player fire debugging
+            COLLISIONS: true,      // Keep collision logs
+            STATE_CHANGES: true    // Keep state change logs
+        };
+        
         // Log levels
         this.LOG_LEVELS = {
             DEBUG: 0,
@@ -152,6 +160,11 @@ export default class GameLogger {
     }
     
     logSpawn(entityType, entityId, position) {
+        // Skip enemy spawn logs if flag is disabled
+        if (entityType === 'Enemy' && !this.debugFlags.ENEMY_ACTIONS) {
+            return;
+        }
+        
         this.logEvent(
             this.EVENT_CATEGORIES.SPAWN,
             `${entityType} spawned: ${entityId}`,

@@ -96,9 +96,11 @@ export default class InputController {
         } else if (keyCode === this.keyBindings.player1.fire) {
             // Only fire on key press, not hold
             if (isPressed && !this.firePressed.player1) {
+                console.log('[DEBUG] Player 1 fire input set to TRUE');
                 this.input.player1.fire = true;
                 this.firePressed.player1 = true;
             } else if (!isPressed) {
+                console.log('[DEBUG] Player 1 fire input set to FALSE');
                 this.input.player1.fire = false;
                 this.firePressed.player1 = false;
             }
@@ -145,6 +147,12 @@ export default class InputController {
     getInput() {
         // Return current input state and reset fire flags
         const currentInput = { ...this.input };
+        
+        // Debug log if fire is being read
+        if (currentInput.player1 && currentInput.player1.fire) {
+            console.log('[DEBUG] getInput() returning fire=true for player1');
+            console.log('[DEBUG] Full input structure being returned:', JSON.stringify(currentInput));
+        }
         
         // Reset fire flags after reading
         if (this.input.player1.fire) {

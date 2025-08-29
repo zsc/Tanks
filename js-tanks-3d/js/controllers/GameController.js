@@ -105,13 +105,30 @@ export default class GameController {
     handleInput() {
         const input = this.inputController.getInput();
         
+        // Debug: log when we get input
+        if (input.player1 && (input.player1.fire || input.player1.up || input.player1.down || input.player1.left || input.player1.right)) {
+            console.log('[DEBUG] GameController got input:', {
+                fire: input.player1.fire,
+                up: input.player1.up,
+                down: input.player1.down,
+                left: input.player1.left,
+                right: input.player1.right
+            });
+        }
+        
         // Process player 1 input
         if (input.player1) {
+            if (input.player1.fire) {
+                console.log('[DEBUG] GameController: player1 fire input detected - calling handlePlayerInput');
+            }
             this.model.handlePlayerInput(0, input.player1);
         }
         
-        // Process player 2 input
-        if (input.player2) {
+        // Process player 2 input (only if player 2 exists)
+        if (input.player2 && this.model.players[1]) {
+            if (input.player2.fire) {
+                console.log('[DEBUG] GameController: player2 fire input detected');
+            }
             this.model.handlePlayerInput(1, input.player2);
         }
         

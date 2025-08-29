@@ -103,7 +103,16 @@ export default class TankModel {
     }
     
     fire() {
-        if (!this.alive || !this.canFire) return null;
+        // Only log for players, not enemies
+        if (this.type.startsWith('player')) {
+            console.log(`[DEBUG] Player ${this.id} fire() - alive: ${this.alive}, canFire: ${this.canFire}`);
+        }
+        if (!this.alive || !this.canFire) {
+            if (this.type.startsWith('player')) {
+                console.log(`[DEBUG] Player cannot fire - canFire: ${this.canFire}, timeSince: ${Date.now() - this.lastFireTime}`);
+            }
+            return null;
+        }
         
         this.canFire = false;
         this.lastFireTime = Date.now();

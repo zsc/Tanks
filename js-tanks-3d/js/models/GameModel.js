@@ -189,7 +189,9 @@ export default class GameModel {
     
     handlePlayerInput(playerIndex, input) {
         const player = this.players[playerIndex];
-        if (!player || !player.alive) return;
+        if (!player || !player.alive) {
+            return;
+        }
         
         // Handle movement
         let action = null;
@@ -219,14 +221,20 @@ export default class GameModel {
         
         // Handle firing
         if (input.fire) {
+            console.log(`[DEBUG] GameModel: Player ${playerIndex} fire command received`);
+            
             const bulletData = player.fire();
             if (bulletData) {
+                console.log(`[DEBUG] Bullet created for player ${playerIndex}`);
                 const bullet = this.createBullet(bulletData);
+                
                 this.logger.logPlayerInput(playerIndex + 1, 'fire', {
                     bulletId: bullet.id,
                     position: bullet.position,
                     direction: bullet.direction
                 });
+            } else {
+                console.log(`[DEBUG] Player ${playerIndex} fire() returned null`);
             }
         }
     }

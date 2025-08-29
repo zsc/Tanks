@@ -246,13 +246,15 @@ export default class CollisionModel {
                         tank.takeDamage(bullet.power);
                         bullet.destroy();
                         
-                        // Log collision
-                        gameModel.logger.logCollision('Bullet-Tank', bullet.id, tank.id, {
-                            bulletOwner: bullet.owner,
-                            tankType: tank.type,
-                            damage: bullet.power,
-                            tankDestroyed: !tank.alive
-                        });
+                        // Log collision (skip enemy bullets if flag is disabled)
+                        if (!bullet.owner.startsWith('enemy') || gameModel.logger.debugFlags.ENEMY_ACTIONS) {
+                            gameModel.logger.logCollision('Bullet-Tank', bullet.id, tank.id, {
+                                bulletOwner: bullet.owner,
+                                tankType: tank.type,
+                                damage: bullet.power,
+                                tankDestroyed: !tank.alive
+                            });
+                        }
                         
                         // Update score if enemy destroyed by player
                         if (!tank.alive && tank.type.startsWith('enemy') && bulletOwnerType === 'player') {
@@ -275,13 +277,15 @@ export default class CollisionModel {
                 // Destroy bullet
                 bullet.destroy();
                 
-                // Log collision
-                gameModel.logger.logCollision('Bullet-Map', bullet.id, 
-                    `Tile(${mapCollision.tileX},${mapCollision.tileZ})`, {
-                    tileType: mapCollision.tileType,
-                    bulletOwner: bullet.owner,
-                    bulletDirection: bullet.direction
-                });
+                // Log collision (skip enemy bullets if flag is disabled)
+                if (!bullet.owner || !bullet.owner.startsWith('enemy') || gameModel.logger.debugFlags.ENEMY_ACTIONS) {
+                    gameModel.logger.logCollision('Bullet-Map', bullet.id, 
+                        `Tile(${mapCollision.tileX},${mapCollision.tileZ})`, {
+                        tileType: mapCollision.tileType,
+                        bulletOwner: bullet.owner,
+                        bulletDirection: bullet.direction
+                    });
+                }
                 
                 // Destroy brick tiles with direction
                 if (map.isDestructible(mapCollision.tileX, mapCollision.tileZ)) {
