@@ -35,7 +35,13 @@ export default class TankModel {
         this.aiState = 'patrol';
         this.targetPosition = null;
         this.lastDirectionChange = 0;
-        this.directionChangeInterval = 2000; // ms
+        this.directionChangeInterval = this.getRandomDirectionInterval(); // ms
+        this.lastSpeedChange = 0;
+        this.speedChangeInterval = Math.random() * 300; // 0-300ms like C++
+        this.lastFireTime = 0;
+        this.fireInterval = this.getFireInterval(); // ms
+        this.isBlocked = false;
+        this.blockCheckTimer = 0;
     }
     
     getSpeedByType(type) {
@@ -43,11 +49,26 @@ export default class TankModel {
             'player1': 3,
             'player2': 3,
             'enemy_a': 2,
-            'enemy_b': 2.5,
+            'enemy_b': 2.5,  // Tank B is 30% faster in C++
             'enemy_c': 3,
             'enemy_d': 2
         };
         return speeds[type] || 2;
+    }
+    
+    getRandomDirectionInterval() {
+        // C++ uses rand() % 800 + 100, so 100-900ms
+        return Math.random() * 800 + 100;
+    }
+    
+    getFireInterval() {
+        if (this.type === 'enemy_d') {
+            return Math.random() * 400; // 0-400ms for tank D
+        } else if (this.type === 'enemy_c') {
+            return Math.random() * 800; // 0-800ms for tank C  
+        } else {
+            return Math.random() * 1000; // 0-1000ms for tanks A & B
+        }
     }
     
     update(deltaTime) {
@@ -123,7 +144,9 @@ export default class TankModel {
         
         this.canFire = false;
         this.lastFireTime = Date.now();
-        console.log(`[DEBUG] Player ${this.id} fired! Setting canFire=false, lastFireTime=${this.lastFireTime}`);
+        if (this.type.startsWith('player')) {
+            console.log(`[DEBUG] Player ${this.id} fired! Setting canFire=false, lastFireTime=${this.lastFireTime}`);
+        }
         
         // Calculate bullet spawn position
         const bulletOffset = 0.5;
@@ -221,24 +244,88 @@ export default class TankModel {
         
         const now = Date.now();
         
-        // Change direction periodically
-        if (now - this.lastDirectionChange > this.directionChangeInterval) {
+        // Store previous position to detect if blocked
+        const prevX = this.position.x;
+        const prevZ = this.position.z;
+        
+        // Check if blocked (hasn't moved much)
+        if (Math.abs(this.position.x - this.previousPosition.x) < 0.01 && 
+            Math.abs(this.position.z - this.previousPosition.z) < 0.01 &&
+            (this.velocity.x !== 0 || this.velocity.z !== 0)) {
+            this.blockCheckTimer += deltaTime;
+            if (this.blockCheckTimer > 100) { // If blocked for 100ms
+                this.isBlocked = true;
+                this.blockCheckTimer = 0;
+            }
+        } else {
+            this.blockCheckTimer = 0;
+            this.isBlocked = false;
+        }
+        
+        // Change direction periodically or when blocked
+        if (now - this.lastDirectionChange > this.directionChangeInterval || this.isBlocked) {
             this.lastDirectionChange = now;
+            this.directionChangeInterval = this.getRandomDirectionInterval();
+            
+            // Find nearest player for targeting
+            const nearestPlayer = this.findNearestPlayer(playerPositions);
+            if (nearestPlayer) {
+                this.targetPosition = nearestPlayer;
+            }
+            
             this.chooseNewDirection(playerPositions);
+            this.isBlocked = false;
         }
         
-        // Simple AI: move in chosen direction
-        if (this.aiState === 'patrol') {
-            // Keep moving in current direction
+        // Change speed periodically (like C++ m_try_to_go_time)
+        if (now - this.lastSpeedChange > this.speedChangeInterval) {
+            this.lastSpeedChange = now;
+            this.speedChangeInterval = Math.random() * 300;
+            // Always try to move (speed = default_speed in C++)
             this.move(this.direction);
-        } else if (this.aiState === 'chase') {
-            // Move towards player (more advanced AI)
-            this.chasePlayer(playerPositions);
         }
         
-        // Randomly fire
-        if (Math.random() < 0.01) { // 1% chance per frame
-            return this.fire();
+        // Keep moving continuously (important!)
+        if (!this.isBlocked) {
+            this.move(this.direction);
+        }
+        
+        // Fire based on timing (like C++)
+        if (now - this.lastFireTime > this.fireInterval) {
+            this.lastFireTime = now;
+            this.fireInterval = this.getFireInterval();
+            
+            // Tank D has smart firing (aims at player)
+            if (this.type === 'enemy_d' && this.targetPosition) {
+                const dx = this.targetPosition.x - this.position.x;
+                const dz = this.targetPosition.z - this.position.z;
+                
+                // Only fire if player is in line of sight
+                const threshold = 0.8; // Tank width
+                let shouldFire = false;
+                
+                switch(this.direction) {
+                    case 'up':
+                        shouldFire = dz < 0 && Math.abs(dx) < threshold;
+                        break;
+                    case 'down':
+                        shouldFire = dz > 0 && Math.abs(dx) < threshold;
+                        break;
+                    case 'left':
+                        shouldFire = dx < 0 && Math.abs(dz) < threshold;
+                        break;
+                    case 'right':
+                        shouldFire = dx > 0 && Math.abs(dz) < threshold;
+                        break;
+                }
+                
+                if (shouldFire || this.isBlocked) {
+                    return this.fire();
+                }
+            } else {
+                // Other tanks just fire randomly
+                return this.fire();
+            }
         }
         
         return null;
@@ -247,24 +334,34 @@ export default class TankModel {
     chooseNewDirection(playerPositions) {
         const directions = ['up', 'down', 'left', 'right'];
         
-        // 30% chance to move towards nearest player
-        if (Math.random() < 0.3 && playerPositions.length > 0) {
-            const nearestPlayer = this.findNearestPlayer(playerPositions);
-            if (nearestPlayer) {
-                const dx = nearestPlayer.x - this.position.x;
-                const dz = nearestPlayer.z - this.position.z;
-                
+        // Different targeting probability based on tank type
+        // Tank A: 80% chance to target player (less aggressive)
+        // Other tanks: 50% chance to target player
+        const targetChance = this.type === 'enemy_a' ? 0.8 : 0.5;
+        
+        if (Math.random() < targetChance && this.targetPosition) {
+            const dx = this.targetPosition.x - this.position.x;
+            const dz = this.targetPosition.z - this.position.z;
+            
+            // 70% chance to choose the most direct path
+            if (Math.random() < 0.7) {
                 if (Math.abs(dx) > Math.abs(dz)) {
                     this.direction = dx > 0 ? 'right' : 'left';
                 } else {
                     this.direction = dz > 0 ? 'down' : 'up';
                 }
-                return;
+            } else {
+                // 30% chance to choose the secondary axis (for flanking)
+                if (Math.abs(dx) > Math.abs(dz)) {
+                    this.direction = dz > 0 ? 'down' : 'up';
+                } else {
+                    this.direction = dx > 0 ? 'right' : 'left';
+                }
             }
+        } else {
+            // Random direction
+            this.direction = directions[Math.floor(Math.random() * directions.length)];
         }
-        
-        // Otherwise random direction
-        this.direction = directions[Math.floor(Math.random() * directions.length)];
     }
     
     findNearestPlayer(playerPositions) {

@@ -166,6 +166,11 @@ export default class GameModel {
             // Create enemy
             const enemyId = `enemy_${this.nextEnemyId++}`;
             const enemy = new TankModel(enemyId, type, spawnPoint);
+            
+            // Start enemy moving immediately (like C++)
+            enemy.direction = 'down'; // C++ starts with D_DOWN
+            enemy.move(enemy.direction);
+            
             this.enemies.push(enemy);
             this.enemiesRemaining--;
             
