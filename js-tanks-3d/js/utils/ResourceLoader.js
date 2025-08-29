@@ -166,22 +166,15 @@ export default class ResourceLoader {
     
     async loadModels() {
         const modelList = {
-            // You can mix different formats - the loader will auto-detect based on extension
-            playerTank: 'assets/models/player_tank.x3d',  // Can be replaced with .gltf/.glb
+            // Using duck.glb for player tank!
+            playerTank: 'assets/models/duck.glb',  // Duck as player tank
             enemyTank: 'assets/models/enemy_tank.x3d',
             bullet: 'assets/models/bullet.x3d',
             brickWall: 'assets/models/brick_wall.x3d',
             steelWall: 'assets/models/steel_wall.x3d',
-            eagleBase: 'assets/models/eagle_base.x3d',  // Can be replaced with .gltf/.glb
+            eagleBase: 'assets/models/eagle_base.x3d',
             // Legacy models for compatibility
             tank: 'assets/models/tank.x3d'
-            
-            // Example of how to add GLTF models:
-            // playerTankGLTF: 'assets/models/tank.gltf',
-            // eagleGLTF: 'assets/models/eagle.glb',
-            
-            // Example of how to add OBJ models:
-            // tankOBJ: 'assets/models/tank.obj',
         };
         
         const loadPromises = Object.entries(modelList).map(([name, path]) => {
