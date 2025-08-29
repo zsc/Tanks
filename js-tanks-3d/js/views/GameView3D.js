@@ -19,9 +19,9 @@ export default class GameView3D {
         this.bulletMeshes = new Map();
         this.explosions = [];
         
-        // Camera settings
-        this.cameraDistance = 30;
-        this.cameraHeight = 40;
+        // Camera settings for 45-degree 2.5D view
+        this.cameraDistance = 40;
+        this.cameraAngle = Math.PI / 4; // 45 degrees
     }
     
     async init() {
@@ -54,21 +54,25 @@ export default class GameView3D {
     
     initCamera() {
         const aspect = window.innerWidth / window.innerHeight;
-        const frustumSize = 30;
         
-        // Orthographic camera for 2.5D view (Phase 1)
-        this.camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -2,
-            frustumSize * aspect / 2,
-            frustumSize / 2,
-            frustumSize / -2,
-            0.1,
-            100
+        // Perspective camera for depth perception (near big, far small)
+        this.camera = new THREE.PerspectiveCamera(
+            50,     // Field of view (FOV) in degrees - slightly wider for better view
+            aspect, // Aspect ratio
+            0.1,    // Near clipping plane
+            200     // Far clipping plane
         );
         
-        // Position camera for top-down view with slight angle
-        this.camera.position.set(0, this.cameraHeight, 20);
-        this.camera.lookAt(0, 0, 0);
+        // Position camera for 45-degree angle view with perspective
+        // Adjusted for perspective projection to show entire battlefield
+        const distance = 60;  // Increased distance for perspective camera
+        const angleInRadians = Math.PI / 3.5; // Slightly less than 45 degrees for better view
+        this.camera.position.set(
+            0,                                    // x: centered
+            distance * Math.sin(angleInRadians), // y: height based on angle
+            distance * Math.cos(angleInRadians)  // z: distance back based on angle
+        );
+        this.camera.lookAt(0, 0, -5); // Look slightly forward for better perspective
     }
     
     initRenderer() {
@@ -183,13 +187,9 @@ export default class GameView3D {
     setupResizeHandler() {
         window.addEventListener('resize', () => {
             const aspect = window.innerWidth / window.innerHeight;
-            const frustumSize = 30;
             
-            // Update camera
-            this.camera.left = frustumSize * aspect / -2;
-            this.camera.right = frustumSize * aspect / 2;
-            this.camera.top = frustumSize / 2;
-            this.camera.bottom = frustumSize / -2;
+            // Update perspective camera aspect ratio
+            this.camera.aspect = aspect;
             this.camera.updateProjectionMatrix();
             
             // Update renderer
