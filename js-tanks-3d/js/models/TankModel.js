@@ -16,6 +16,12 @@ export default class TankModel {
         this.health = 1;
         this.powerLevel = 1;
         this.maxPowerLevel = this.type.startsWith('player') ? 4 : 1;
+        this.livesCount = this.type.startsWith('player') ? 10 : 1; // Player has 10 lives, enemies have 1-4 armor
+        
+        // Shield properties (for players)
+        this.hasShield = false;
+        this.shieldTime = 0;
+        this.maxShieldTime = 3000; // 3 seconds of shield after respawn
         
         // Shooting
         this.canFire = true;
@@ -85,6 +91,15 @@ export default class TankModel {
         
         // Update animation
         this.updateAnimation(deltaTime);
+        
+        // Update shield timer
+        if (this.hasShield) {
+            this.shieldTime += deltaTime;
+            if (this.shieldTime >= this.maxShieldTime) {
+                this.hasShield = false;
+                this.shieldTime = 0;
+            }
+        }
         
         // Update fire cooldown
         if (!this.canFire) {
@@ -181,6 +196,11 @@ export default class TankModel {
     takeDamage(damage = 1) {
         if (!this.alive) return;
         
+        // Shield protects from damage
+        if (this.hasShield && this.type.startsWith('player')) {
+            return; // No damage when shielded
+        }
+        
         this.health -= damage;
         if (this.health <= 0) {
             this.destroy();
@@ -188,12 +208,36 @@ export default class TankModel {
     }
     
     destroy() {
+        // For enemies, reduce armor/lives
+        if (this.type.startsWith('enemy')) {
+            this.livesCount--;
+            if (this.livesCount > 0) {
+                // Enemy has more armor, just damaged not destroyed
+                this.health = 1;
+                return;
+            }
+        }
+        
         this.alive = false;
         this.velocity = { x: 0, z: 0 };
         this.toRemove = false; // Don't immediately remove, wait for explosion animation
+        
+        // For players, trigger respawn after explosion
+        if (this.type.startsWith('player')) {
+            this.needsRespawn = true;
+        }
     }
     
     respawn(position) {
+        // Check if player has lives left
+        if (this.type.startsWith('player')) {
+            this.livesCount--;
+            if (this.livesCount <= 0) {
+                this.toRemove = true;
+                return false; // No more lives
+            }
+        }
+        
         this.alive = true;
         this.health = 1;
         this.position = { ...position };
@@ -203,6 +247,17 @@ export default class TankModel {
         this.rotation = 0;
         this.canFire = true;
         this.powerLevel = 1;
+        this.needsRespawn = false;
+        
+        // Add shield for players (like C++)
+        if (this.type.startsWith('player')) {
+            this.hasShield = true;
+            this.shieldTime = 0;
+            // C++ gives half shield time on respawn
+            this.maxShieldTime = 1500; // 1.5 seconds
+        }
+        
+        return true;
     }
     
     upgrade() {

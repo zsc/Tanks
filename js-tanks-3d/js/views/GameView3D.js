@@ -281,7 +281,7 @@ export default class GameView3D {
         this.tankMeshes.set(id, tank);
     }
     
-    updateTank(id, position, direction) {
+    updateTank(id, position, direction, hasShield = false, armorLevel = 1) {
         const tank = this.tankMeshes.get(id);
         if (tank) {
             tank.position.x = position.x - 13;
@@ -289,6 +289,50 @@ export default class GameView3D {
             this.modelManager.rotateTankToDirection(tank, direction);
             // Keep tank slightly above ground for 3D effect
             tank.position.y = 0.5;
+            
+            // Handle shield effect for players
+            if (hasShield) {
+                if (!tank.shield) {
+                    // Create shield mesh
+                    const shieldGeometry = new THREE.SphereGeometry(0.7, 16, 16);
+                    const shieldMaterial = new THREE.MeshBasicMaterial({
+                        color: 0x00ffff,
+                        transparent: true,
+                        opacity: 0.3,
+                        wireframe: true
+                    });
+                    tank.shield = new THREE.Mesh(shieldGeometry, shieldMaterial);
+                    tank.add(tank.shield);
+                }
+                // Animate shield
+                tank.shield.rotation.y += 0.05;
+                tank.shield.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.1);
+            } else if (tank.shield) {
+                // Remove shield
+                tank.remove(tank.shield);
+                tank.shield = null;
+            }
+            
+            // Update enemy tank color based on armor level
+            if (id.startsWith('enemy_')) {
+                const armorColors = {
+                    1: 0x808080, // Gray - weakest
+                    2: 0x00ff00, // Green
+                    3: 0xffff00, // Yellow
+                    4: 0xff0000  // Red - strongest
+                };
+                
+                const color = armorColors[armorLevel] || 0x808080;
+                tank.traverse((child) => {
+                    if (child.isMesh && child.material) {
+                        // Update material color to indicate armor level
+                        if (!child.originalMaterial) {
+                            child.originalMaterial = child.material.clone();
+                        }
+                        child.material.color.setHex(color);
+                    }
+                });
+            }
         }
     }
     

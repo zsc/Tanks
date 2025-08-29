@@ -196,6 +196,14 @@ export default class GameLogger {
         );
     }
     
+    logRespawn(entityType, entityId, details) {
+        this.logEvent(
+            this.EVENT_CATEGORIES.SPAWN,
+            `${entityType} ${entityId} respawned`,
+            details
+        );
+    }
+    
     // Helper methods
     getLevelName(level) {
         const names = Object.entries(this.LOG_LEVELS).find(([name, val]) => val === level);

@@ -162,8 +162,8 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(player.id)) {
                     this.view.addTank(player.id, player.type, player.position);
                 }
-                // Always update position and rotation
-                this.view.updateTank(player.id, player.position, player.direction);
+                // Always update position, rotation and shield
+                this.view.updateTank(player.id, player.position, player.direction, player.hasShield);
                 // Tank animation is now handled by 3D model rotation
             } else {
                 if (this.view.tankMeshes.has(player.id)) {
@@ -178,8 +178,8 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(enemy.id)) {
                     this.view.addTank(enemy.id, enemy.type, enemy.position);
                 }
-                // Always update position and rotation
-                this.view.updateTank(enemy.id, enemy.position, enemy.direction);
+                // Always update position, rotation and armor
+                this.view.updateTank(enemy.id, enemy.position, enemy.direction, false, enemy.livesCount);
                 // Tank animation is now handled by 3D model rotation
             } else {
                 if (this.view.tankMeshes.has(enemy.id)) {
