@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanks 3D - JavaScript MVC + Three.js</title>
+    <title>Tanks 3D - No Cache Version</title>
     <link rel="stylesheet" href="css/style.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 </head>
 <body>
     <div id="game-container">
@@ -58,6 +61,12 @@
         }
     }
     </script>
-    <script type="module" src="js/app.js?v=2"></script>
+    <script type="module">
+        // Clear module cache
+        const timestamp = Date.now();
+        import(`./js/app.js?t=${timestamp}`).then(module => {
+            console.log('App loaded with timestamp:', timestamp);
+        });
+    </script>
 </body>
 </html>
