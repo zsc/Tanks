@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanks 3D - JavaScript MVC + Three.js</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-overlay">
+            <div id="score-panel">
+                <div id="player1-score">P1: <span>0</span></div>
+                <div id="player2-score">P2: <span>0</span></div>
+                <div id="level">Level: <span>1</span></div>
+            </div>
+            <div id="game-state"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

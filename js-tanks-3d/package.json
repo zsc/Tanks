@@ -1,0 +1,17 @@
+{
+  "name": "js-tanks-3d",
+  "version": "1.0.0",
+  "description": "Tanks game rebuilt with JavaScript MVC + Three.js",
+  "main": "js/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "dev": "npx live-server --port=8080"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
