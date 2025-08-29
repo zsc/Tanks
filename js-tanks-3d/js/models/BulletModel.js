@@ -1,15 +1,16 @@
 export default class BulletModel {
-    constructor(id, position, direction, speed = 8, power = 1, owner = null) {
-        this.id = id;
-        this.position = { ...position, y: 0 }; // Ensure y is always 0 for 2D game
-        this.direction = direction;
-        this.speed = speed;
-        this.power = power;
-        this.owner = owner; // Tank ID that fired this bullet
+    constructor(data) {
+        this.id = data.id || `bullet_${Date.now()}_${Math.random()}`;
+        this.position = { ...data.position, y: 0.8 }; // Set y to a visible height
+        this.direction = data.direction;
+        this.speed = data.speed || 8;
+        this.power = data.power || 1;
+        this.owner = data.owner;
+        this.ownerType = data.ownerType;
         this.active = true;
         
         // Set velocity based on direction
-        this.velocity = this.calculateVelocity(direction, speed);
+        this.velocity = this.calculateVelocity(this.direction, this.speed);
         
         // Bullet size for collision
         this.size = 0.1;

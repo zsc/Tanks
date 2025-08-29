@@ -179,14 +179,12 @@ export default class GameModel {
     
     createBullet(bulletData) {
         console.log(`[DEBUG] createBullet called with data:`, bulletData);
-        const bullet = new BulletModel(
-            `bullet_${this.nextBulletId++}`,
-            bulletData.position,
-            bulletData.direction,
-            bulletData.speed,
-            bulletData.power,
-            bulletData.owner
-        );
+        const bulletId = `bullet_${this.nextBulletId++}`;
+        const newBulletData = {
+            ...bulletData,
+            id: bulletId
+        };
+        const bullet = new BulletModel(newBulletData);
         console.log(`[DEBUG] Bullet created:`, bullet);
         this.bullets.push(bullet);
         console.log(`[DEBUG] Total bullets in array: ${this.bullets.length}`);
