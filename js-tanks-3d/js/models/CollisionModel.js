@@ -246,11 +246,24 @@ export default class CollisionModel {
                         tank.takeDamage(bullet.power);
                         bullet.destroy();
                         
+                        // Log collision
+                        gameModel.logger.logCollision('Bullet-Tank', bullet.id, tank.id, {
+                            bulletOwner: bullet.owner,
+                            tankType: tank.type,
+                            damage: bullet.power,
+                            tankDestroyed: !tank.alive
+                        });
+                        
                         // Update score if enemy destroyed by player
                         if (!tank.alive && tank.type.startsWith('enemy') && bulletOwnerType === 'player') {
                             const playerNum = bullet.owner.includes('1') ? 'player1' : 'player2';
                             gameModel.score[playerNum] += 100;
                             gameModel.enemiesKilled++;
+                            
+                            gameModel.logger.logScore(playerNum, 100, gameModel.score[playerNum]);
+                            gameModel.logger.logDestroy('Enemy', tank.id, bullet.owner);
+                        } else if (!tank.alive && tank.type.startsWith('player')) {
+                            gameModel.logger.logDestroy('Player', tank.id, bullet.owner);
                         }
                     }
                 }
@@ -262,9 +275,26 @@ export default class CollisionModel {
                 // Destroy bullet
                 bullet.destroy();
                 
+                // Log collision
+                gameModel.logger.logCollision('Bullet-Map', bullet.id, 
+                    `Tile(${mapCollision.tileX},${mapCollision.tileZ})`, {
+                    tileType: mapCollision.tileType,
+                    bulletOwner: bullet.owner,
+                    bulletDirection: bullet.direction
+                });
+                
                 // Destroy brick tiles with direction
                 if (map.isDestructible(mapCollision.tileX, mapCollision.tileZ)) {
                     const result = map.destroyTile(mapCollision.tileX, mapCollision.tileZ, bullet.direction);
+                    
+                    // Log map change
+                    gameModel.logger.logMapChange(
+                        mapCollision.tileX, 
+                        mapCollision.tileZ,
+                        mapCollision.tileType,
+                        result.destroyed ? 0 : mapCollision.tileType,
+                        `Bullet from ${bullet.owner}`
+                    );
                     
                     // Store destroyed tile info for view update
                     if (!gameModel.destroyedTiles) {
@@ -279,6 +309,7 @@ export default class CollisionModel {
                     // Check if eagle was destroyed
                     if (!map.eagleAlive) {
                         gameModel.gameOver();
+                        gameModel.logger.logDestroy('Eagle', 'eagle', bullet.owner);
                     }
                 }
             }

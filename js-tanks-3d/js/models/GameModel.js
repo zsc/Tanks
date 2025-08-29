@@ -2,9 +2,18 @@ import TankModel from './TankModel.js';
 import BulletModel from './BulletModel.js';
 import MapModel from './MapModel.js';
 import CollisionModel from './CollisionModel.js';
+import GameLogger from '../utils/GameLogger.js';
 
 export default class GameModel {
     constructor() {
+        // Initialize logger
+        this.logger = new GameLogger({
+            enabled: true,
+            logToFile: true,
+            logToConsole: true,
+            level: 1 // INFO level
+        });
+        
         // Game state
         this.gameState = 'menu'; // menu, playing, paused, gameover
         this.level = 1;
@@ -62,11 +71,13 @@ export default class GameModel {
         const p1Spawn = this.map.getPlayerSpawnPoint(0);
         const player1 = new TankModel('player1', 'player1', p1Spawn);
         this.players.push(player1);
+        this.logger.logSpawn('Player', 'player1', p1Spawn);
         
         // Spawn player 2 (optional)
         // const p2Spawn = this.map.getPlayerSpawnPoint(1);
         // const player2 = new TankModel('player2', 'player2', p2Spawn);
         // this.players.push(player2);
+        // this.logger.logSpawn('Player', 'player2', p2Spawn);
     }
     
     update(deltaTime) {
@@ -150,9 +161,16 @@ export default class GameModel {
             const type = types[Math.floor(Math.random() * types.length)];
             
             // Create enemy
-            const enemy = new TankModel(`enemy_${this.nextEnemyId++}`, type, spawnPoint);
+            const enemyId = `enemy_${this.nextEnemyId++}`;
+            const enemy = new TankModel(enemyId, type, spawnPoint);
             this.enemies.push(enemy);
             this.enemiesRemaining--;
+            
+            this.logger.logSpawn('Enemy', enemyId, {
+                ...spawnPoint,
+                type: type,
+                remaining: this.enemiesRemaining
+            });
         }
     }
     
@@ -174,23 +192,41 @@ export default class GameModel {
         if (!player || !player.alive) return;
         
         // Handle movement
+        let action = null;
         if (input.up) {
             player.move('up');
+            action = 'move_up';
         } else if (input.down) {
             player.move('down');
+            action = 'move_down';
         } else if (input.left) {
             player.move('left');
+            action = 'move_left';
         } else if (input.right) {
             player.move('right');
+            action = 'move_right';
         } else {
             player.stop();
+        }
+        
+        // Log movement (debounced)
+        if (action) {
+            this.logger.logPlayerInput(playerIndex + 1, action, {
+                position: player.position,
+                direction: player.direction
+            });
         }
         
         // Handle firing
         if (input.fire) {
             const bulletData = player.fire();
             if (bulletData) {
-                this.createBullet(bulletData);
+                const bullet = this.createBullet(bulletData);
+                this.logger.logPlayerInput(playerIndex + 1, 'fire', {
+                    bulletId: bullet.id,
+                    position: bullet.position,
+                    direction: bullet.direction
+                });
             }
         }
     }
@@ -219,8 +255,10 @@ export default class GameModel {
         // Trigger game over event
     }
     
-    setState(newState) {
+    setState(newState, reason = '') {
+        const oldState = this.gameState;
         this.gameState = newState;
+        this.logger.logStateChange(oldState, newState, reason);
     }
     
     getState() {

@@ -59,7 +59,7 @@ export default class GameController {
         this.view.renderMap(this.model.map);
         
         // Start playing
-        this.model.setState('playing');
+        this.model.setState('playing', 'Game started');
         
         // Add initial tanks to view
         this.model.players.forEach(player => {
@@ -262,9 +262,9 @@ export default class GameController {
     
     togglePause() {
         if (this.model.gameState === 'playing') {
-            this.model.setState('paused');
+            this.model.setState('paused', 'User paused');
         } else if (this.model.gameState === 'paused') {
-            this.model.setState('playing');
+            this.model.setState('playing', 'User resumed');
         }
     }
     

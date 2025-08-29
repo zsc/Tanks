@@ -87,3 +87,28 @@ body {
 .player-controls div {
     line-height: 1.4;
 }
+
+/* Log download button */
+#download-logs {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+#download-logs:hover {
+    background: #45a049;
+}
+
+#download-logs:active {
+    background: #3d8b40;
+}
