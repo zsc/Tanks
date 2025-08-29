@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>坦克大战 X3D 资产图鉴</title>
+    <script src="https://www.x3dom.org/download/x3dom.js"></script>
+    <link rel="stylesheet" href="https://www.x3dom.org/download/x3dom.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .asset-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .asset-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .asset-title {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        x3d {
+            width: 100%;
+            height: 250px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .asset-description {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 坦克大战 X3D 资产图鉴</h1>
+        <p>使用 X3D 标准构建的游戏模型展示</p>
+    </div>
+
+    <div class="asset-container">
+        <!-- 玩家坦克 -->
+        <div class="asset-card">
+            <h2 class="asset-title">玩家坦克</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 5 10" orientation="1 0 0 -0.3"></viewpoint>
+                    <background skyColor="0.9 0.95 1"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    <directionalLight direction="0 1 1" intensity="0.3"></directionalLight>
+                    
+                    <!-- 坦克组合 -->
+                    <transform DEF="PlayerTank">
+                        <!-- 坦克底盘 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.2 0.6 0.2" specularColor="0.1 0.3 0.1"></material>
+                            </appearance>
+                            <box size="3 1 4"></box>
+                        </shape>
+                        
+                        <!-- 坦克履带左 -->
+                        <transform translation="-1.8 -0.3 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.1 0.1 0.1"></material>
+                                </appearance>
+                                <box size="0.5 0.8 4.2"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克履带右 -->
+                        <transform translation="1.8 -0.3 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.1 0.1 0.1"></material>
+                                </appearance>
+                                <box size="0.5 0.8 4.2"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克炮塔 -->
+                        <transform translation="0 1 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.25 0.7 0.25" specularColor="0.1 0.3 0.1"></material>
+                                </appearance>
+                                <cylinder height="1" radius="1.2"></cylinder>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克炮管 -->
+                        <transform translation="0 1 2.5" rotation="1 0 0 1.57">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.15 0.5 0.15"></material>
+                                </appearance>
+                                <cylinder height="3" radius="0.2"></cylinder>
+                            </shape>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">玩家控制的主战坦克，绿色涂装，配备标准火炮</p>
+        </div>
+
+        <!-- 敌方坦克 -->
+        <div class="asset-card">
+            <h2 class="asset-title">敌方坦克</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 5 10" orientation="1 0 0 -0.3"></viewpoint>
+                    <background skyColor="0.95 0.9 0.9"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    <directionalLight direction="0 1 1" intensity="0.3"></directionalLight>
+                    
+                    <!-- 敌方坦克 -->
+                    <transform DEF="EnemyTank">
+                        <!-- 坦克底盘 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.7 0.2 0.2" specularColor="0.3 0.1 0.1"></material>
+                            </appearance>
+                            <box size="2.8 0.9 3.8"></box>
+                        </shape>
+                        
+                        <!-- 坦克履带左 -->
+                        <transform translation="-1.7 -0.3 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.15 0.15 0.15"></material>
+                                </appearance>
+                                <box size="0.4 0.7 4"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克履带右 -->
+                        <transform translation="1.7 -0.3 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.15 0.15 0.15"></material>
+                                </appearance>
+                                <box size="0.4 0.7 4"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克炮塔 -->
+                        <transform translation="0 0.9 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.8 0.25 0.25" specularColor="0.3 0.1 0.1"></material>
+                                </appearance>
+                                <sphere radius="1.1"></sphere>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 坦克炮管 -->
+                        <transform translation="0 0.9 2.3" rotation="1 0 0 1.57">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.5 0.15 0.15"></material>
+                                </appearance>
+                                <cylinder height="2.8" radius="0.18"></cylinder>
+                            </shape>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">敌方AI坦克，红色涂装，球形炮塔设计</p>
+        </div>
+
+        <!-- 砖墙 -->
+        <div class="asset-card">
+            <h2 class="asset-title">砖墙</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 3 8" orientation="1 0 0 -0.2"></viewpoint>
+                    <background skyColor="0.95 0.95 0.9"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    
+                    <!-- 砖墙组合 -->
+                    <transform>
+                        <!-- 基础砖块矩阵 -->
+                        <transform DEF="BrickWall">
+                            <!-- 第一排砖块 -->
+                            <transform translation="-1.5 0 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.7 0.3 0.2"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="-0.5 0 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.75 0.32 0.22"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0.5 0 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.72 0.31 0.21"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="1.5 0 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.68 0.29 0.19"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 第二排砖块（错位排列） -->
+                            <transform translation="-1 0.5 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.73 0.33 0.23"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 0.5 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.71 0.31 0.21"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="1 0.5 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.69 0.30 0.20"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 第三排砖块 -->
+                            <transform translation="-1.5 1 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.74 0.34 0.24"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="-0.5 1 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.70 0.30 0.20"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0.5 1 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.72 0.32 0.22"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="1.5 1 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.68 0.28 0.18"></material>
+                                    </appearance>
+                                    <box size="1 0.5 0.5"></box>
+                                </shape>
+                            </transform>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">可破坏的砖墙，由多个砖块组成，支持部分破坏</p>
+        </div>
+
+        <!-- 钢墙 -->
+        <div class="asset-card">
+            <h2 class="asset-title">钢墙</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 3 8" orientation="1 0 0 -0.2"></viewpoint>
+                    <background skyColor="0.9 0.9 0.95"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    <directionalLight direction="1 0 0" intensity="0.3"></directionalLight>
+                    
+                    <!-- 钢墙 -->
+                    <transform>
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.6 0.6 0.65" specularColor="0.8 0.8 0.85" shininess="0.8"></material>
+                            </appearance>
+                            <box size="4 2 0.5"></box>
+                        </shape>
+                        
+                        <!-- 钢板纹理细节 -->
+                        <transform translation="0 0 0.26">
+                            <!-- 铆钉行1 -->
+                            <transform translation="-1.5 0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="-0.5 0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="0.5 0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="1.5 0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 铆钉行2 -->
+                            <transform translation="-1.5 -0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="-0.5 -0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="0.5 -0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                            <transform translation="1.5 -0.7 0">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.4 0.4 0.45" specularColor="0.6 0.6 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.1" radius="0.1"></cylinder>
+                                </shape>
+                            </transform>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">不可破坏的钢墙，金属材质，带铆钉装饰</p>
+        </div>
+
+        <!-- 子弹 -->
+        <div class="asset-card">
+            <h2 class="asset-title">子弹</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 0 5" orientation="0 0 0 0"></viewpoint>
+                    <background skyColor="0.95 0.95 0.95"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    
+                    <!-- 子弹模型 -->
+                    <transform rotation="0 0 1 1.57">
+                        <!-- 弹体 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.8 0.7 0.3" specularColor="0.9 0.8 0.4" shininess="0.9"></material>
+                            </appearance>
+                            <cylinder height="1.5" radius="0.15"></cylinder>
+                        </shape>
+                        
+                        <!-- 弹头 -->
+                        <transform translation="0 0.85 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.75 0.65 0.25" specularColor="0.85 0.75 0.35" shininess="0.9"></material>
+                                </appearance>
+                                <cone bottomRadius="0.15" height="0.4"></cone>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 弹壳底部 -->
+                        <transform translation="0 -0.75 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.7 0.6 0.2" specularColor="0.8 0.7 0.3"></material>
+                                </appearance>
+                                <cylinder height="0.1" radius="0.18"></cylinder>
+                            </shape>
+                        </transform>
+                    </transform>
+                    
+                    <!-- 旋转动画 -->
+                    <timeSensor DEF="BulletRotation" cycleInterval="4" loop="true"></timeSensor>
+                    <orientationInterpolator DEF="BulletSpin" key="0 0.25 0.5 0.75 1" keyValue="0 1 0 0, 0 1 0 1.57, 0 1 0 3.14, 0 1 0 4.71, 0 1 0 6.28"></orientationInterpolator>
+                    <route fromNode="BulletRotation" fromField="fraction_changed" toNode="BulletSpin" toField="set_fraction"></route>
+                </scene>
+            </x3d>
+            <p class="asset-description">坦克发射的炮弹，黄铜材质</p>
+        </div>
+
+        <!-- 爆炸效果 -->
+        <div class="asset-card">
+            <h2 class="asset-title">爆炸效果</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 0 8" orientation="0 0 0 0"></viewpoint>
+                    <background skyColor="0.1 0.1 0.15"></background>
+                    
+                    <!-- 爆炸粒子效果 -->
+                    <transform DEF="Explosion">
+                        <!-- 中心火球 -->
+                        <transform DEF="FireBall">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="1 0.5 0" emissiveColor="1 0.3 0" transparency="0.3"></material>
+                                </appearance>
+                                <sphere radius="1"></sphere>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 外圈火焰 -->
+                        <transform DEF="OuterFire" scale="1.5 1.5 1.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="1 0.3 0" emissiveColor="1 0.2 0" transparency="0.6"></material>
+                                </appearance>
+                                <sphere radius="1"></sphere>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 烟雾效果 -->
+                        <transform DEF="Smoke" scale="2 2 2">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.3 0.3 0.3" transparency="0.8"></material>
+                                </appearance>
+                                <sphere radius="1"></sphere>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 火花粒子 -->
+                        <transform translation="0.8 0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material emissiveColor="1 1 0"></material>
+                                </appearance>
+                                <sphere radius="0.1"></sphere>
+                            </shape>
+                        </transform>
+                        <transform translation="-0.7 0.6 0">
+                            <shape>
+                                <appearance>
+                                    <material emissiveColor="1 0.8 0"></material>
+                                </appearance>
+                                <sphere radius="0.08"></sphere>
+                            </shape>
+                        </transform>
+                        <transform translation="0.5 -0.7 0">
+                            <shape>
+                                <appearance>
+                                    <material emissiveColor="1 0.9 0"></material>
+                                </appearance>
+                                <sphere radius="0.12"></sphere>
+                            </shape>
+                        </transform>
+                        <transform translation="-0.6 -0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material emissiveColor="1 1 0.2"></material>
+                                </appearance>
+                                <sphere radius="0.09"></sphere>
+                            </shape>
+                        </transform>
+                    </transform>
+                    
+                    <!-- 爆炸动画 -->
+                    <timeSensor DEF="ExplosionTimer" cycleInterval="2" loop="true"></timeSensor>
+                    <scalarInterpolator DEF="ExplosionScale" key="0 0.2 0.5 1" keyValue="0.1 1.5 2 0.1"></scalarInterpolator>
+                    <route fromNode="ExplosionTimer" fromField="fraction_changed" toNode="ExplosionScale" toField="set_fraction"></route>
+                    <route fromNode="ExplosionScale" fromField="value_changed" toNode="FireBall" toField="scale"></route>
+                </scene>
+            </x3d>
+            <p class="asset-description">坦克或砖块被击中时的爆炸特效</p>
+        </div>
+
+        <!-- 基地/鹰 -->
+        <div class="asset-card">
+            <h2 class="asset-title">基地（鹰）</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 3 10" orientation="1 0 0 -0.2"></viewpoint>
+                    <background skyColor="0.95 0.95 1"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    <directionalLight direction="1 0.5 0.5" intensity="0.4"></directionalLight>
+                    
+                    <!-- 基地建筑 -->
+                    <transform>
+                        <!-- 多层基座 -->
+                        <!-- 底层基座 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.7 0.7 0.7" specularColor="0.8 0.8 0.8"></material>
+                            </appearance>
+                            <box size="5 0.3 5"></box>
+                        </shape>
+                        
+                        <!-- 中层基座 -->
+                        <transform translation="0 0.25 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.75 0.75 0.75" specularColor="0.85 0.85 0.85"></material>
+                                </appearance>
+                                <box size="4.5 0.2 4.5"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 上层基座 -->
+                        <transform translation="0 0.4 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.8 0.8 0.8" specularColor="0.9 0.9 0.9"></material>
+                                </appearance>
+                                <box size="4 0.2 4"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 基座装饰纹路 -->
+                        <transform translation="0 0.51 1.8">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.6 0.6 0.6"></material>
+                                </appearance>
+                                <box size="3.5 0.02 0.1"></box>
+                            </shape>
+                        </transform>
+                        <transform translation="0 0.51 -1.8">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.6 0.6 0.6"></material>
+                                </appearance>
+                                <box size="3.5 0.02 0.1"></box>
+                            </shape>
+                        </transform>
+                        <transform translation="1.8 0.51 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.6 0.6 0.6"></material>
+                                </appearance>
+                                <box size="0.1 0.02 3.5"></box>
+                            </shape>
+                        </transform>
+                        <transform translation="-1.8 0.51 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.6 0.6 0.6"></material>
+                                </appearance>
+                                <box size="0.1 0.02 3.5"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 鹰雕像主体 -->
+                        <transform translation="0 2.2 0">
+                            <!-- 腹部（椭球形） -->
+                            <transform scale="1 1.2 0.8">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.85 0.75 0.55" specularColor="0.9 0.8 0.6" shininess="0.3"></material>
+                                    </appearance>
+                                    <sphere radius="0.9"></sphere>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 胸部 -->
+                            <transform translation="0 0.3 0.3">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.88 0.78 0.58" specularColor="0.93 0.83 0.63" shininess="0.3"></material>
+                                    </appearance>
+                                    <sphere radius="0.7"></sphere>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 颈部 -->
+                            <transform translation="0 0.7 0.4">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.9 0.8 0.6" specularColor="0.95 0.85 0.65"></material>
+                                    </appearance>
+                                    <cylinder height="0.4" radius="0.3"></cylinder>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 头部 -->
+                            <transform translation="0 1.1 0.5">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.95 0.9 0.8" specularColor="1 0.95 0.85" shininess="0.4"></material>
+                                    </appearance>
+                                    <sphere radius="0.45"></sphere>
+                                </shape>
+                                
+                                <!-- 左眼 -->
+                                <transform translation="-0.15 0.1 0.35">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.1 0.1 0.1" specularColor="0.8 0.8 0.8" shininess="0.9"></material>
+                                        </appearance>
+                                        <sphere radius="0.08"></sphere>
+                                    </shape>
+                                </transform>
+                                
+                                <!-- 右眼 -->
+                                <transform translation="0.15 0.1 0.35">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.1 0.1 0.1" specularColor="0.8 0.8 0.8" shininess="0.9"></material>
+                                        </appearance>
+                                        <sphere radius="0.08"></sphere>
+                                    </shape>
+                                </transform>
+                                
+                                <!-- 瞳孔发光效果 -->
+                                <transform translation="-0.15 0.1 0.38">
+                                    <shape>
+                                        <appearance>
+                                            <material emissiveColor="0.8 0.6 0.2"></material>
+                                        </appearance>
+                                        <sphere radius="0.03"></sphere>
+                                    </shape>
+                                </transform>
+                                <transform translation="0.15 0.1 0.38">
+                                    <shape>
+                                        <appearance>
+                                            <material emissiveColor="0.8 0.6 0.2"></material>
+                                        </appearance>
+                                        <sphere radius="0.03"></sphere>
+                                    </shape>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 鹰喙（弯曲） -->
+                            <transform translation="0 1.05 0.85">
+                                <!-- 上喙 -->
+                                <transform rotation="1 0 0 1.8">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.7"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.12" height="0.35"></cone>
+                                    </shape>
+                                </transform>
+                                <!-- 下喙 -->
+                                <transform translation="0 -0.08 0" rotation="1 0 0 1.4">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.1" height="0.25"></cone>
+                                    </shape>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 左翼（多层羽毛） -->
+                            <transform translation="-1.2 0 0">
+                                <!-- 主翼 -->
+                                <transform rotation="0 0 1 -0.25">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.75 0.65 0.45" specularColor="0.8 0.7 0.5"></material>
+                                        </appearance>
+                                        <box size="2.2 0.15 1.2"></box>
+                                    </shape>
+                                    
+                                    <!-- 翼尖羽毛1 -->
+                                    <transform translation="-1 0 -0.3" rotation="0 0 1 -0.1">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.7 0.6 0.4" specularColor="0.75 0.65 0.45"></material>
+                                            </appearance>
+                                            <box size="0.8 0.1 0.3"></box>
+                                        </shape>
+                                    </transform>
+                                    
+                                    <!-- 翼尖羽毛2 -->
+                                    <transform translation="-1 0 0" rotation="0 0 1 -0.15">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.72 0.62 0.42" specularColor="0.77 0.67 0.47"></material>
+                                            </appearance>
+                                            <box size="0.9 0.1 0.35"></box>
+                                        </shape>
+                                    </transform>
+                                    
+                                    <!-- 翼尖羽毛3 -->
+                                    <transform translation="-1 0 0.3" rotation="0 0 1 -0.2">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.68 0.58 0.38" specularColor="0.73 0.63 0.43"></material>
+                                            </appearance>
+                                            <box size="0.85 0.1 0.32"></box>
+                                        </shape>
+                                    </transform>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 右翼（多层羽毛） -->
+                            <transform translation="1.2 0 0">
+                                <!-- 主翼 -->
+                                <transform rotation="0 0 1 0.25">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.75 0.65 0.45" specularColor="0.8 0.7 0.5"></material>
+                                        </appearance>
+                                        <box size="2.2 0.15 1.2"></box>
+                                    </shape>
+                                    
+                                    <!-- 翼尖羽毛1 -->
+                                    <transform translation="1 0 -0.3" rotation="0 0 1 0.1">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.7 0.6 0.4" specularColor="0.75 0.65 0.45"></material>
+                                            </appearance>
+                                            <box size="0.8 0.1 0.3"></box>
+                                        </shape>
+                                    </transform>
+                                    
+                                    <!-- 翼尖羽毛2 -->
+                                    <transform translation="1 0 0" rotation="0 0 1 0.15">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.72 0.62 0.42" specularColor="0.77 0.67 0.47"></material>
+                                            </appearance>
+                                            <box size="0.9 0.1 0.35"></box>
+                                        </shape>
+                                    </transform>
+                                    
+                                    <!-- 翼尖羽毛3 -->
+                                    <transform translation="1 0 0.3" rotation="0 0 1 0.2">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.68 0.58 0.38" specularColor="0.73 0.63 0.43"></material>
+                                            </appearance>
+                                            <box size="0.85 0.1 0.32"></box>
+                                        </shape>
+                                    </transform>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 尾羽 -->
+                            <transform translation="0 -0.5 -0.8">
+                                <!-- 中央尾羽 -->
+                                <transform rotation="1 0 0 -0.3">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.78 0.68 0.48" specularColor="0.83 0.73 0.53"></material>
+                                        </appearance>
+                                        <box size="0.6 0.1 1.2"></box>
+                                    </shape>
+                                </transform>
+                                
+                                <!-- 左尾羽 -->
+                                <transform translation="-0.3 0 0" rotation="1 0 0 -0.3">
+                                    <transform rotation="0 1 0 -0.2">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.76 0.66 0.46" specularColor="0.81 0.71 0.51"></material>
+                                            </appearance>
+                                            <box size="0.5 0.1 1"></box>
+                                        </shape>
+                                    </transform>
+                                </transform>
+                                
+                                <!-- 右尾羽 -->
+                                <transform translation="0.3 0 0" rotation="1 0 0 -0.3">
+                                    <transform rotation="0 1 0 0.2">
+                                        <shape>
+                                            <appearance>
+                                                <material diffuseColor="0.76 0.66 0.46" specularColor="0.81 0.71 0.51"></material>
+                                            </appearance>
+                                            <box size="0.5 0.1 1"></box>
+                                        </shape>
+                                    </transform>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 爪子 -->
+                            <!-- 左爪 -->
+                            <transform translation="-0.4 -1.3 0.2">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.8"></material>
+                                    </appearance>
+                                    <sphere radius="0.15"></sphere>
+                                </shape>
+                                <!-- 爪趾1 -->
+                                <transform translation="-0.05 -0.1 0.15" rotation="1 0 0 0.5">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                                <!-- 爪趾2 -->
+                                <transform translation="0.05 -0.1 0.15" rotation="1 0 0 0.5">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                                <!-- 爪趾3 -->
+                                <transform translation="0 -0.1 -0.1" rotation="1 0 0 -0.3">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                            </transform>
+                            
+                            <!-- 右爪 -->
+                            <transform translation="0.4 -1.3 0.2">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.9 0.7 0.2" specularColor="0.95 0.75 0.25" shininess="0.8"></material>
+                                    </appearance>
+                                    <sphere radius="0.15"></sphere>
+                                </shape>
+                                <!-- 爪趾1 -->
+                                <transform translation="-0.05 -0.1 0.15" rotation="1 0 0 0.5">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                                <!-- 爪趾2 -->
+                                <transform translation="0.05 -0.1 0.15" rotation="1 0 0 0.5">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                                <!-- 爪趾3 -->
+                                <transform translation="0 -0.1 -0.1" rotation="1 0 0 -0.3">
+                                    <shape>
+                                        <appearance>
+                                            <material diffuseColor="0.85 0.65 0.15" specularColor="0.9 0.7 0.2"></material>
+                                        </appearance>
+                                        <cone bottomRadius="0.05" height="0.2"></cone>
+                                    </shape>
+                                </transform>
+                            </transform>
+                        </transform>
+                        
+                        <!-- 保护墙（砖块结构） -->
+                        <transform translation="0 1.5 -2.5">
+                            <!-- 主墙体 -->
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.7 0.3 0.2" specularColor="0.3 0.1 0.1"></material>
+                                </appearance>
+                                <box size="5 3 0.3"></box>
+                            </shape>
+                            
+                            <!-- 砖缝横线 -->
+                            <transform translation="0 1 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="5 0.05 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 0.5 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="5 0.05 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="5 0.05 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 -0.5 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="5 0.05 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 -1 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="5 0.05 0.02"></box>
+                                </shape>
+                            </transform>
+                            
+                            <!-- 砖缝竖线 -->
+                            <transform translation="-2 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="0.05 3 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="-1 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="0.05 3 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="0 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="0.05 3 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="1 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="0.05 3 0.02"></box>
+                                </shape>
+                            </transform>
+                            <transform translation="2 0 0.16">
+                                <shape>
+                                    <appearance>
+                                        <material diffuseColor="0.5 0.2 0.1"></material>
+                                    </appearance>
+                                    <box size="0.05 3 0.02"></box>
+                                </shape>
+                            </transform>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">需要保护的基地，精细的鹰形雕像设计，象征着自由与力量</p>
+        </div>
+
+        <!-- 道具箱 -->
+        <div class="asset-card">
+            <h2 class="asset-title">道具箱</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 3 8" orientation="1 0 0 -0.3"></viewpoint>
+                    <background skyColor="0.95 0.95 0.95"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    
+                    <!-- 道具箱 -->
+                    <transform DEF="PowerUp">
+                        <!-- 箱体 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.9 0.7 0.2" specularColor="1 0.8 0.3" shininess="0.7"></material>
+                            </appearance>
+                            <box size="1.5 1.5 1.5"></box>
+                        </shape>
+                        
+                        <!-- 问号标志 -->
+                        <transform translation="0 0 0.76">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="1 1 1" emissiveColor="0.2 0.2 0.2"></material>
+                                </appearance>
+                                <text string="?">
+                                    <fontstyle size="1.2" style="BOLD"></fontstyle>
+                                </text>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 发光效果 -->
+                        <transform scale="1.2 1.2 1.2">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="1 0.9 0.3" transparency="0.8" emissiveColor="0.5 0.4 0.1"></material>
+                                </appearance>
+                                <box size="1.5 1.5 1.5"></box>
+                            </shape>
+                        </transform>
+                    </transform>
+                    
+                    <!-- 旋转和浮动动画 -->
+                    <timeSensor DEF="PowerUpTimer" cycleInterval="3" loop="true"></timeSensor>
+                    <orientationInterpolator DEF="PowerUpRotate" key="0 0.5 1" keyValue="0 1 0 0, 0 1 0 3.14, 0 1 0 6.28"></orientationInterpolator>
+                    <route fromNode="PowerUpTimer" fromField="fraction_changed" toNode="PowerUpRotate" toField="set_fraction"></route>
+                    <route fromNode="PowerUpRotate" fromField="value_changed" toNode="PowerUp" toField="rotation"></route>
+                </scene>
+            </x3d>
+            <p class="asset-description">游戏道具箱，包含随机增益效果</p>
+        </div>
+
+        <!-- 草地 -->
+        <div class="asset-card">
+            <h2 class="asset-title">草地</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 5 10" orientation="1 0 0 -0.4"></viewpoint>
+                    <background skyColor="0.8 0.9 1"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    
+                    <!-- 草地瓦片 -->
+                    <transform>
+                        <!-- 草地基底 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.3 0.6 0.2"></material>
+                            </appearance>
+                            <box size="4 0.1 4"></box>
+                        </shape>
+                        
+                        <!-- 草丛1 -->
+                        <transform translation="-1 0.3 -1">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.25 0.55 0.15" transparency="0.3"></material>
+                                </appearance>
+                                <cone bottomRadius="0.5" height="0.6"></cone>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 草丛2 -->
+                        <transform translation="1 0.3 -0.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.28 0.58 0.18" transparency="0.3"></material>
+                                </appearance>
+                                <cone bottomRadius="0.4" height="0.7"></cone>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 草丛3 -->
+                        <transform translation="0 0.3 1">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.27 0.57 0.17" transparency="0.3"></material>
+                                </appearance>
+                                <cone bottomRadius="0.45" height="0.65"></cone>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 草丛4 -->
+                        <transform translation="-0.8 0.3 0.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.26 0.56 0.16" transparency="0.3"></material>
+                                </appearance>
+                                <cone bottomRadius="0.4" height="0.6"></cone>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 草丛5 -->
+                        <transform translation="0.7 0.3 -1.2">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.29 0.59 0.19" transparency="0.3"></material>
+                                </appearance>
+                                <cone bottomRadius="0.35" height="0.55"></cone>
+                            </shape>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">可以隐藏坦克的草地地形</p>
+        </div>
+
+        <!-- 水域 -->
+        <div class="asset-card">
+            <h2 class="asset-title">水域</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 5 10" orientation="1 0 0 -0.4"></viewpoint>
+                    <background skyColor="0.9 0.95 1"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.8"></directionalLight>
+                    
+                    <!-- 水面 -->
+                    <transform>
+                        <!-- 水体 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.2 0.5 0.8" specularColor="0.4 0.7 1" shininess="0.9" transparency="0.3"></material>
+                            </appearance>
+                            <box size="4 0.5 4"></box>
+                        </shape>
+                        
+                        <!-- 波纹层1 -->
+                        <transform translation="0 0.26 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.3 0.6 0.9" transparency="0.7"></material>
+                                </appearance>
+                                <box size="3.8 0.01 3.8"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 波纹层2 -->
+                        <transform translation="0.5 0.27 0.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.4 0.7 1" transparency="0.8"></material>
+                                </appearance>
+                                <cylinder height="0.01" radius="1"></cylinder>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 波纹层3 -->
+                        <transform translation="-0.8 0.27 -0.8">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.35 0.65 0.95" transparency="0.8"></material>
+                                </appearance>
+                                <cylinder height="0.01" radius="0.8"></cylinder>
+                            </shape>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">不可通过的水域障碍</p>
+        </div>
+
+        <!-- 冰面 -->
+        <div class="asset-card">
+            <h2 class="asset-title">冰面</h2>
+            <x3d>
+                <scene>
+                    <viewpoint position="0 5 10" orientation="1 0 0 -0.4"></viewpoint>
+                    <background skyColor="0.95 0.98 1"></background>
+                    <directionalLight direction="0 -1 -1" intensity="0.9"></directionalLight>
+                    
+                    <!-- 冰面 -->
+                    <transform>
+                        <!-- 冰层 -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.85 0.95 1" specularColor="1 1 1" shininess="0.95" transparency="0.2"></material>
+                            </appearance>
+                            <box size="4 0.2 4"></box>
+                        </shape>
+                        
+                        <!-- 裂纹1 -->
+                        <transform translation="0.5 0.11 -0.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.7 0.85 0.95" transparency="0.5"></material>
+                                </appearance>
+                                <box size="2 0.01 0.05"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 裂纹2 -->
+                        <transform translation="-0.3 0.11 0.8" rotation="0 1 0 0.5">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0.75 0.88 0.98" transparency="0.5"></material>
+                                </appearance>
+                                <box size="1.5 0.01 0.04"></box>
+                            </shape>
+                        </transform>
+                        
+                        <!-- 反光效果 -->
+                        <transform translation="0 0.12 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="1 1 1" transparency="0.9" emissiveColor="0.1 0.1 0.1"></material>
+                                </appearance>
+                                <box size="3.5 0.01 3.5"></box>
+                            </shape>
+                        </transform>
+                    </transform>
+                </scene>
+            </x3d>
+            <p class="asset-description">滑动地形，坦克在上面会打滑</p>
+        </div>
+    </div>
+</body>
+</html>
