@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import X3DLoader from './X3DLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
 export default class ResourceLoader {
     constructor() {
@@ -9,6 +12,9 @@ export default class ResourceLoader {
         this.models = {};  // Store 3D models
         this.loaded = false;
         this.x3dLoader = new X3DLoader();
+        this.gltfLoader = new GLTFLoader();
+        this.objLoader = new OBJLoader();
+        this.mtlLoader = new MTLLoader();
     }
     
     async loadAll() {
@@ -160,32 +166,128 @@ export default class ResourceLoader {
     
     async loadModels() {
         const modelList = {
-            playerTank: 'assets/models/player_tank.x3d',
+            // You can mix different formats - the loader will auto-detect based on extension
+            playerTank: 'assets/models/player_tank.x3d',  // Can be replaced with .gltf/.glb
             enemyTank: 'assets/models/enemy_tank.x3d',
             bullet: 'assets/models/bullet.x3d',
             brickWall: 'assets/models/brick_wall.x3d',
             steelWall: 'assets/models/steel_wall.x3d',
-            eagleBase: 'assets/models/eagle_base.x3d',
+            eagleBase: 'assets/models/eagle_base.x3d',  // Can be replaced with .gltf/.glb
             // Legacy models for compatibility
             tank: 'assets/models/tank.x3d'
+            
+            // Example of how to add GLTF models:
+            // playerTankGLTF: 'assets/models/tank.gltf',
+            // eagleGLTF: 'assets/models/eagle.glb',
+            
+            // Example of how to add OBJ models:
+            // tankOBJ: 'assets/models/tank.obj',
         };
         
         const loadPromises = Object.entries(modelList).map(([name, path]) => {
-            return this.x3dLoader.load(path)
-                .then(model => {
-                    this.models[name] = model;
-                    console.log(`Loaded 3D model: ${name}`);
-                })
-                .catch(error => {
-                    console.warn(`Failed to load model ${name}:`, error);
-                    // Create placeholder geometry if model fails to load
-                    const geometry = new THREE.BoxGeometry(1, 1, 1);
-                    const material = new THREE.MeshPhongMaterial({ color: 0x808080 });
-                    this.models[name] = new THREE.Mesh(geometry, material);
-                });
+            return this.loadModelByFormat(name, path);
         });
         
         await Promise.all(loadPromises);
+    }
+    
+    async loadModelByFormat(name, path) {
+        const extension = path.split('.').pop().toLowerCase();
+        
+        try {
+            let model = null;
+            
+            switch(extension) {
+                case 'gltf':
+                case 'glb':
+                    model = await this.loadGLTF(path);
+                    break;
+                    
+                case 'obj':
+                    model = await this.loadOBJ(path);
+                    break;
+                    
+                case 'x3d':
+                    model = await this.x3dLoader.load(path);
+                    break;
+                    
+                default:
+                    console.warn(`Unknown model format: ${extension}`);
+                    model = this.createPlaceholder();
+            }
+            
+            this.models[name] = model;
+            console.log(`Loaded 3D model: ${name} (${extension})`);
+            
+        } catch (error) {
+            console.warn(`Failed to load model ${name}:`, error);
+            this.models[name] = this.createPlaceholder();
+        }
+    }
+    
+    loadGLTF(path) {
+        return new Promise((resolve, reject) => {
+            this.gltfLoader.load(
+                path,
+                (gltf) => {
+                    // GLTF models come with a scene, animations, etc.
+                    // We typically want the scene
+                    resolve(gltf.scene);
+                },
+                (progress) => {
+                    // Progress callback
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        });
+    }
+    
+    loadOBJ(path) {
+        return new Promise((resolve, reject) => {
+            // Check if there's an MTL file (materials)
+            const mtlPath = path.replace('.obj', '.mtl');
+            
+            // Try to load MTL first
+            this.mtlLoader.load(
+                mtlPath,
+                (materials) => {
+                    materials.preload();
+                    this.objLoader.setMaterials(materials);
+                    this.loadOBJWithMaterials(path, resolve, reject);
+                },
+                (progress) => {
+                    // Progress callback
+                },
+                (error) => {
+                    // No MTL file, load OBJ without materials
+                    console.log('No MTL file found, loading OBJ without materials');
+                    this.loadOBJWithMaterials(path, resolve, reject);
+                }
+            );
+        });
+    }
+    
+    loadOBJWithMaterials(path, resolve, reject) {
+        this.objLoader.load(
+            path,
+            (object) => {
+                resolve(object);
+            },
+            (progress) => {
+                // Progress callback
+            },
+            (error) => {
+                reject(error);
+            }
+        );
+    }
+    
+    createPlaceholder() {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshPhongMaterial({ color: 0x808080 });
+        return new THREE.Mesh(geometry, material);
     }
     
     async loadLevels() {
