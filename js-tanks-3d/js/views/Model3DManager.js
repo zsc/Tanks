@@ -168,9 +168,9 @@ export default class Model3DManager {
             return group;
         }
         
-        // Chess Queen needs specific scaling and styling
         eagleModel.scale.set(2, 2, 2);  // Make it prominent as the base to protect
         
+        /*
         // Add lighting effects while keeping original colors
         eagleModel.traverse((child) => {
             if (child.isMesh && child.material) {
@@ -191,6 +191,7 @@ export default class Model3DManager {
                 child.receiveShadow = true;
             }
         });
+        */
         
         // Add a point light to the queen to make it glow
         const light = new THREE.PointLight(0xffffff, 0.5, 5);
