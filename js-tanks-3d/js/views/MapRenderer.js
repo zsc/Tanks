@@ -109,9 +109,15 @@ export default class MapRenderer {
             t.userData.tileX === x && t.userData.tileZ === z
         );
         
-        if (tile) {
-            tile.material.emissive = new THREE.Color(color);
-            tile.material.emissiveIntensity = 0.5;
+        if (tile && tile.material) {
+            // Only set emissive for materials that support it (not MeshBasicMaterial)
+            if (tile.material.emissive !== undefined) {
+                tile.material.emissive = new THREE.Color(color);
+                tile.material.emissiveIntensity = 0.5;
+            } else {
+                // For MeshBasicMaterial, just change the color
+                tile.material.color = new THREE.Color(color);
+            }
         }
     }
     

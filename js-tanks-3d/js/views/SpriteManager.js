@@ -70,9 +70,7 @@ export default class SpriteManager {
         // Make bullet more visible - larger size and brighter color
         const geometry = new THREE.SphereGeometry(0.15, 8, 6);
         const material = new THREE.MeshBasicMaterial({
-            color: 0xffff00,
-            emissive: 0xffff00,
-            emissiveIntensity: 1.0
+            color: 0xffff00
         });
         
         const bullet = new THREE.Mesh(geometry, material);
@@ -305,9 +303,7 @@ export default class SpriteManager {
         };
         
         material = new THREE.MeshBasicMaterial({
-            color: powerUpColors[type] || 0xffffff,
-            emissive: powerUpColors[type] || 0xffffff,
-            emissiveIntensity: 0.5
+            color: powerUpColors[type] || 0xffffff
         });
         
         const powerUp = new THREE.Mesh(geometry, material);
