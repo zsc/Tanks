@@ -281,12 +281,12 @@ export default class GameView3D {
         this.tankMeshes.set(id, tank);
     }
     
-    updateTank(id, position, rotation) {
+    updateTank(id, position, direction) {
         const tank = this.tankMeshes.get(id);
         if (tank) {
             tank.position.x = position.x - 13;
             tank.position.z = position.z - 13;
-            tank.rotation.y = rotation;
+            this.modelManager.rotateTankToDirection(tank, direction);
             // Keep tank slightly above ground for 3D effect
             tank.position.y = 0.5;
         }
