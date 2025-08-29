@@ -205,11 +205,32 @@ export default class GameLogger {
     sanitizeData(data) {
         // Remove circular references and limit object depth
         try {
+            const seen = new WeakSet();
             return JSON.parse(JSON.stringify(data, (key, value) => {
                 // Skip functions and very large objects
                 if (typeof value === 'function') return '[Function]';
                 if (value instanceof HTMLElement) return '[HTMLElement]';
-                if (value instanceof THREE.Object3D) return `[Three.${value.type}]`;
+                if (typeof THREE !== 'undefined' && value instanceof THREE.Object3D) return `[Three.${value.type}]`;
+                
+                // Handle circular references
+                if (typeof value === 'object' && value !== null) {
+                    if (seen.has(value)) {
+                        return '[Circular Reference]';
+                    }
+                    seen.add(value);
+                    
+                    // Extract only essential properties from complex objects
+                    if (value.position && value.rotation) {
+                        return {
+                            id: value.id,
+                            type: value.type,
+                            position: { x: value.position.x, y: value.position.y, z: value.position.z },
+                            rotation: value.rotation,
+                            alive: value.alive,
+                            health: value.health
+                        };
+                    }
+                }
                 
                 // Limit array length
                 if (Array.isArray(value) && value.length > 10) {
@@ -219,7 +240,12 @@ export default class GameLogger {
                 return value;
             }));
         } catch (e) {
-            return { error: 'Failed to serialize data' };
+            // Return a simplified version if serialization fails
+            return { 
+                error: 'Serialization failed',
+                type: data?.type || 'unknown',
+                id: data?.id || 'unknown'
+            };
         }
     }
     

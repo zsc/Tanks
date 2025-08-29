@@ -256,6 +256,45 @@ export default class Map3DRenderer {
         }
     }
     
+    destroyTile(x, z) {
+        // Find and remove the tile at the given position
+        const tile = this.wallMeshes.find(mesh => 
+            mesh.userData.col === x && mesh.userData.row === z
+        );
+        
+        if (tile) {
+            // Create explosion effect at tile position
+            const explosion = this.modelManager.createExplosion3D 
+                ? this.modelManager.createExplosion3D(tile.position.clone())
+                : null;
+            
+            // Remove the tile from the scene
+            this.mapGroup.remove(tile);
+            
+            // Remove from wallMeshes array
+            const index = this.wallMeshes.indexOf(tile);
+            if (index > -1) {
+                this.wallMeshes.splice(index, 1);
+            }
+            
+            // Dispose of geometry and material
+            if (tile.geometry) {
+                tile.geometry.dispose();
+            }
+            if (tile.material) {
+                if (Array.isArray(tile.material)) {
+                    tile.material.forEach(mat => mat.dispose());
+                } else {
+                    tile.material.dispose();
+                }
+            }
+            
+            return explosion;
+        }
+        
+        return null;
+    }
+    
     clearMap() {
         // Remove the entire map group from the scene
         if (this.mapGroup.parent) {
