@@ -172,7 +172,7 @@ export default class ResourceLoader {
             bullet: 'assets/models/bullet.x3d',
             brickWall: 'assets/models/brick_wall.x3d',
             steelWall: 'assets/models/steel_wall.x3d',
-            eagleBase: 'assets/models/eagle_base.x3d',
+            eagleBase: 'assets/models/chess_queen.glb',  // Chess queen as base
             // Legacy models for compatibility
             tank: 'assets/models/tank.x3d'
         };

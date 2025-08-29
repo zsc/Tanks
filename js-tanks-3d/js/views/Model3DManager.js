@@ -168,8 +168,23 @@ export default class Model3DManager {
             return group;
         }
         
-        // Scale eagle base appropriately
-        eagleModel.scale.set(0.5, 0.5, 0.5);
+        // Chess Queen needs specific scaling and styling
+        eagleModel.scale.set(2, 2, 2);  // Make it prominent as the base to protect
+        
+        /*
+        // Add golden material to make it stand out
+        eagleModel.traverse((child) => {
+            if (child.isMesh) {
+                child.material = new THREE.MeshPhongMaterial({
+                    color: 0xFFD700,  // Golden color
+                    emissive: 0xFFAA00,
+                    emissiveIntensity: 0.2,
+                    metalness: 0.8,
+                    roughness: 0.2
+                });
+            }
+        });
+        */
         
         return eagleModel;
     }
