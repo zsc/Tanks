@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import ResourceLoader from '../utils/ResourceLoader.js';
 import SpriteManager from './SpriteManager.js';
 import MapRenderer from './MapRenderer.js';
@@ -9,6 +10,7 @@ export default class GameView3D {
         this.camera = null;
         this.renderer = null;
         this.canvas = null;
+        this.controls = null;
         
         // Managers
         this.resourceLoader = new ResourceLoader();
@@ -23,6 +25,8 @@ export default class GameView3D {
         // Camera settings for 45-degree 2.5D view
         this.cameraDistance = 40;
         this.cameraAngle = Math.PI / 4; // 45 degrees
+        this.orbitEnabled = true;
+        this.currentView = 'isometric';
     }
     
     async init() {
@@ -34,6 +38,8 @@ export default class GameView3D {
         this.initCamera();
         this.initRenderer();
         this.initLights();
+        this.initControls();
+        this.setupCameraButtons();
         
         // Setup resize handler
         this.setupResizeHandler();
@@ -133,6 +139,128 @@ export default class GameView3D {
         // Optional: Add hemisphere light for more natural lighting
         const hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x545454, 0.3);
         this.scene.add(hemisphereLight);
+    }
+    
+    initControls() {
+        // Initialize OrbitControls for 3D camera manipulation
+        this.controls = new OrbitControls(this.camera, this.canvas);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.screenSpacePanning = true;
+        this.controls.minDistance = 20;
+        this.controls.maxDistance = 100;
+        this.controls.maxPolarAngle = Math.PI / 2.2; // Limit vertical rotation
+        this.controls.enabled = this.orbitEnabled;
+        
+        // Set initial target to center of battlefield
+        this.controls.target.set(0, 0, 0);
+        this.controls.update();
+    }
+    
+    setupCameraButtons() {
+        // Top view button
+        document.getElementById('view-top').addEventListener('click', () => {
+            this.setCameraView('top');
+        });
+        
+        // Isometric view button
+        document.getElementById('view-isometric').addEventListener('click', () => {
+            this.setCameraView('isometric');
+        });
+        
+        // Perspective view button
+        document.getElementById('view-perspective').addEventListener('click', () => {
+            this.setCameraView('perspective');
+        });
+        
+        // Toggle orbit controls
+        document.getElementById('toggle-orbit').addEventListener('click', () => {
+            this.toggleOrbitControls();
+        });
+        
+        // Set initial active button
+        this.updateActiveButton('isometric');
+    }
+    
+    setCameraView(viewType) {
+        this.currentView = viewType;
+        
+        switch(viewType) {
+            case 'top':
+                // Direct top-down view
+                this.camera.position.set(0, 80, 1);
+                this.camera.lookAt(0, 0, 0);
+                break;
+                
+            case 'isometric':
+                // Classic isometric angle
+                const isoDistance = 60;
+                const isoAngle = Math.PI / 4;
+                this.camera.position.set(
+                    isoDistance * Math.sin(isoAngle),
+                    isoDistance,
+                    isoDistance * Math.cos(isoAngle)
+                );
+                this.camera.lookAt(0, 0, 0);
+                break;
+                
+            case 'perspective':
+                // Dynamic perspective view
+                const perspDistance = 50;
+                const perspAngle = Math.PI / 3;
+                this.camera.position.set(
+                    perspDistance * Math.sin(perspAngle) * 0.8,
+                    perspDistance * 0.7,
+                    perspDistance * Math.cos(perspAngle)
+                );
+                this.camera.lookAt(0, 0, -5);
+                break;
+        }
+        
+        // Update controls target
+        if (this.controls) {
+            this.controls.target.set(0, 0, 0);
+            this.controls.update();
+        }
+        
+        this.updateActiveButton(viewType);
+    }
+    
+    toggleOrbitControls() {
+        this.orbitEnabled = !this.orbitEnabled;
+        this.controls.enabled = this.orbitEnabled;
+        
+        const button = document.getElementById('toggle-orbit');
+        if (this.orbitEnabled) {
+            button.classList.add('active');
+            button.textContent = 'Orbit: ON';
+        } else {
+            button.classList.remove('active');
+            button.textContent = 'Orbit: OFF';
+        }
+    }
+    
+    updateActiveButton(viewType) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.camera-buttons button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Add active class to current view button
+        const buttonId = `view-${viewType}`;
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.classList.add('active');
+        }
+        
+        // Update orbit toggle button state
+        const orbitButton = document.getElementById('toggle-orbit');
+        if (this.orbitEnabled) {
+            orbitButton.classList.add('active');
+            orbitButton.textContent = 'Orbit: ON';
+        } else {
+            orbitButton.textContent = 'Orbit: OFF';
+        }
     }
     
     renderMap(mapModel) {
@@ -241,6 +369,11 @@ export default class GameView3D {
     }
     
     render() {
+        // Update orbit controls if enabled
+        if (this.controls && this.controls.enabled) {
+            this.controls.update();
+        }
+        
         this.renderer.render(this.scene, this.camera);
     }
     

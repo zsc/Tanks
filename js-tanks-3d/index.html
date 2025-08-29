@@ -34,6 +34,18 @@
                     Pause: P | Restart: R
                 </div>
             </div>
+            <div id="camera-controls">
+                <h3>3D View</h3>
+                <div class="camera-buttons">
+                    <button id="view-top">Top View</button>
+                    <button id="view-isometric">Isometric</button>
+                    <button id="view-perspective">Perspective</button>
+                    <button id="toggle-orbit">Toggle Orbit</button>
+                </div>
+                <div class="camera-info">
+                    <small>Mouse: Rotate | Scroll: Zoom | Right-drag: Pan</small>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -41,7 +53,8 @@
     <script type="importmap">
     {
         "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
         }
     }
     </script>
