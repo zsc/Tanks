@@ -162,13 +162,9 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(player.id)) {
                     this.view.addTank(player.id, player.type, player.position);
                 }
-                // Always update position and animation, even if velocity is 0
+                // Always update position and rotation
                 this.view.updateTank(player.id, player.position, player.rotation);
-                // Update tank sprite animation
-                const tankMesh = this.view.tankMeshes.get(player.id);
-                if (tankMesh) {
-                    this.view.spriteManager.updateTankAnimation(tankMesh, player.direction, 16.67);
-                }
+                // Tank animation is now handled by 3D model rotation
             } else {
                 if (this.view.tankMeshes.has(player.id)) {
                     this.view.removeTank(player.id);
@@ -182,13 +178,9 @@ export default class GameController {
                 if (!this.view.tankMeshes.has(enemy.id)) {
                     this.view.addTank(enemy.id, enemy.type, enemy.position);
                 }
-                // Always update position and animation
+                // Always update position and rotation
                 this.view.updateTank(enemy.id, enemy.position, enemy.rotation);
-                // Update tank sprite animation
-                const tankMesh = this.view.tankMeshes.get(enemy.id);
-                if (tankMesh) {
-                    this.view.spriteManager.updateTankAnimation(tankMesh, enemy.direction, 16.67);
-                }
+                // Tank animation is now handled by 3D model rotation
             } else {
                 if (this.view.tankMeshes.has(enemy.id)) {
                     this.view.removeTank(enemy.id);

@@ -345,11 +345,39 @@ export default class GameView3D {
     
     updateExplosions(deltaTime) {
         this.explosions = this.explosions.filter(explosion => {
-            const active = this.spriteManager.updateExplosion(explosion, deltaTime);
-            if (!active) {
-                this.scene.remove(explosion);
+            // Use the Model3DManager's updateExplosion method if available
+            if (this.modelManager && this.modelManager.updateExplosion) {
+                const active = this.modelManager.updateExplosion(explosion, deltaTime);
+                if (!active) {
+                    this.scene.remove(explosion);
+                }
+                return active;
             }
-            return active;
+            
+            // Fallback: Simple explosion animation
+            if (explosion.userData && explosion.userData.createdAt !== undefined) {
+                const age = Date.now() - explosion.userData.createdAt;
+                const lifeRatio = age / (explosion.userData.lifetime || 1000);
+                
+                if (lifeRatio >= 1) {
+                    this.scene.remove(explosion);
+                    return false;
+                }
+                
+                // Scale and fade animation
+                const scale = 1 + lifeRatio * 2;
+                explosion.scale.set(scale, scale, scale);
+                
+                // Update opacity for all children
+                explosion.children.forEach(child => {
+                    if (child.material && child.material.opacity !== undefined) {
+                        child.material.opacity = Math.max(0, 1 - lifeRatio);
+                    }
+                });
+                
+                return true;
+            }
+            return false;
         });
     }
     
