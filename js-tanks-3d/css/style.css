@@ -60,3 +60,30 @@ body {
 #game-state.show {
     display: block;
 }
+
+#controls-help {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    font-size: 14px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.5);
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#controls-help h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.player-controls {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 10px;
+}
+
+.player-controls div {
+    line-height: 1.4;
+}

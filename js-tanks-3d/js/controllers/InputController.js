@@ -2,19 +2,21 @@ export default class InputController {
     constructor() {
         this.keys = {};
         this.keyBindings = {
+            // Player 1: Arrow keys + Right Alt/Option (Mac) or Space (fallback)
             player1: {
-                up: 'KeyW',
-                down: 'KeyS',
-                left: 'KeyA',
-                right: 'KeyD',
-                fire: 'Space'
-            },
-            player2: {
                 up: 'ArrowUp',
                 down: 'ArrowDown',
                 left: 'ArrowLeft',
                 right: 'ArrowRight',
-                fire: 'Enter'
+                fire: 'AltRight'  // Right Alt/Option key on Mac
+            },
+            // Player 2: WASD + Left Alt/Option (Mac) or Left Ctrl
+            player2: {
+                up: 'KeyW',
+                down: 'KeyS',
+                left: 'KeyA',
+                right: 'KeyD',
+                fire: 'AltLeft'  // Left Alt/Option key on Mac
             },
             game: {
                 pause: 'KeyP',
@@ -86,7 +88,8 @@ export default class InputController {
             this.input.player1.left = isPressed;
         } else if (keyCode === this.keyBindings.player1.right) {
             this.input.player1.right = isPressed;
-        } else if (keyCode === this.keyBindings.player1.fire) {
+        } else if (keyCode === this.keyBindings.player1.fire || keyCode === 'Space') {
+            // Support both Right Alt and Space for firing (Space as fallback)
             // Only fire on key press, not hold
             if (isPressed && !this.firePressed.player1) {
                 this.input.player1.fire = true;
