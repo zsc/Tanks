@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
+<X3D profile='Interchange' version='3.2'>
+  <head>
+    <meta name='title' content='Tank Model'/>
+    <meta name='description' content='3D tank model for Tanks game'/>
+    <meta name='creator' content='Claude'/>
+  </head>
+  <Scene>
+    <!-- Tank Body (Main chassis) -->
+    <Transform DEF='TankBody'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.3 0.5 0.2' specularColor='0.2 0.2 0.2' shininess='0.5'/>
+        </Appearance>
+        <Box size='1.2 0.4 1.6'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Tank Turret -->
+    <Transform DEF='TankTurret' translation='0 0.3 -0.1'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.25 0.45 0.15' specularColor='0.2 0.2 0.2' shininess='0.5'/>
+        </Appearance>
+        <Box size='0.8 0.3 0.8'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Tank Barrel -->
+    <Transform DEF='TankBarrel' translation='0 0.35 -0.7' rotation='1 0 0 1.5708'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.2 0.2 0.2' specularColor='0.3 0.3 0.3' shininess='0.8'/>
+        </Appearance>
+        <Cylinder radius='0.08' height='1.2'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Left Track -->
+    <Transform DEF='LeftTrack' translation='-0.65 -0.15 0'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.1 0.1 0.1' specularColor='0.05 0.05 0.05' shininess='0.2'/>
+        </Appearance>
+        <Box size='0.2 0.3 1.8'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Right Track -->
+    <Transform DEF='RightTrack' translation='0.65 -0.15 0'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.1 0.1 0.1' specularColor='0.05 0.05 0.05' shininess='0.2'/>
+        </Appearance>
+        <Box size='0.2 0.3 1.8'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Track Wheels (simplified) -->
+    <!-- Front Left Wheel -->
+    <Transform translation='-0.65 -0.25 -0.6' rotation='0 0 1 1.5708'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.15 0.15 0.15'/>
+        </Appearance>
+        <Cylinder radius='0.15' height='0.1'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Front Right Wheel -->
+    <Transform translation='0.65 -0.25 -0.6' rotation='0 0 1 1.5708'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.15 0.15 0.15'/>
+        </Appearance>
+        <Cylinder radius='0.15' height='0.1'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Rear Left Wheel -->
+    <Transform translation='-0.65 -0.25 0.6' rotation='0 0 1 1.5708'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.15 0.15 0.15'/>
+        </Appearance>
+        <Cylinder radius='0.15' height='0.1'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Rear Right Wheel -->
+    <Transform translation='0.65 -0.25 0.6' rotation='0 0 1 1.5708'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.15 0.15 0.15'/>
+        </Appearance>
+        <Cylinder radius='0.15' height='0.1'/>
+      </Shape>
+    </Transform>
+  </Scene>
+</X3D>

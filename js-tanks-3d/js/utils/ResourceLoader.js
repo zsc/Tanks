@@ -1,9 +1,14 @@
+import * as THREE from 'three';
+import X3DLoader from './X3DLoader.js';
+
 export default class ResourceLoader {
     constructor() {
         this.textures = {};
         this.sprites = {};
         this.levels = {};
+        this.models = {};  // Store 3D models
         this.loaded = false;
+        this.x3dLoader = new X3DLoader();
     }
     
     async loadAll() {
@@ -13,7 +18,8 @@ export default class ResourceLoader {
             await Promise.all([
                 this.loadTextures(),
                 this.loadSprites(),
-                this.loadLevels()
+                this.loadLevels(),
+                this.loadModels()  // Load X3D models
             ]);
             
             this.loaded = true;
@@ -152,6 +158,32 @@ export default class ResourceLoader {
         this.sprites = spriteSheet;
     }
     
+    async loadModels() {
+        const modelList = {
+            tank: 'assets/models/tank.x3d',
+            bullet: 'assets/models/bullet.x3d',
+            brickWall: 'assets/models/brick_wall.x3d',
+            steelWall: 'assets/models/steel_wall.x3d'
+        };
+        
+        const loadPromises = Object.entries(modelList).map(([name, path]) => {
+            return this.x3dLoader.load(path)
+                .then(model => {
+                    this.models[name] = model;
+                    console.log(`Loaded 3D model: ${name}`);
+                })
+                .catch(error => {
+                    console.warn(`Failed to load model ${name}:`, error);
+                    // Create placeholder geometry if model fails to load
+                    const geometry = new THREE.BoxGeometry(1, 1, 1);
+                    const material = new THREE.MeshPhongMaterial({ color: 0x808080 });
+                    this.models[name] = new THREE.Mesh(geometry, material);
+                });
+        });
+        
+        await Promise.all(loadPromises);
+    }
+    
     async loadLevels() {
         // Load level data files
         const levelPromises = [];
@@ -221,6 +253,15 @@ export default class ResourceLoader {
     
     getLevel(index) {
         return this.levels[index] || null;
+    }
+    
+    getModel(name) {
+        if (!this.models[name]) {
+            console.warn(`Model ${name} not found`);
+            return null;
+        }
+        // Return a clone of the model so each instance can be positioned independently
+        return this.models[name].clone();
     }
     
     createSpriteMaterial(textureName, transparent = true) {

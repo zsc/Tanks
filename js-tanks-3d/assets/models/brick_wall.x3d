@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "http://www.web3d.org/specifications/x3d-3.2.dtd">
+<X3D profile='Interchange' version='3.2'>
+  <head>
+    <meta name='title' content='Brick Wall Model'/>
+    <meta name='description' content='3D brick wall tile for Tanks game'/>
+    <meta name='creator' content='Claude'/>
+  </head>
+  <Scene>
+    <!-- Main Brick Structure -->
+    <Transform DEF='BrickWall'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.6 0.2 0.1' specularColor='0.1 0.05 0.02' shininess='0.1' ambientIntensity='0.2'/>
+          <ImageTexture url='"../images/brick_texture.png"'/>
+        </Appearance>
+        <Box size='1 1 1'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Mortar Lines (simplified) -->
+    <!-- Horizontal mortar line 1 -->
+    <Transform translation='0 0.25 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='1 0.02 0.02'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Horizontal mortar line 2 -->
+    <Transform translation='0 0 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='1 0.02 0.02'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Horizontal mortar line 3 -->
+    <Transform translation='0 -0.25 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='1 0.02 0.02'/>
+      </Shape>
+    </Transform>
+    
+    <!-- Vertical mortar lines -->
+    <Transform translation='-0.25 0.125 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='0.02 0.25 0.02'/>
+      </Shape>
+    </Transform>
+    
+    <Transform translation='0.25 0.125 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='0.02 0.25 0.02'/>
+      </Shape>
+    </Transform>
+    
+    <Transform translation='0 -0.125 0.51'>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor='0.7 0.7 0.7' ambientIntensity='0.3'/>
+        </Appearance>
+        <Box size='0.02 0.25 0.02'/>
+      </Shape>
+    </Transform>
+  </Scene>
+</X3D>
