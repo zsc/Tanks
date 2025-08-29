@@ -2,21 +2,21 @@ export default class InputController {
     constructor() {
         this.keys = {};
         this.keyBindings = {
-            // Player 1: Arrow keys + Right Alt/Option (Mac) or Space (fallback)
+            // Player 1: Arrow keys + Space (primary) or Slash (secondary)
             player1: {
                 up: 'ArrowUp',
                 down: 'ArrowDown',
                 left: 'ArrowLeft',
                 right: 'ArrowRight',
-                fire: 'AltRight'  // Right Alt/Option key on Mac
+                fire: 'Space'  // Space is more reliable across browsers
             },
-            // Player 2: WASD + Left Alt/Option (Mac) or Left Ctrl
+            // Player 2: WASD + Left Shift
             player2: {
                 up: 'KeyW',
                 down: 'KeyS',
                 left: 'KeyA',
                 right: 'KeyD',
-                fire: 'AltLeft'  // Left Alt/Option key on Mac
+                fire: 'ShiftLeft'  // Left Shift for Player 2
             },
             game: {
                 pause: 'KeyP',
@@ -58,6 +58,11 @@ export default class InputController {
     setupEventListeners() {
         // Keydown event
         window.addEventListener('keydown', (e) => {
+            // Debug log for fire keys
+            if (e.code === 'Space' || e.code === 'ShiftLeft') {
+                console.log('Fire key pressed:', e.code);
+            }
+            
             if (!this.keys[e.code]) {
                 this.keys[e.code] = true;
                 this.updateInput(e.code, true);
@@ -88,8 +93,7 @@ export default class InputController {
             this.input.player1.left = isPressed;
         } else if (keyCode === this.keyBindings.player1.right) {
             this.input.player1.right = isPressed;
-        } else if (keyCode === this.keyBindings.player1.fire || keyCode === 'Space') {
-            // Support both Right Alt and Space for firing (Space as fallback)
+        } else if (keyCode === this.keyBindings.player1.fire) {
             // Only fire on key press, not hold
             if (isPressed && !this.firePressed.player1) {
                 this.input.player1.fire = true;
