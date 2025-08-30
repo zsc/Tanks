@@ -53,6 +53,7 @@ export default class GameModel {
         this.lastUpdateTime = 0;
         this.enemySpawnTimer = 0;
         this.enemySpawnInterval = 3000; // ms
+        this.victoryTimer = 0; // Delay before victory screen
     }
     
     async init(levelNumber = 1) {
@@ -80,6 +81,7 @@ export default class GameModel {
         this.nextBonusId = 1;
         this.enemySpawnPosition = 0;
         this.enemySpawnTimer = 0;
+        this.victoryTimer = 0;
     }
     
     async loadLevel(levelNumber) {
@@ -434,15 +436,31 @@ export default class GameModel {
     }
     
     checkGameStatus() {
-        // Check if all enemies are defeated
-        if (this.enemiesKilled >= 20 && this.enemies.length === 0) {
-            this.nextLevel();
+        // C++ style victory/defeat conditions:
+        // Victory: All 20 enemies spawned (enemiesRemaining <= 0) AND none left on map
+        // Defeat: All players dead OR eagle destroyed
+        
+        // Check victory condition
+        if (this.enemiesRemaining <= 0 && this.enemies.length === 0) {
+            // Add a small delay before victory (like C++ level_end_time)
+            if (!this.victoryTimer) {
+                this.victoryTimer = 0;
+            }
+            this.victoryTimer += 16.67; // Assuming 60 FPS
+            
+            if (this.victoryTimer > 1000) { // 1 second delay
+                this.victory();
+            }
         }
         
-        // Check if player lost all lives
-        // Only game over if player is dead AND has no more lives left (toRemove = true)
+        // Check game over conditions (C++ style)
+        // Game over if:
+        // 1. All players are out of lives
+        // 2. Eagle is destroyed
         const allPlayersOutOfLives = this.players.every(p => p.toRemove);
-        if (allPlayersOutOfLives) {
+        const eagleDestroyed = this.map && !this.map.eagleAlive;
+        
+        if (allPlayersOutOfLives || eagleDestroyed) {
             this.gameOver();
         }
     }
