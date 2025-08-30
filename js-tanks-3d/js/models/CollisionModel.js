@@ -106,7 +106,7 @@ export default class CollisionModel {
     }
     
     // Check entity vs map collision
-    checkMapCollision(entity, map) {
+    checkMapCollision(entity, map, entityType = 'bullet') {
         const corners = [
             { x: entity.bounds.left, z: entity.bounds.top },
             { x: entity.bounds.right, z: entity.bounds.top },
@@ -116,7 +116,17 @@ export default class CollisionModel {
         
         for (let corner of corners) {
             const tile = map.worldToTile(corner.x, corner.z);
-            if (map.isSolid(tile.x, tile.z)) {
+            let isBlocked = false;
+            
+            if (entityType === 'tank') {
+                // For tanks, check with canCrossWater flag
+                isBlocked = map.isSolidForTank(tile.x, tile.z, entity.canCrossWater || false);
+            } else {
+                // For bullets
+                isBlocked = map.isSolidForBullet(tile.x, tile.z);
+            }
+            
+            if (isBlocked) {
                 return {
                     collided: true,
                     tileX: tile.x,
@@ -224,8 +234,8 @@ export default class CollisionModel {
                 }
             });
             
-            // Check against map
-            const mapCollision = this.checkMapCollision(tank1, map);
+            // Check against map (pass 'tank' as entity type)
+            const mapCollision = this.checkMapCollision(tank1, map, 'tank');
             if (mapCollision.collided) {
                 this.resolveTankMapCollision(tank1, map);
             }
@@ -282,8 +292,8 @@ export default class CollisionModel {
                 }
             });
             
-            // Check bullet vs map
-            const mapCollision = this.checkMapCollision(bullet, map);
+            // Check bullet vs map (bullets pass through water)
+            const mapCollision = this.checkMapCollision(bullet, map, 'bullet');
             if (mapCollision.collided) {
                 // Destroy bullet
                 bullet.destroy();

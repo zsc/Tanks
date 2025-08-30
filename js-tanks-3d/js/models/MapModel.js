@@ -137,6 +137,17 @@ export default class MapModel {
                 }
             }
         }
+        
+        // Add ice areas (tanks slip on ice)
+        for (let i = 0; i < 3; i++) {
+            const x = Math.floor(Math.random() * (this.width - 2));
+            const z = Math.floor(Math.random() * (this.height - 8)) + 4;
+            for (let dx = 0; dx < 2; dx++) {
+                for (let dz = 0; dz < 2; dz++) {
+                    this.setTile(x + dx, z + dz, this.TILE_TYPES.ICE);
+                }
+            }
+        }
     }
     
     loadLevel(levelData) {
@@ -210,7 +221,32 @@ export default class MapModel {
         return (
             tile === this.TILE_TYPES.BRICK ||
             tile === this.TILE_TYPES.STONE ||
-            tile === this.TILE_TYPES.WATER ||
+            tile === this.TILE_TYPES.EAGLE
+        );
+    }
+    
+    isSolidForTank(x, z, canCrossWater = false) {
+        const tile = this.getTile(x, z);
+        // Water is solid for tanks unless they have boat powerup
+        if (tile === this.TILE_TYPES.WATER) {
+            return !canCrossWater;
+        }
+        return (
+            tile === this.TILE_TYPES.BRICK ||
+            tile === this.TILE_TYPES.STONE ||
+            tile === this.TILE_TYPES.EAGLE
+        );
+    }
+    
+    isSolidForBullet(x, z) {
+        const tile = this.getTile(x, z);
+        // Water and ice don't block bullets
+        if (tile === this.TILE_TYPES.WATER || tile === this.TILE_TYPES.ICE) {
+            return false;
+        }
+        return (
+            tile === this.TILE_TYPES.BRICK ||
+            tile === this.TILE_TYPES.STONE ||
             tile === this.TILE_TYPES.EAGLE
         );
     }

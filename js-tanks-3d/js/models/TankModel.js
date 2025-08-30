@@ -230,6 +230,14 @@ export default class TankModel {
             return; // No damage when shielded
         }
         
+        // Boat protection for players (like C++)
+        if (this.canCrossWater && this.type.startsWith('player')) {
+            // Lose boat instead of taking damage
+            this.canCrossWater = false;
+            this.boatTime = 0;
+            return;
+        }
+        
         this.health -= damage;
         if (this.health <= 0) {
             this.destroy();
