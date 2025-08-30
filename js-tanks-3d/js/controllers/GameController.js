@@ -1,10 +1,12 @@
 import InputController from './InputController.js';
+import ScreenManager from '../views/ScreenManager.js';
 
 export default class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
         this.inputController = new InputController();
+        this.screenManager = new ScreenManager();
         
         // Game loop timing (fixed timestep)
         this.targetFPS = 60;
@@ -18,19 +20,72 @@ export default class GameController {
     }
     
     async init() {
+        // Initialize screen manager
+        this.screenManager.init();
+        
+        // Setup screen transitions
+        this.screenManager.onTransition((action) => {
+            this.handleScreenTransition(action);
+        });
+        
+        // Show menu
+        this.screenManager.show('menu');
+        
         // Initialize input controller
         this.inputController.init();
         
-        // Initialize game model with level 1
-        await this.model.init(1);
+        console.log('GameController initialized');
+    }
+    
+    async startGame(playerCount = 1) {
+        try {
+            // Initialize game model with level 1
+            this.model.playerCount = playerCount;
+            await this.model.init(1);
+            
+            // Check if map loaded successfully
+            if (!this.model.map) {
+                console.error('Failed to load map');
+                return;
+            }
+            
+            // Render the initial map
+            this.view.renderMap(this.model.map);
+            
+            // Setup event listeners
+            this.setupEventListeners();
+            
+            // Show level start screen
+            this.screenManager.show('levelStart', { level: this.model.level });
+        } catch (error) {
+            console.error('Error starting game:', error);
+        }
+    }
+    
+    handleScreenTransition(action) {
+        console.log('Screen transition:', action);
         
-        // Render the initial map
-        this.view.renderMap(this.model.map);
-        
-        // Setup event listeners
-        this.setupEventListeners();
-        
-        console.log('GameController initialized with level', this.model.level);
+        switch(action) {
+            case 'start1player':
+                this.startGame(1);
+                break;
+                
+            case 'start2players':
+                this.startGame(2);
+                break;
+                
+            case 'levelStartComplete':
+                this.start();
+                break;
+                
+            case 'gameOverComplete':
+                this.showScoreScreen();
+                break;
+                
+            case 'scoreComplete':
+                this.handleScoreComplete();
+                break;
+        }
     }
     
     setupEventListeners() {
@@ -41,6 +96,12 @@ export default class GameController {
     
     start() {
         if (this.isRunning) return;
+        
+        // Check if map is loaded
+        if (!this.model.map) {
+            console.warn('Cannot start game - map not loaded');
+            return;
+        }
         
         this.isRunning = true;
         this.lastTime = performance.now();
@@ -58,8 +119,10 @@ export default class GameController {
         // Clear the view
         this.view.clear();
         
-        // Render the map
-        this.view.renderMap(this.model.map);
+        // Render the map if it exists
+        if (this.model.map) {
+            this.view.renderMap(this.model.map);
+        }
         
         // Start playing
         this.model.setState('playing', 'Game started');
@@ -289,8 +352,40 @@ export default class GameController {
     togglePause() {
         if (this.model.gameState === 'playing') {
             this.model.setState('paused', 'User paused');
+            this.screenManager.show('pause');
         } else if (this.model.gameState === 'paused') {
             this.model.setState('playing', 'User resumed');
+            this.screenManager.hide('pause');
+        }
+    }
+    
+    showGameOver() {
+        this.screenManager.show('gameOver');
+    }
+    
+    showScoreScreen() {
+        const scoreData = {
+            level: this.model.level,
+            players: this.model.players.map(p => ({
+                lives: p.livesCount,
+                score: this.model.score[p.type] || 0
+            })),
+            enemiesKilled: this.model.enemiesKilled,
+            bonusesCollected: this.model.bonusesCollected || 0
+        };
+        
+        this.screenManager.show('score', scoreData);
+    }
+    
+    handleScoreComplete() {
+        if (this.model.gameState === 'gameover') {
+            // Return to menu
+            this.screenManager.show('menu');
+            this.model.reset();
+        } else if (this.model.gameState === 'victory') {
+            // Next level
+            this.model.nextLevel();
+            this.screenManager.show('levelStart', { level: this.model.level });
         }
     }
     

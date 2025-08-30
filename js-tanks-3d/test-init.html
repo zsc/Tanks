@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Init</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background: #111;
+            color: white;
+        }
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100vh;
+        }
+        #debug {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="game-canvas"></canvas>
+    <div id="debug">Loading...</div>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <script type="module">
+        import GameController from './js/controllers/GameController.js';
+        import GameModel from './js/models/GameModel.js';
+        import GameView3D from './js/views/GameView3D.js';
+        
+        const debug = document.getElementById('debug');
+        
+        async function test() {
+            try {
+                debug.innerHTML = 'Creating model...<br>';
+                const model = new GameModel();
+                
+                debug.innerHTML += 'Creating view...<br>';
+                const view = new GameView3D();
+                
+                debug.innerHTML += 'Creating controller...<br>';
+                const controller = new GameController(model, view);
+                
+                debug.innerHTML += 'Initializing view...<br>';
+                await view.init();
+                debug.innerHTML += 'View initialized<br>';
+                
+                debug.innerHTML += 'Initializing controller (shows menu)...<br>';
+                await controller.init();
+                debug.innerHTML += 'Controller initialized<br>';
+                
+                // Try to start game directly without menu
+                debug.innerHTML += 'Starting game directly...<br>';
+                await controller.startGame(1);
+                debug.innerHTML += 'Game started<br>';
+                
+                // Check map status
+                if (model.map) {
+                    debug.innerHTML += `Map loaded: ${model.map.width}x${model.map.height}<br>`;
+                } else {
+                    debug.innerHTML += 'Map is null!<br>';
+                }
+                
+                debug.innerHTML += 'Success!';
+                
+            } catch (error) {
+                debug.innerHTML += `<span style="color:red">Error: ${error.message}<br>${error.stack}</span>`;
+                console.error('Test failed:', error);
+            }
+        }
+        
+        test();
+    </script>
+</body>
+</html>

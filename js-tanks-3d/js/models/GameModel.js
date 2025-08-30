@@ -20,6 +20,8 @@ export default class GameModel {
         this.level = 1;
         this.score = { player1: 0, player2: 0 };
         this.lives = { player1: 10, player2: 10 }; // C++ style: 10 lives per player
+        this.playerCount = 1;
+        this.bonusesCollected = 0;
         
         // Game entities
         this.players = [];
@@ -56,7 +58,14 @@ export default class GameModel {
     async init(levelNumber = 1) {
         this.reset();
         await this.loadLevel(levelNumber);
-        this.spawnPlayers();
+        
+        // Only spawn players if map loaded successfully
+        if (this.map) {
+            this.spawnPlayers();
+        } else {
+            console.error('Cannot spawn players - map not loaded');
+            throw new Error('Failed to load map for level ' + levelNumber);
+        }
     }
     
     reset() {
@@ -81,14 +90,33 @@ export default class GameModel {
         
         this.level = levelNumber;
         
-        // Create map with level data
-        this.map = new MapModel(null, levelNumber);
-        
-        // Wait for async level loading
-        await this.map.loadLevelFromFile(levelNumber);
+        try {
+            // Create map with level data
+            this.map = new MapModel(null, levelNumber);
+            
+            // Wait for async level loading
+            await this.map.loadLevelFromFile(levelNumber);
+            
+            console.log(`Level ${levelNumber} loaded successfully`, {
+                width: this.map.width,
+                height: this.map.height
+            });
+        } catch (error) {
+            console.error(`Failed to load level ${levelNumber}:`, error);
+            // Create a default map as fallback
+            this.map = new MapModel();
+            this.map.generateDefaultMap();
+            console.log('Using default generated map as fallback');
+        }
     }
     
     spawnPlayers() {
+        // Safety check
+        if (!this.map) {
+            console.error('Cannot spawn players - map is null');
+            return;
+        }
+        
         // Spawn player 1
         const p1Spawn = this.map.getPlayerSpawnPoint(0);
         const player1 = new TankModel('player1', 'player1', p1Spawn);
@@ -438,7 +466,26 @@ export default class GameModel {
     
     gameOver() {
         this.gameState = 'gameover';
-        // Trigger game over event
+        this.logger.log('INFO', 'GAME OVER');
+        
+        // Trigger game over screen in controller
+        if (window.game && window.game.controller) {
+            setTimeout(() => {
+                window.game.controller.showGameOver();
+            }, 500);
+        }
+    }
+    
+    victory() {
+        this.gameState = 'victory';
+        this.logger.log('INFO', 'VICTORY - Level Complete');
+        
+        // Trigger score screen in controller  
+        if (window.game && window.game.controller) {
+            setTimeout(() => {
+                window.game.controller.showScoreScreen();
+            }, 1000);
+        }
     }
     
     setState(newState, reason = '') {

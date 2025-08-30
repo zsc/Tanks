@@ -258,6 +258,14 @@ export default class GameView3D {
     }
     
     renderMap(mapModel) {
+        if (!mapModel) {
+            console.warn('GameView3D.renderMap: mapModel is null');
+            return;
+        }
+        if (!this.mapRenderer) {
+            console.error('GameView3D.renderMap: mapRenderer is not initialized');
+            return;
+        }
         this.mapRenderer.renderMap(mapModel);
     }
     

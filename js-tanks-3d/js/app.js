@@ -20,19 +20,26 @@ class App {
         // Initialize view (Three.js scene)
         await this.view.init();
         
-        // Initialize controller
+        // Initialize controller (will show menu)
         await this.controller.init();
         
-        // Start game
-        this.controller.start();
-        
-        console.log('Game started successfully!');
+        // Don't auto-start, wait for menu selection
+        console.log('Game initialized successfully!');
     }
 }
 
 // Start application when DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
     const app = new App();
+    
+    // Expose game instance globally for debugging and screen transitions
+    window.game = {
+        app: app,
+        get model() { return app.model; },
+        get view() { return app.view; },
+        get controller() { return app.controller; }
+    };
+    
     app.init().catch(error => {
         console.error('Failed to initialize game:', error);
     });

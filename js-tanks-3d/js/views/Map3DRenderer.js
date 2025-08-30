@@ -12,6 +12,22 @@ export default class Map3DRenderer {
     }
     
     renderMap(mapModel) {
+        // Safety check
+        if (!mapModel) {
+            console.error('Map3DRenderer.renderMap: mapModel is null');
+            return;
+        }
+        
+        // Additional safety checks
+        if (typeof mapModel.height === 'undefined' || typeof mapModel.width === 'undefined') {
+            console.error('Map3DRenderer.renderMap: mapModel missing width or height', {
+                mapModel,
+                hasHeight: typeof mapModel.height !== 'undefined',
+                hasWidth: typeof mapModel.width !== 'undefined'
+            });
+            return;
+        }
+        
         // Clear existing map
         this.clearMap();
         
