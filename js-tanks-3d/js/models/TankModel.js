@@ -38,6 +38,9 @@ export default class TankModel {
         this.lastFireTime = 0;
         this.bulletSpeed = 8;
         
+        // Movement blocking (like C++ stop flag)
+        this.blocked = false;
+        
         // Tank size for collision
         this.size = 0.8;
         this.bounds = this.calculateBounds();
@@ -55,8 +58,12 @@ export default class TankModel {
         this.speedChangeInterval = Math.random() * 300; // 0-300ms like C++
         this.lastFireTime = Date.now();  // Initialize to current time
         this.fireInterval = this.getFireInterval(); // ms
-        this.isBlocked = false;
         this.blockCheckTimer = 0;
+        
+        // Spawn protection (like C++ TSF_CREATE)
+        this.spawning = true;
+        this.spawnTimer = 0;
+        this.spawnDuration = 500; // ms of spawn animation
     }
     
     getSpeedByType(type) {
@@ -89,6 +96,17 @@ export default class TankModel {
     update(deltaTime) {
         if (!this.alive) return;
         
+        // Handle spawn animation (like C++ TSF_CREATE)
+        if (this.spawning) {
+            this.spawnTimer += deltaTime;
+            if (this.spawnTimer >= this.spawnDuration) {
+                this.spawning = false;
+                this.spawnTimer = 0;
+            }
+            // During spawn, no collision (like C++ collision_rect = 0)
+            return;
+        }
+        
         // Check if frozen (clock bonus effect)
         if (this.frozen) {
             this.frozenTime += deltaTime;
@@ -102,9 +120,14 @@ export default class TankModel {
         
         this.previousPosition = { ...this.position };
         
-        // Update position based on velocity
-        this.position.x += this.velocity.x * deltaTime / 1000;
-        this.position.z += this.velocity.z * deltaTime / 1000;
+        // Update position based on velocity (like C++ - only if not blocked)
+        if (!this.blocked) {
+            this.position.x += this.velocity.x * deltaTime / 1000;
+            this.position.z += this.velocity.z * deltaTime / 1000;
+        } else {
+            // Clear blocked flag after processing (like C++ stop flag)
+            this.blocked = false;
+        }
         
         // Update bounds
         this.bounds = this.calculateBounds();
@@ -171,7 +194,8 @@ export default class TankModel {
     }
     
     stop() {
-        this.velocity = { x: 0, z: 0 };
+        // Like C++: just set blocked flag, don't clear velocity
+        this.blocked = true;
     }
     
     fire() {
@@ -285,6 +309,11 @@ export default class TankModel {
         this.canFire = true;
         this.powerLevel = 1;
         this.needsRespawn = false;
+        this.blocked = false;
+        
+        // Start spawn animation (like C++ TSF_CREATE)
+        this.spawning = true;
+        this.spawnTimer = 0;
         
         // Add shield for players (like C++)
         if (this.type.startsWith('player')) {
@@ -313,6 +342,16 @@ export default class TankModel {
     }
     
     calculateBounds() {
+        // During spawn, no collision (like C++ collision_rect = 0)
+        if (this.spawning) {
+            return {
+                left: this.position.x,
+                right: this.position.x,
+                top: this.position.z,
+                bottom: this.position.z
+            };
+        }
+        
         const halfSize = this.size / 2;
         return {
             left: this.position.x - halfSize,
@@ -337,22 +376,24 @@ export default class TankModel {
         
         const now = Date.now();
         
-        // Check if blocked (hasn't moved much)
-        if (Math.abs(this.position.x - this.previousPosition.x) < 0.01 && 
-            Math.abs(this.position.z - this.previousPosition.z) < 0.01 &&
-            (this.velocity.x !== 0 || this.velocity.z !== 0)) {
+        // Check if movement is blocked (like C++)
+        const hasntMoved = Math.abs(this.position.x - this.previousPosition.x) < 0.01 && 
+                          Math.abs(this.position.z - this.previousPosition.z) < 0.01;
+        const isMoving = this.velocity.x !== 0 || this.velocity.z !== 0;
+        
+        if (hasntMoved && isMoving) {
             this.blockCheckTimer += deltaTime;
             if (this.blockCheckTimer > 100) { // If blocked for 100ms
-                this.isBlocked = true;
+                // Immediately change direction when blocked
+                this.lastDirectionChange = 0; // Force direction change
                 this.blockCheckTimer = 0;
             }
         } else {
             this.blockCheckTimer = 0;
-            this.isBlocked = false;
         }
         
         // Change direction periodically or when blocked (C++ m_direction_time)
-        if (now - this.lastDirectionChange > this.directionChangeInterval || this.isBlocked) {
+        if (now - this.lastDirectionChange > this.directionChangeInterval) {
             this.lastDirectionChange = now;
             this.directionChangeInterval = this.getRandomDirectionInterval();
             
@@ -406,7 +447,7 @@ export default class TankModel {
                         break;
                 }
                 
-                if (shouldFire || this.isBlocked) {
+                if (shouldFire || hasntMoved) {
                     return this.fire();
                 }
             } else {

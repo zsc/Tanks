@@ -344,16 +344,22 @@ export default class MapModel {
     }
     
     getPlayerSpawnPoint(playerIndex) {
-        return this.playerSpawnPoints[playerIndex] || this.playerSpawnPoints[0];
+        const tilePos = this.playerSpawnPoints[playerIndex] || this.playerSpawnPoints[0];
+        // Convert tile coordinates to world coordinates (center of tile)
+        return this.tileToWorld(tilePos.x, tilePos.z);
     }
     
     getRandomEnemySpawnPoint() {
         const index = Math.floor(Math.random() * this.enemySpawnPoints.length);
-        return this.enemySpawnPoints[index];
+        const tilePos = this.enemySpawnPoints[index];
+        // Convert tile coordinates to world coordinates (center of tile)
+        return this.tileToWorld(tilePos.x, tilePos.z);
     }
     
     getEnemySpawnPoint(index) {
         // Return spawn point by index (cycles through 0, 1, 2)
-        return this.enemySpawnPoints[index % this.enemySpawnPoints.length];
+        const tilePos = this.enemySpawnPoints[index % this.enemySpawnPoints.length];
+        // Convert tile coordinates to world coordinates (center of tile)
+        return this.tileToWorld(tilePos.x, tilePos.z);
     }
 }

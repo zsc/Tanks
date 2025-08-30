@@ -229,6 +229,12 @@ export default class GameModel {
             const spawnPoint = this.map.getEnemySpawnPoint(this.enemySpawnPosition);
             this.enemySpawnPosition = (this.enemySpawnPosition + 1) % 3; // Cycle through 3 spawn points
             
+            // Check if spawn point is occupied (like C++)
+            if (this.checkSpawnPointOccupied(spawnPoint)) {
+                // Skip this spawn attempt, will retry next frame
+                return;
+            }
+            
             // Choose enemy type
             const types = ['enemy_a', 'enemy_b', 'enemy_c', 'enemy_d'];
             const type = types[Math.floor(Math.random() * types.length)];
@@ -333,6 +339,25 @@ export default class GameModel {
                 console.log(`[DEBUG] Player ${playerIndex} fire() returned null`);
             }
         }
+    }
+    
+    checkSpawnPointOccupied(spawnPoint) {
+        // Check if any tank is at this spawn point (like C++)
+        const threshold = 1.5; // Tank size + margin
+        
+        const allTanks = [...this.players, ...this.enemies];
+        for (let tank of allTanks) {
+            if (!tank.alive || tank.spawning) continue; // Ignore dead or spawning tanks
+            
+            const dx = Math.abs(tank.position.x - spawnPoint.x);
+            const dz = Math.abs(tank.position.z - spawnPoint.z);
+            
+            if (dx < threshold && dz < threshold) {
+                return true; // Spawn point occupied
+            }
+        }
+        
+        return false;
     }
     
     generateBonus() {

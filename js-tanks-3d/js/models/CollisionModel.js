@@ -161,9 +161,10 @@ export default class CollisionModel {
             tank2.bounds.bottom - tank1.bounds.top
         );
         
-        // Push apart along axis with smallest overlap
+        // Like C++: determine collision direction and only block that direction
         if (overlapX < overlapZ) {
-            // Push horizontally
+            // Horizontal collision - block horizontal movement
+            // Push apart
             const pushX = overlapX / 2;
             if (tank1.position.x < tank2.position.x) {
                 tank1.position.x -= pushX;
@@ -172,8 +173,19 @@ export default class CollisionModel {
                 tank1.position.x += pushX;
                 tank2.position.x -= pushX;
             }
+            
+            // Only stop if moving toward each other horizontally
+            if ((tank1.direction === 'right' && tank1.position.x < tank2.position.x) ||
+                (tank1.direction === 'left' && tank1.position.x > tank2.position.x)) {
+                tank1.blocked = true;
+            }
+            if ((tank2.direction === 'right' && tank2.position.x < tank1.position.x) ||
+                (tank2.direction === 'left' && tank2.position.x > tank1.position.x)) {
+                tank2.blocked = true;
+            }
         } else {
-            // Push vertically
+            // Vertical collision - block vertical movement
+            // Push apart
             const pushZ = overlapZ / 2;
             if (tank1.position.z < tank2.position.z) {
                 tank1.position.z -= pushZ;
@@ -182,11 +194,17 @@ export default class CollisionModel {
                 tank1.position.z += pushZ;
                 tank2.position.z -= pushZ;
             }
+            
+            // Only stop if moving toward each other vertically
+            if ((tank1.direction === 'down' && tank1.position.z < tank2.position.z) ||
+                (tank1.direction === 'up' && tank1.position.z > tank2.position.z)) {
+                tank1.blocked = true;
+            }
+            if ((tank2.direction === 'down' && tank2.position.z < tank1.position.z) ||
+                (tank2.direction === 'up' && tank2.position.z > tank1.position.z)) {
+                tank2.blocked = true;
+            }
         }
-        
-        // Stop both tanks
-        tank1.stop();
-        tank2.stop();
         
         // Recalculate bounds
         tank1.bounds = tank1.calculateBounds();
@@ -197,7 +215,8 @@ export default class CollisionModel {
     resolveTankMapCollision(tank, map) {
         // Revert to previous position
         tank.position = { ...tank.previousPosition };
-        tank.stop();
+        // Like C++: set blocked flag instead of stopping velocity
+        tank.blocked = true;
         tank.bounds = tank.calculateBounds();
     }
     
