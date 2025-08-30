@@ -366,25 +366,33 @@ export default class GameController {
     showScoreScreen() {
         const scoreData = {
             level: this.model.level,
-            players: this.model.players.map(p => ({
+            players: this.model.players.map((p, index) => ({
                 lives: p.livesCount,
-                score: this.model.score[p.type] || 0
+                score: this.model.score[`player${index + 1}`] || 0,
+                type: p.type
             })),
             enemiesKilled: this.model.enemiesKilled,
             bonusesCollected: this.model.bonusesCollected || 0
         };
         
+        console.log('Score data:', scoreData);
         this.screenManager.show('score', scoreData);
     }
     
-    handleScoreComplete() {
+    async handleScoreComplete() {
         if (this.model.gameState === 'gameover') {
             // Return to menu
             this.screenManager.show('menu');
             this.model.reset();
         } else if (this.model.gameState === 'victory') {
             // Next level
-            this.model.nextLevel();
+            await this.model.nextLevel();
+            
+            // Render the new map
+            if (this.model.map) {
+                this.view.renderMap(this.model.map);
+            }
+            
             this.screenManager.show('levelStart', { level: this.model.level });
         }
     }

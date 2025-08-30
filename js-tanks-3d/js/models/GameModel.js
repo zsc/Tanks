@@ -473,13 +473,31 @@ export default class GameModel {
             this.level = 1;
         }
         
-        // Reset for new level
+        // Save cumulative stats before reset
+        const savedScore = { ...this.score };
+        const savedLives = { ...this.lives };
+        const totalEnemiesKilled = this.enemiesKilled;
+        const totalBonusesCollected = this.bonusesCollected;
+        
+        // Reset for new level (but preserve player progress)
         this.reset();
+        
+        // Restore cumulative stats
+        this.score = savedScore;
+        this.lives = savedLives;
+        // Note: enemiesKilled resets to 0 for the new level (counts per level)
+        // But we could track a totalEnemiesKilled if needed
+        this.bonusesCollected = totalBonusesCollected; // Keep bonuses cumulative
+        
+        // Load new level
         await this.loadLevel(this.level);
-        this.spawnPlayers();
+        
+        // Only spawn players if map loaded
+        if (this.map) {
+            this.spawnPlayers();
+        }
         
         this.gameState = 'playing';
-        // Trigger level complete event
     }
     
     gameOver() {
@@ -496,7 +514,11 @@ export default class GameModel {
     
     victory() {
         this.gameState = 'victory';
-        this.logger.log('INFO', 'VICTORY - Level Complete');
+        this.logger.log('INFO', 'VICTORY - Level Complete', {
+            score: this.score,
+            enemiesKilled: this.enemiesKilled,
+            bonusesCollected: this.bonusesCollected
+        });
         
         // Trigger score screen in controller  
         if (window.game && window.game.controller) {

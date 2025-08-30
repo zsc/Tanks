@@ -72,6 +72,9 @@ export default class BonusModel {
         const playerNum = player.type === 'player1' ? 'player1' : 'player2';
         gameModel.score[playerNum] += 300;
         
+        // Track bonus collection
+        gameModel.bonusesCollected++;
+        
         switch(this.type) {
             case BonusModel.TYPES.GRENADE:
                 // Destroy all enemies
