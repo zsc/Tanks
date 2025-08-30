@@ -114,6 +114,29 @@ export default class GameController {
             this.audioManager.playPowerup();
         };
         
+        // Setup tank fire sound callbacks
+        const setupTankSounds = (tank) => {
+            tank.onFire = (position) => {
+                // Get player 1 position as listener (camera follows player)
+                const listener = this.model.players[0] ? this.model.players[0].position : { x: 0, z: 0 };
+                this.audioManager.playBulletFire(position, listener);
+            };
+        };
+        
+        // Setup for all players
+        this.model.players.forEach(player => setupTankSounds(player));
+        
+        // Setup for enemies as they spawn
+        this.model.onEnemySpawn = (enemy) => {
+            setupTankSounds(enemy);
+        };
+        
+        // Listen for bullet hits
+        this.model.onBulletHit = (position) => {
+            const listener = this.model.players[0] ? this.model.players[0].position : { x: 0, z: 0 };
+            this.audioManager.playBulletHit(position, listener);
+        };
+        
         // Listen for input events
         // These will be connected when the game logic is more complete
     }

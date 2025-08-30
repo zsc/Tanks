@@ -191,6 +191,50 @@ def generate_timpani_tone(frequency, duration, sample_rate=44100, amplitude=0.5)
     
     return amp_envelope * timpani
 
+def generate_explosion_tone(frequency, duration, sample_rate=44100, amplitude=0.8):
+    """Generate explosion/impact sound."""
+    if frequency == 0:
+        return np.zeros(int(sample_rate * duration))
+    
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Quick pitch drop for explosion
+    pitch_envelope = frequency * np.exp(-15 * t)
+    
+    # Sharp attack, quick decay
+    amp_envelope = amplitude * np.exp(-10 * t)
+    
+    # Mix of low frequency rumble and noise
+    explosion = (
+        0.7 * np.sin(2 * np.pi * pitch_envelope * t) +  # Pitched component
+        0.3 * np.random.normal(0, 1, len(t)) * np.exp(-20 * t)  # Noise burst
+    )
+    
+    return amp_envelope * explosion
+
+def generate_gunshot_tone(frequency, duration, sample_rate=44100, amplitude=0.9):
+    """Generate gunshot/firing sound."""
+    if frequency == 0:
+        return np.zeros(int(sample_rate * duration))
+    
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Very sharp attack
+    amp_envelope = amplitude * np.exp(-30 * t)
+    
+    # Mix of pop and white noise
+    gunshot = (
+        0.4 * np.sin(2 * np.pi * frequency * t) +  # Pop
+        0.6 * np.random.normal(0, 1, len(t))  # White noise burst
+    )
+    
+    # Add click at start
+    click_samples = int(0.0005 * sample_rate)  # 0.5ms click
+    if click_samples < len(gunshot):
+        gunshot[:click_samples] *= 5
+    
+    return amp_envelope * gunshot
+
 def generate_snare_tone(duration, sample_rate=44100, amplitude=0.7):
     """Generate snare drum sound with crisp attack and enhanced punch."""
     t = np.linspace(0, duration, int(sample_rate * duration), False)
@@ -257,6 +301,10 @@ def generate_voice_track(voice_data, tempo, sample_rate=44100, voice_type='melod
                     tone = generate_snare_tone(duration, sample_rate, amplitude=0.5)
                 else:
                     tone = np.zeros(int(sample_rate * duration))
+            elif voice_type == 'gunshot':
+                tone = generate_gunshot_tone(frequency, duration, sample_rate, amplitude=0.9)
+            elif voice_type == 'explosion':
+                tone = generate_explosion_tone(frequency, duration, sample_rate, amplitude=0.8)
             else:
                 tone = generate_tone(frequency, duration, sample_rate, amplitude=0.3, waveform='sine')
         else:  # rest
@@ -302,6 +350,10 @@ def convert_abc_to_ogg(abc_file, output_name=None):
             voice_type = 'timpani'
         elif 'snare' in voice_name:
             voice_type = 'snare'
+        elif 'fire' in voice_name:
+            voice_type = 'gunshot'
+        elif 'impact' in voice_name or 'metal' in voice_name:
+            voice_type = 'explosion'
         else:
             voice_type = 'melody'
         
@@ -380,7 +432,9 @@ def main():
         'battle_theme.abc', 
         'victory_theme.abc',
         'game_over_theme.abc',
-        'powerup_jingle.abc'
+        'powerup_jingle.abc',
+        'bullet_fire.abc',
+        'bullet_hit.abc'
     ]
     
     print("Tank Battle Multi-Track Audio Converter")

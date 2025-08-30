@@ -26,7 +26,9 @@ export default class AudioManager {
             battle: 'audio/battle_theme.ogg',
             victory: 'audio/victory_theme.ogg',
             gameOver: 'audio/game_over_theme.ogg',
-            powerup: 'audio/powerup_jingle.ogg'
+            powerup: 'audio/powerup_jingle.ogg',
+            bulletFire: 'audio/bullet_fire.ogg',
+            bulletHit: 'audio/bullet_hit.ogg'
         };
         
         // Load each track
@@ -214,6 +216,105 @@ export default class AudioManager {
     
     playBattleMusic() {
         this.play('battle', { loop: true });
+    }
+    
+    // 3D Positional Audio for sound effects
+    play3D(soundName, position, listenerPosition, options = {}) {
+        if (!this.enabled) return;
+        
+        const sound = this.tracks[soundName];
+        if (!sound) {
+            console.warn(`Sound not found: ${soundName}`);
+            return;
+        }
+        
+        // Calculate distance
+        const dx = position.x - listenerPosition.x;
+        const dz = position.z - listenerPosition.z;
+        const distance = Math.sqrt(dx * dx + dz * dz);
+        
+        // Maximum hearing distance (in game units)
+        const maxDistance = options.maxDistance || 20;
+        const refDistance = options.refDistance || 1;
+        
+        // Skip if too far away
+        if (distance > maxDistance) return;
+        
+        // Calculate volume based on distance (inverse distance model)
+        let volume = 1.0;
+        if (distance > refDistance) {
+            volume = refDistance / distance;
+        }
+        
+        // Apply additional volume scaling
+        volume *= (options.volume || 1.0) * this.sfxVolume;
+        volume = Math.max(0, Math.min(1, volume)); // Clamp to 0-1
+        
+        // Calculate stereo panning (-1 to 1)
+        // Angle from listener to sound source
+        const angle = Math.atan2(dz, dx);
+        // Map angle to panning (-1 = left, 0 = center, 1 = right)
+        // Assuming listener faces "up" (negative Z direction)
+        const listenerAngle = options.listenerAngle || -Math.PI / 2; // Facing up
+        const relativeAngle = angle - listenerAngle;
+        
+        // Convert to panning value
+        let pan = Math.sin(relativeAngle);
+        pan = Math.max(-1, Math.min(1, pan)); // Clamp to -1 to 1
+        
+        // Clone the audio for multiple simultaneous sounds
+        const audioClone = sound.cloneNode();
+        audioClone.volume = volume;
+        
+        // Apply panning if Web Audio API is available
+        if (this.audioContext) {
+            try {
+                const source = this.audioContext.createMediaElementSource(audioClone);
+                const panner = this.audioContext.createStereoPanner();
+                panner.pan.value = pan;
+                
+                source.connect(panner);
+                panner.connect(this.audioContext.destination);
+            } catch (e) {
+                // Fallback: just play with volume
+                console.warn('3D audio panning failed:', e);
+            }
+        }
+        
+        // Play the sound
+        audioClone.play().catch(e => {
+            console.warn(`Failed to play 3D audio: ${soundName}`, e);
+        });
+        
+        // Clean up after playback
+        audioClone.addEventListener('ended', () => {
+            audioClone.remove();
+        });
+        
+        return {
+            audio: audioClone,
+            volume: volume,
+            pan: pan,
+            distance: distance
+        };
+    }
+    
+    // Play bullet fire sound at position
+    playBulletFire(position, listenerPosition) {
+        return this.play3D('bulletFire', position, listenerPosition, {
+            volume: 0.6,
+            maxDistance: 15,
+            refDistance: 2
+        });
+    }
+    
+    // Play bullet hit sound at position
+    playBulletHit(position, listenerPosition) {
+        return this.play3D('bulletHit', position, listenerPosition, {
+            volume: 0.8,
+            maxDistance: 20,
+            refDistance: 2
+        });
     }
 }
 

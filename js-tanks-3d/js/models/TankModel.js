@@ -235,6 +235,11 @@ export default class TankModel {
                 break;
         }
         
+        // Trigger fire sound effect
+        if (this.onFire) {
+            this.onFire(bulletPos);
+        }
+        
         // Return bullet data for GameModel to create a bullet
         return {
             position: bulletPos,

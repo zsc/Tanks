@@ -273,6 +273,11 @@ export default class GameModel {
             const enemyId = `enemy_${this.nextEnemyId++}`;
             const enemy = new TankModel(enemyId, type, spawnPoint);
             
+            // Trigger enemy spawn event for audio setup
+            if (this.onEnemySpawn) {
+                this.onEnemySpawn(enemy);
+            }
+            
             // Set random armor level (1-4 hits to destroy) like C++
             const armorRoll = Math.random();
             if (armorRoll < 0.5) {

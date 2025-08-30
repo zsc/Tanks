@@ -279,6 +279,12 @@ export default class CollisionModel {
                     
                     if (bulletOwnerType !== tankType || bulletOwnerType === 'enemy') {
                         tank.takeDamage(bullet.power);
+                        
+                        // Trigger hit sound at impact position
+                        if (gameModel.onBulletHit) {
+                            gameModel.onBulletHit(bullet.position);
+                        }
+                        
                         bullet.destroy();
                         
                         // Log collision (skip enemy bullets if flag is disabled)
@@ -314,6 +320,11 @@ export default class CollisionModel {
             // Check bullet vs map (bullets pass through water)
             const mapCollision = this.checkMapCollision(bullet, map, 'bullet');
             if (mapCollision.collided) {
+                // Trigger hit sound at impact position
+                if (gameModel.onBulletHit) {
+                    gameModel.onBulletHit(bullet.position);
+                }
+                
                 // Destroy bullet
                 bullet.destroy();
                 
