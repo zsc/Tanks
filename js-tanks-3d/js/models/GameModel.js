@@ -97,17 +97,17 @@ export default class GameModel {
     update(deltaTime) {
         if (this.gameState !== 'playing') return;
         
+        // Spawn enemies first (before updates) so they participate in collision detection
+        this.spawnEnemies();
+        
         // Update all entities
         this.updatePlayers(deltaTime);
         this.updateEnemies(deltaTime);
         this.updateBullets(deltaTime);
         this.updateBonuses(deltaTime);
         
-        // Check collisions
+        // Check collisions (will handle spawn overlaps)
         this.checkCollisions();
-        
-        // Spawn enemies if needed
-        this.spawnEnemies();
         
         // Check win/lose conditions
         this.checkGameStatus();
