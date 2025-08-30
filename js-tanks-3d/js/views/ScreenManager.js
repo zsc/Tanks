@@ -27,6 +27,7 @@ export default class ScreenManager {
         this.createGameOverScreen();
         this.createScoreScreen();
         this.createPauseScreen();
+        this.createLevelSelectScreen();
     }
     
     createMenuScreen() {
@@ -96,6 +97,19 @@ export default class ScreenManager {
                             opacity: 0;
                         ">▶</span>
                         2 PLAYERS
+                    </div>
+                    <div class="menu-item" data-option="level" style="
+                        padding: 10px 40px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        position: relative;
+                    ">
+                        <span class="menu-indicator" style="
+                            position: absolute;
+                            left: -40px;
+                            opacity: 0;
+                        ">▶</span>
+                        SELECT LEVEL
                     </div>
                     <div class="menu-item" data-option="exit" style="
                         padding: 10px 40px;
@@ -366,6 +380,185 @@ export default class ScreenManager {
         this.container.appendChild(screen);
     }
     
+    createLevelSelectScreen() {
+        const screen = document.createElement('div');
+        screen.id = 'level-select-screen';
+        screen.className = 'game-screen';
+        screen.style.cssText = `
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            font-family: 'Courier New', monospace;
+            pointer-events: auto;
+            overflow-y: auto;
+        `;
+        
+        // Create level grid (35 levels like C++)
+        let levelGridHtml = '';
+        for (let i = 1; i <= 35; i++) {
+            levelGridHtml += `
+                <div class="level-item" data-level="${i}" style="
+                    width: 80px;
+                    height: 80px;
+                    border: 2px solid #444;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    background: rgba(0, 0, 0, 0.5);
+                ">${i}</div>
+            `;
+        }
+        
+        screen.innerHTML = `
+            <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 40px;
+                min-height: 100%;
+            ">
+                <div style="
+                    font-size: 48px;
+                    font-weight: bold;
+                    color: #ffcc00;
+                    margin-bottom: 40px;
+                    letter-spacing: 4px;
+                ">SELECT LEVEL</div>
+                
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(7, 1fr);
+                    gap: 20px;
+                    max-width: 700px;
+                ">
+                    ${levelGridHtml}
+                </div>
+                
+                <div style="
+                    margin-top: 40px;
+                    font-size: 16px;
+                    color: #888;
+                ">
+                    Use ARROW KEYS to select, ENTER to start, ESC to return
+                </div>
+            </div>
+            
+            <style>
+                .level-item:hover,
+                .level-item.selected {
+                    border-color: #ffcc00 !important;
+                    background: rgba(255, 204, 0, 0.2) !important;
+                    transform: scale(1.1);
+                }
+            </style>
+        `;
+        
+        this.screens.levelSelect = screen;
+        this.container.appendChild(screen);
+    }
+    
+    setupLevelSelectControls() {
+        const screen = this.screens.levelSelect;
+        const levelItems = screen.querySelectorAll('.level-item');
+        let selectedIndex = 0;
+        
+        // Set initial selection
+        levelItems[selectedIndex].classList.add('selected');
+        
+        // Keyboard controls
+        const handleKeydown = (e) => {
+            if (this.currentScreen !== 'levelSelect') return;
+            
+            const cols = 7; // 7 columns in grid
+            const rows = Math.ceil(35 / cols);
+            const currentRow = Math.floor(selectedIndex / cols);
+            const currentCol = selectedIndex % cols;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (currentRow > 0) {
+                        levelItems[selectedIndex].classList.remove('selected');
+                        selectedIndex -= cols;
+                        levelItems[selectedIndex].classList.add('selected');
+                    }
+                    break;
+                    
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (currentRow < rows - 1 && selectedIndex + cols < levelItems.length) {
+                        levelItems[selectedIndex].classList.remove('selected');
+                        selectedIndex += cols;
+                        levelItems[selectedIndex].classList.add('selected');
+                    }
+                    break;
+                    
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    if (selectedIndex > 0) {
+                        levelItems[selectedIndex].classList.remove('selected');
+                        selectedIndex--;
+                        levelItems[selectedIndex].classList.add('selected');
+                    }
+                    break;
+                    
+                case 'ArrowRight':
+                    e.preventDefault();
+                    if (selectedIndex < levelItems.length - 1) {
+                        levelItems[selectedIndex].classList.remove('selected');
+                        selectedIndex++;
+                        levelItems[selectedIndex].classList.add('selected');
+                    }
+                    break;
+                    
+                case 'Enter':
+                    const selectedLevel = parseInt(levelItems[selectedIndex].dataset.level);
+                    this.selectLevel(selectedLevel);
+                    break;
+                    
+                case 'Escape':
+                    this.hide('levelSelect');
+                    this.show('menu');
+                    break;
+            }
+        };
+        
+        // Remove old event listener if exists
+        document.removeEventListener('keydown', this.levelSelectHandler);
+        this.levelSelectHandler = handleKeydown;
+        document.addEventListener('keydown', handleKeydown);
+        
+        // Mouse controls
+        levelItems.forEach((item, index) => {
+            item.addEventListener('mouseenter', () => {
+                levelItems[selectedIndex].classList.remove('selected');
+                selectedIndex = index;
+                levelItems[selectedIndex].classList.add('selected');
+            });
+            
+            item.addEventListener('click', () => {
+                const selectedLevel = parseInt(item.dataset.level);
+                this.selectLevel(selectedLevel);
+            });
+        });
+    }
+    
+    selectLevel(levelNumber) {
+        console.log('Selected level:', levelNumber);
+        this.hide('levelSelect');
+        if (this.transitionCallback) {
+            this.transitionCallback('startLevel', { level: levelNumber });
+        }
+    }
+    
     setupMenuControls(screen) {
         const menuItems = screen.querySelectorAll('.menu-item');
         let selectedIndex = 0;
@@ -440,6 +633,11 @@ export default class ScreenManager {
                 }
                 break;
                 
+            case 'level':
+                this.hide('menu');
+                this.show('levelSelect');
+                break;
+                
             case 'exit':
                 if (confirm('Exit game?')) {
                     window.close();
@@ -471,6 +669,10 @@ export default class ScreenManager {
                     
                 case 'score':
                     this.showScore(options);
+                    break;
+                    
+                case 'levelSelect':
+                    this.setupLevelSelectControls();
                     break;
             }
         }
