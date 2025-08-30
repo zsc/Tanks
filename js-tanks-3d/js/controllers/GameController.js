@@ -1,6 +1,6 @@
 import InputController from './InputController.js';
 import ScreenManager from '../views/ScreenManager.js';
-import AudioManager from '../AudioManager.js';
+import { getAudioManager } from '../utils/AudioManager.js';
 
 export default class GameController {
     constructor(model, view) {
@@ -8,7 +8,7 @@ export default class GameController {
         this.view = view;
         this.inputController = new InputController();
         this.screenManager = new ScreenManager();
-        this.audioManager = new AudioManager();
+        this.audioManager = getAudioManager();
         
         // Game loop timing (fixed timestep)
         this.targetFPS = 60;
@@ -33,9 +33,9 @@ export default class GameController {
             this.handleScreenTransition(action, data);
         });
         
-        // Show menu with menu music
+        // Show menu with title music
         this.screenManager.show('menu');
-        this.audioManager.playMusic('mainMenu');
+        this.audioManager.playTitleMusic();
         
         // Initialize input controller
         this.inputController.init();
@@ -73,23 +73,24 @@ export default class GameController {
         
         switch(action) {
             case 'start1player':
-                this.audioManager.onGameStart();
+                this.audioManager.fadeOut(500);  // Fade out menu music
                 this.startGame(1);
                 break;
                 
             case 'start2players':
-                this.audioManager.onGameStart();
+                this.audioManager.fadeOut(500);  // Fade out menu music
                 this.startGame(2);
                 break;
                 
             case 'startLevel':
                 // Start specific level with 1 player
-                this.audioManager.onGameStart();
+                this.audioManager.fadeOut(500);  // Fade out menu music
                 this.startGame(1, data.level || 1);
                 break;
                 
             case 'levelStartComplete':
                 this.start();
+                this.audioManager.playBattleMusic();  // Start battle music when level begins
                 break;
                 
             case 'gameOverComplete':
@@ -104,6 +105,15 @@ export default class GameController {
     
     setupEventListeners() {
         // Listen for game state changes
+        this.model.onVictory = () => {
+            this.audioManager.playVictory();
+        };
+        
+        // Listen for powerup collection
+        this.model.onPowerupCollected = () => {
+            this.audioManager.playPowerup();
+        };
+        
         // Listen for input events
         // These will be connected when the game logic is more complete
     }
@@ -215,6 +225,11 @@ export default class GameController {
         // Process game controls
         if (input.pause) {
             this.togglePause();
+        }
+        
+        if (input.mute) {
+            const enabled = this.audioManager.toggleMute();
+            console.log(`Audio ${enabled ? 'enabled' : 'muted'}`);
         }
     }
     
@@ -366,14 +381,17 @@ export default class GameController {
     togglePause() {
         if (this.model.gameState === 'playing') {
             this.model.setState('paused', 'User paused');
+            this.audioManager.pause();  // Pause music
             this.screenManager.show('pause');
         } else if (this.model.gameState === 'paused') {
             this.model.setState('playing', 'User resumed');
+            this.audioManager.resume();  // Resume music
             this.screenManager.hide('pause');
         }
     }
     
     showGameOver() {
+        this.audioManager.playGameOver();  // Play game over music
         this.screenManager.show('gameOver');
     }
     
@@ -397,6 +415,7 @@ export default class GameController {
         if (this.model.gameState === 'gameover') {
             // Return to menu
             this.screenManager.show('menu');
+            this.audioManager.playTitleMusic();  // Return to title music
             this.model.reset();
         } else if (this.model.gameState === 'victory') {
             // Next level

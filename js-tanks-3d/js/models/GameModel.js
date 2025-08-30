@@ -520,6 +520,11 @@ export default class GameModel {
             bonusesCollected: this.bonusesCollected
         });
         
+        // Trigger victory event for audio
+        if (this.onVictory) {
+            this.onVictory();
+        }
+        
         // Trigger score screen in controller  
         if (window.game && window.game.controller) {
             setTimeout(() => {

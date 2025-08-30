@@ -75,6 +75,11 @@ export default class BonusModel {
         // Track bonus collection
         gameModel.bonusesCollected++;
         
+        // Trigger powerup sound
+        if (gameModel.onPowerupCollected) {
+            gameModel.onPowerupCollected();
+        }
+        
         switch(this.type) {
             case BonusModel.TYPES.GRENADE:
                 // Destroy all enemies

@@ -20,7 +20,8 @@ export default class InputController {
             },
             game: {
                 pause: 'KeyP',
-                restart: 'KeyR'
+                restart: 'KeyR',
+                mute: 'KeyM'
             }
         };
         
@@ -41,6 +42,7 @@ export default class InputController {
             const p1Fire = this.keyBindings.player1.fire;
             const p2Fire = this.keyBindings.player2.fire;
             const pause = this.keyBindings.game.pause;
+            const mute = this.keyBindings.game.mute;
             
             if (e.code === p1Fire) {
                 console.log('[DEBUG] Player 1 fire action queued');
@@ -51,6 +53,9 @@ export default class InputController {
             }
             if (e.code === pause) {
                 this.actionQueue.push('pause');
+            }
+            if (e.code === mute) {
+                this.actionQueue.push('mute');
             }
         });
         
@@ -97,7 +102,8 @@ export default class InputController {
                 right: this.keys[this.keyBindings.player2.right] || false,
                 fire: false
             },
-            pause: false
+            pause: false,
+            mute: false
         };
         
         // Process the action queue for discrete events
@@ -112,6 +118,9 @@ export default class InputController {
             }
             if (action === 'pause') {
                 input.pause = true;
+            }
+            if (action === 'mute') {
+                input.mute = true;
             }
         }
         
