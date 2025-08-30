@@ -13,7 +13,7 @@ export default class TankModel {
         
         // Tank properties
         this.alive = true;
-        this.health = 1;
+        this.health = 2;
         this.powerLevel = 1;
         this.maxPowerLevel = this.type.startsWith('player') ? 4 : 1;
         this.livesCount = this.type.startsWith('player') ? 10 : 1; // Player has 10 lives, enemies have 1-4 armor
@@ -300,7 +300,7 @@ export default class TankModel {
         }
         
         this.alive = true;
-        this.health = 1;
+        this.health = 2;
         this.position = { ...position };
         this.previousPosition = { ...position };
         this.velocity = { x: 0, z: 0 };

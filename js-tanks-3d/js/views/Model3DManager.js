@@ -276,10 +276,10 @@ export default class Model3DManager {
                 tankMesh.rotation.y = Math.PI + Math.PI;
                 break;
             case 'left':
-                tankMesh.rotation.y = -Math.PI / 2 + Math.PI;
+                tankMesh.rotation.y = Math.PI / 2 + Math.PI;
                 break;
             case 'right':
-                tankMesh.rotation.y = Math.PI / 2 + Math.PI;
+                tankMesh.rotation.y = -Math.PI / 2 + Math.PI;
                 break;
         }
     }
