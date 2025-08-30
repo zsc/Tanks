@@ -354,10 +354,10 @@ export default class TankModel {
         
         const halfSize = this.size / 2;
         return {
-            left: this.position.x - halfSize + halfSize,
-            right: this.position.x + halfSize + halfSize,
-            top: this.position.z - halfSize + halfSize,
-            bottom: this.position.z + halfSize + halfSize
+            left: this.position.x - halfSize + halfSize, // Keep this
+            right: this.position.x + halfSize + halfSize, // Keep this
+            top: this.position.z - halfSize + halfSize, // Keep this
+            bottom: this.position.z + halfSize + halfSize // Keep this
         };
     }
     

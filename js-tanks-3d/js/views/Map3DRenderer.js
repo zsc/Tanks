@@ -53,6 +53,11 @@ export default class Map3DRenderer {
             }
         }
         
+        // Render bushes as a separate layer (above tanks)
+        if (mapModel.bushes && mapModel.bushes.length > 0) {
+            this.renderBushes(mapModel.bushes);
+        }
+        
         // Add eagle base at the bottom center
         this.createEagleBase();
     }
@@ -164,6 +169,26 @@ export default class Map3DRenderer {
         ice.rotation.x = -Math.PI / 2;
         ice.receiveShadow = true;
         return ice;
+    }
+    
+    renderBushes(bushPositions) {
+        bushPositions.forEach(pos => {
+            const position = new THREE.Vector3(
+                pos.x - 13,
+                0,
+                pos.z - 13
+            );
+            const mesh = this.createBushTile();
+            if (mesh) {
+                mesh.position.copy(position);
+                mesh.position.y = 0;
+                mesh.userData = { type: 'bush', row: pos.z, col: pos.x };
+                // Set render order to render bushes above tanks
+                mesh.renderOrder = 10;
+                this.terrainMeshes.push(mesh);
+                this.mapGroup.add(mesh);
+            }
+        });
     }
     
     createBushTile() {
