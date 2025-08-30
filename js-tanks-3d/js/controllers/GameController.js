@@ -1,5 +1,6 @@
 import InputController from './InputController.js';
 import ScreenManager from '../views/ScreenManager.js';
+import AudioManager from '../AudioManager.js';
 
 export default class GameController {
     constructor(model, view) {
@@ -7,6 +8,7 @@ export default class GameController {
         this.view = view;
         this.inputController = new InputController();
         this.screenManager = new ScreenManager();
+        this.audioManager = new AudioManager();
         
         // Game loop timing (fixed timestep)
         this.targetFPS = 60;
@@ -17,6 +19,9 @@ export default class GameController {
         
         // Interpolation factor for smooth rendering
         this.alpha = 0;
+        
+        // Track tank movement for audio
+        this.playerMoving = false;
     }
     
     async init() {
@@ -24,12 +29,13 @@ export default class GameController {
         this.screenManager.init();
         
         // Setup screen transitions
-        this.screenManager.onTransition((action) => {
-            this.handleScreenTransition(action);
+        this.screenManager.onTransition((action, data) => {
+            this.handleScreenTransition(action, data);
         });
         
-        // Show menu
+        // Show menu with menu music
         this.screenManager.show('menu');
+        this.audioManager.playMusic('mainMenu');
         
         // Initialize input controller
         this.inputController.init();
@@ -37,11 +43,11 @@ export default class GameController {
         console.log('GameController initialized');
     }
     
-    async startGame(playerCount = 1) {
+    async startGame(playerCount = 1, levelNumber = 1) {
         try {
-            // Initialize game model with level 1
+            // Initialize game model with specified level
             this.model.playerCount = playerCount;
-            await this.model.init(1);
+            await this.model.init(levelNumber);
             
             // Check if map loaded successfully
             if (!this.model.map) {
@@ -62,16 +68,24 @@ export default class GameController {
         }
     }
     
-    handleScreenTransition(action) {
-        console.log('Screen transition:', action);
+    handleScreenTransition(action, data = {}) {
+        console.log('Screen transition:', action, data);
         
         switch(action) {
             case 'start1player':
+                this.audioManager.onGameStart();
                 this.startGame(1);
                 break;
                 
             case 'start2players':
+                this.audioManager.onGameStart();
                 this.startGame(2);
+                break;
+                
+            case 'startLevel':
+                // Start specific level with 1 player
+                this.audioManager.onGameStart();
+                this.startGame(1, data.level || 1);
                 break;
                 
             case 'levelStartComplete':

@@ -622,14 +622,14 @@ export default class ScreenManager {
             case '1player':
                 this.hide('menu');
                 if (this.transitionCallback) {
-                    this.transitionCallback('start1player');
+                    this.transitionCallback('start1player', {});
                 }
                 break;
                 
             case '2players':
                 this.hide('menu');
                 if (this.transitionCallback) {
-                    this.transitionCallback('start2players');
+                    this.transitionCallback('start2players', {});
                 }
                 break;
                 
@@ -697,7 +697,7 @@ export default class ScreenManager {
         setTimeout(() => {
             this.hide('levelStart');
             if (this.transitionCallback) {
-                this.transitionCallback('levelStartComplete');
+                this.transitionCallback('levelStartComplete', {});
             }
         }, 2000);
     }
@@ -724,7 +724,7 @@ export default class ScreenManager {
                 setTimeout(() => {
                     this.hide('gameOver');
                     if (this.transitionCallback) {
-                        this.transitionCallback('gameOverComplete');
+                        this.transitionCallback('gameOverComplete', {});
                     }
                 }, 2000);
             }
@@ -779,7 +779,7 @@ export default class ScreenManager {
                 document.removeEventListener('keydown', handleContinue);
                 this.hide('score');
                 if (this.transitionCallback) {
-                    this.transitionCallback('scoreComplete');
+                    this.transitionCallback('scoreComplete', {});
                 }
             }
         };
