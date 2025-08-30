@@ -42,7 +42,7 @@ export default class TankModel {
         this.blocked = false;
         
         // Tank size for collision
-        this.size = 0.8;
+        this.size = 1;
         this.bounds = this.calculateBounds();
         
         // Animation
@@ -354,10 +354,10 @@ export default class TankModel {
         
         const halfSize = this.size / 2;
         return {
-            left: this.position.x - halfSize,
-            right: this.position.x + halfSize,
-            top: this.position.z - halfSize,
-            bottom: this.position.z + halfSize
+            left: this.position.x - halfSize + halfSize,
+            right: this.position.x + halfSize + halfSize,
+            top: this.position.z - halfSize + halfSize,
+            bottom: this.position.z + halfSize + halfSize
         };
     }
     

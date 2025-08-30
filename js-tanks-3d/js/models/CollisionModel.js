@@ -1,7 +1,7 @@
 export default class CollisionModel {
     constructor() {
         // Spatial hash grid for broad phase collision detection
-        this.gridSize = 2; // Size of each grid cell
+        this.gridSize = 1; // Size of each grid cell
         this.spatialGrid = new Map();
     }
     
