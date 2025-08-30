@@ -303,8 +303,9 @@ export default class GameModel {
         }
         
         // Check if player lost all lives
-        const allPlayersDead = this.players.every(p => !p.alive);
-        if (allPlayersDead) {
+        // Only game over if player is dead AND has no more lives left (toRemove = true)
+        const allPlayersOutOfLives = this.players.every(p => p.toRemove);
+        if (allPlayersOutOfLives) {
             this.gameOver();
         }
     }
