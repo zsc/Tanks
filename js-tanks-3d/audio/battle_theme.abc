@@ -1,0 +1,36 @@
+X:2
+T:Tank Battle - Battle Theme
+M:4/4
+L:1/16
+Q:1/4=160
+K:Dm
+% Voice 1: Main Melody - Fast-paced action theme
+V:1 name="Melody" clef=treble
+|: D2D2 F2A2 d2c2 A2F2 | G2G2 B2d2 c2B2 G2E2 |
+   F2F2 A2c2 f2e2 c2A2 | d2A2 F2D2 E4 D4 :|
+|: d2d2 c2B2 A2G2 F2E2 | D2F2 A2d2 c2A2 F2D2 |
+   G2B2 d2f2 e2c2 A2F2 | D2F2 A2d2 D4 z4 :|
+% Voice 2: Harmony/Chords - Power chords for intensity
+V:2 name="Chords" clef=treble
+|: [DFA]8 [DFA]8 | [GBd]8 [CEG]8 |
+   [FAc]8 [FAc]8 | [DFA]4 [CEG]4 [DFA]8 :|
+|: [DFA]4 [FAc]4 [DFA]4 [CEG]4 | [DFA]8 [DFA]8 |
+   [GBd]8 [FAc]8 | [DFA]8 [DFA]4 z4 :|
+% Voice 3: Bass Line - Driving bass
+V:3 name="Bass" clef=bass
+|: D,2D,2 D,2D,2 D,2D,2 D,2D,2 | G,2G,2 G,2G,2 C,2C,2 C,2C,2 |
+   F,2F,2 F,2F,2 F,2F,2 F,2F,2 | D,2D,2 D,2D,2 A,2A,2 D,4 :|
+|: D,2D,2 F,2F,2 D,2D,2 C,2C,2 | D,2D,2 D,2D,2 F,2F,2 A,2A,2 |
+   G,2G,2 G,2G,2 F,2F,2 F,2F,2 | D,2D,2 A,2A,2 D,4 z4 :|
+% Voice 4: Timpani/Percussion - War drums
+V:4 name="Timpani" clef=percussion
+|: D,4 z4 D,4 z4 | G,4 z4 C,4 z4 |
+   F,4 z4 F,4 z4 | D,4 A,4 D,4 D,4 :|
+|: D,2z2 D,2z2 D,2z2 D,2z2 | D,4 z4 D,4 z4 |
+   G,2z2 G,2z2 F,2z2 F,2z2 | D,4 A,4 D,4 z4 :|
+% Voice 5: Snare Drum - Intense battle rhythm
+V:5 name="Snare" clef=percussion
+|: xxxx xxxx xxxx xxxx | xxxx xxxx xxxx xxxx |
+   xxxx xxxx xxxx xxxx | xxxxxxxx xxxxxxxx :|
+|: x2x2 x2x2 x2x2 x2x2 | xxxx xxxx xxxx xxxx |
+   xxxxxxxx xxxxxxxx | xxxx xxxx xxxx z4 :|

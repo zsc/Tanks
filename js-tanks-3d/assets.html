@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tank Battle - Audio Assets</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+            border-bottom: 2px solid #0f0;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0a0;
+            margin-top: 30px;
+        }
+        .audio-container {
+            background: #2a2a2a;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .audio-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0f0;
+        }
+        audio {
+            width: 100%;
+            margin: 5px 0;
+        }
+        .abc-notation {
+            background: #333;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+            font-size: 12px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            margin: 5px;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #0a0;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #2a2a2a;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Tank Battle - Multi-Track Audio Assets 🎵</h1>
+    <p style="color: #0a0; margin: 10px 0;">Enhanced with chord progressions, bass lines, and timpani percussion!</p>
+    
+    <div class="controls">
+        <h2>Master Controls</h2>
+        <button onclick="playAll()">▶️ Play All</button>
+        <button onclick="stopAll()">⏹️ Stop All</button>
+        <button onclick="setVolume(0.5)">🔉 50% Volume</button>
+        <button onclick="setVolume(1.0)">🔊 100% Volume</button>
+    </div>
+
+    <h2>Game Music Tracks</h2>
+
+    <div class="audio-container">
+        <div class="audio-title">🎺 Title Theme</div>
+        <audio id="title_theme" controls>
+            <source src="audio/title_theme.ogg?v=1756544103" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('title_abc')">Show/Hide ABC Notation</button>
+        <div id="title_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Main Melody (Heroic march theme)
+- Voice 2: Harmony/Chords (C, F, G progressions)
+- Voice 3: Bass Line (Walking bass pattern)
+- Voice 4: Timpani (Military percussion)
+
+Tempo: 140 BPM | Key: C Major
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">⚔️ Battle Theme</div>
+        <audio id="battle_theme" controls>
+            <source src="audio/battle_theme.ogg?v=1756544103" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('battle_abc')">Show/Hide ABC Notation</button>
+        <div id="battle_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Main Melody (Fast-paced action theme)
+- Voice 2: Power Chords (Dm, Gm, F, C progressions)
+- Voice 3: Driving Bass Line (Repetitive, intense pattern)
+- Voice 4: War Drums (Timpani with aggressive rhythm)
+
+Tempo: 160 BPM | Key: D Minor
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">🏆 Victory Theme</div>
+        <audio id="victory_theme" controls>
+            <source src="audio/victory_theme.ogg?v=1756544103" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('victory_abc')">Show/Hide ABC Notation</button>
+        <div id="victory_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Main Melody (Triumphant fanfare)
+- Voice 2: Triumphant Harmonies (G, D, C, Am chords)
+- Voice 3: Celebratory Bass (Ascending patterns)
+- Voice 4: Victory Rolls (Timpani with dramatic flourishes)
+
+Tempo: 120 BPM | Key: G Major
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">💀 Game Over Theme</div>
+        <audio id="game_over_theme" controls>
+            <source src="audio/game_over_theme.ogg?v=1756544103" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('gameover_abc')">Show/Hide ABC Notation</button>
+        <div id="gameover_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Main Melody (Slow, mournful theme)
+- Voice 2: Mournful Harmonies (Am, Dm, Em, G chords)
+- Voice 3: Deep Bass Line (Slow, descending pattern)
+- Voice 4: Funeral Drums (Sparse timpani hits)
+
+Tempo: 80 BPM | Key: A Minor
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">⭐ Powerup Jingle</div>
+        <audio id="powerup_jingle" controls>
+            <source src="audio/powerup_jingle.ogg?v=1756544103" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('powerup_abc')">Show/Hide ABC Notation</button>
+        <div id="powerup_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Main Melody (Quick ascending arpeggio)
+- Voice 2: Bright Harmonies (C major chord progression)
+- Voice 3: Rising Bass (C to high C octave jump)
+- Voice 4: Quick Hits (Timpani accents)
+
+Tempo: 180 BPM | Key: C Major
+        </div>
+    </div>
+
+    <h2>Usage in Game</h2>
+    <div class="audio-container">
+        <pre style="color: #0f0;">
+// Example JavaScript usage:
+const audioManager = {
+    tracks: {
+        title: new Audio('audio/title_theme.ogg'),
+        battle: new Audio('audio/battle_theme.ogg'),
+        victory: new Audio('audio/victory_theme.ogg'),
+        gameOver: new Audio('audio/game_over_theme.ogg'),
+        powerup: new Audio('audio/powerup_jingle.ogg')
+    },
+    
+    play(trackName, loop = false) {
+        const track = this.tracks[trackName];
+        if (track) {
+            track.loop = loop;
+            track.play();
+        }
+    },
+    
+    stop(trackName) {
+        const track = this.tracks[trackName];
+        if (track) {
+            track.pause();
+            track.currentTime = 0;
+        }
+    }
+};
+
+// Play title music on menu
+audioManager.play('title', true);
+
+// Play battle music during game
+audioManager.play('battle', true);
+
+// Play powerup sound effect
+audioManager.play('powerup', false);
+        </pre>
+    </div>
+
+    <script>
+        function toggleABC(id) {
+            const elem = document.getElementById(id);
+            elem.style.display = elem.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function playAll() {
+            const audios = document.querySelectorAll('audio');
+            let delay = 0;
+            audios.forEach((audio, index) => {
+                setTimeout(() => {
+                    audio.play();
+                }, delay);
+                delay += 3000; // 3 second delay between tracks
+            });
+        }
+
+        function stopAll() {
+            const audios = document.querySelectorAll('audio');
+            audios.forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
+
+        function setVolume(level) {
+            const audios = document.querySelectorAll('audio');
+            audios.forEach(audio => {
+                audio.volume = level;
+            });
+        }
+
+        // Set initial volume
+        window.addEventListener('DOMContentLoaded', () => {
+            setVolume(0.5);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+X:5
+T:Tank Battle - Powerup Jingle
+M:2/4
+L:1/16
+Q:1/4=180
+K:C
+% Voice 1: Main Melody - Quick ascending powerup sound
+V:1 name="Melody" clef=treble
+C2E2 G2c2 | e2g2 c'4 |
+% Voice 2: Harmony/Chords - Bright harmonies
+V:2 name="Chords" clef=treble
+[CEG]4 [EGc]4 | [Gce]4 [ceg]4 |
+% Voice 3: Bass Line - Rising bass
+V:3 name="Bass" clef=bass
+C,4 G,4 | C4 c4 |
+% Voice 4: Timpani/Percussion - Quick hits
+V:4 name="Timpani" clef=percussion
+C,2z2 G,2z2 | C2z2 c4 |

@@ -1,0 +1,36 @@
+X:1
+T:Tank Battle - Title Theme
+M:4/4
+L:1/8
+Q:1/4=140
+K:C
+% Voice 1: Main Melody - Heroic military-style march theme
+V:1 name="Melody" clef=treble
+|: G2 E2 C2 E2 | G2 c2 B2 A2 | G2 E2 C2 D2 | E4 z4 |
+   F2 D2 B,2 D2 | F2 A2 G2 F2 | E2 C2 G,2 C2 | C4 z4 :|
+|: c2 c2 B2 A2 | G2 E2 D2 C2 | F2 F2 E2 D2 | E4 G4 |
+   A2 A2 G2 F2 | E2 c2 B2 G2 | F2 D2 E2 C2 | C4 z4 :|
+% Voice 2: Harmony/Chords
+V:2 name="Chords" clef=treble
+|: [CEG]4 [CEG]4 | [CEG]4 [FAc]4 | [CEG]4 [GBd]4 | [CEG]4 z4 |
+   [FAc]4 [FAc]4 | [FAc]4 [GBd]4 | [CEG]4 [CEG]4 | [CEG]4 z4 :|
+|: [CEG]4 [FAc]4 | [CEG]4 [GBd]4 | [FAc]4 [GBd]4 | [CEG]4 [CEG]4 |
+   [FAc]4 [FAc]4 | [CEG]4 [GBd]4 | [FAc]4 [GBd]4 | [CEG]4 z4 :|
+% Voice 3: Bass Line
+V:3 name="Bass" clef=bass
+|: C,2 G,2 C2 G,2 | C,2 G,2 F,2 F2 | C,2 G,2 G,2 B,2 | C,2 E,2 G,2 C2 |
+   F,2 C2 F,2 A,2 | F,2 C2 G,2 B,2 | C,2 E,2 G,2 E,2 | C,2 G,2 C,4 :|
+|: C,2 E,2 F,2 A,2 | C,2 G,2 G,2 B,2 | F,2 A,2 G,2 B,2 | C,2 E,2 G,2 C2 |
+   F,2 C2 F,2 A,2 | C,2 E,2 G,2 B,2 | F,2 A,2 G,2 B,2 | C,2 G,2 C,4 :|
+% Voice 4: Timpani/Percussion
+V:4 name="Timpani" clef=percussion
+|: C,4 z4 | C,4 z4 | G,4 z4 | C,4 z2 C,2 |
+   F,4 z4 | F,4 G,4 | C,4 z4 | C,4 z2 C,2 :|
+|: C,2 z2 C,2 z2 | C,2 z2 G,2 z2 | F,2 z2 G,2 z2 | C,2 z2 C,4 |
+   F,2 z2 F,2 z2 | C,2 z2 G,2 z2 | F,2 G,2 G,2 z2 | C,4 C,2 z2 :|
+% Voice 5: Snare Drum - Military march pattern
+V:5 name="Snare" clef=percussion
+|: x2xx x2xx x2xx x2xx | x2xx x2xx xxxx x2x2 | x2xx x2xx x2xx x2xx | xxxx xxxx x4 z4 |
+   x2xx x2xx x2xx x2xx | xxxx xxxx xxxx xxxx | x2xx x2xx x2xx x2xx | xxxx x2x2 x4 z4 :|
+|: xxxx x2x2 xxxx x2x2 | x2xx x2xx xxxx x2x2 | xxxx x2x2 xxxx x2x2 | xxxx xxxx x8 |
+   x2xx x2xx x2xx x2xx | xxxx x2x2 xxxx x2x2 | xxxx xxxx xxxx x2z2 | x8 x4 z4 :|

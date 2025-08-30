@@ -1,0 +1,36 @@
+X:3
+T:Tank Battle - Victory Theme
+M:4/4
+L:1/8
+Q:1/4=120
+K:G
+% Voice 1: Main Melody - Triumphant victory fanfare
+V:1 name="Melody" clef=treble
+|: G2 B2 d2 g2 | f2 d2 B2 G2 | c2 e2 g2 e2 | d4 B4 |
+   A2 c2 e2 a2 | g2 e2 c2 A2 | B2 d2 g2 B2 | G4 z4 :|
+|: g2 g2 f2 d2 | e2 c2 B2 G2 | A2 c2 e2 g2 | d4 g4 |
+   f2 d2 B2 G2 | c2 e2 g2 e2 | d2 B2 A2 F2 | G4 z4 :|
+% Voice 2: Harmony/Chords - Triumphant harmonies
+V:2 name="Chords" clef=treble
+|: [GBd]4 [GBd]4 | [DFA]4 [GBd]4 | [CEG]4 [CEG]4 | [GBd]4 [GBd]4 |
+   [DFA]4 [ACE]4 | [CEG]4 [ACE]4 | [GBd]4 [GBd]4 | [GBd]4 z4 :|
+|: [GBd]4 [DFA]4 | [CEG]4 [GBd]4 | [ACE]4 [CEG]4 | [GBd]4 [GBd]4 |
+   [DFA]4 [GBd]4 | [CEG]4 [CEG]4 | [DFA]4 [DFA]4 | [GBd]4 z4 :|
+% Voice 3: Bass Line - Celebratory bass
+V:3 name="Bass" clef=bass
+|: G,2 D2 G2 B2 | D,2 F,2 G,2 B,2 | C,2 E,2 G,2 C2 | G,2 D2 G2 B2 |
+   D,2 F,2 A,2 C2 | C,2 E,2 A,2 C2 | G,2 B,2 D2 G2 | G,2 D2 G,4 :|
+|: G,2 B,2 D2 F2 | C,2 E,2 G,2 B,2 | A,2 C2 E2 G2 | G,2 B,2 D2 G2 |
+   D,2 F,2 G,2 B,2 | C,2 E,2 G,2 C2 | D,2 F,2 D,2 F,2 | G,2 D2 G,4 :|
+% Voice 4: Timpani/Percussion - Victory rolls
+V:4 name="Timpani" clef=percussion
+|: G,4 G,4 | D,4 G,4 | C,4 C,4 | G,4 G,2 z2 |
+   D,4 A,4 | C,4 A,4 | G,4 G,4 | G,2 G,2 G,2 z2 :|
+|: G,2 G,2 D,2 D,2 | C,2 z2 G,2 z2 | A,2 z2 C,2 z2 | G,2 G,2 G,4 |
+   D,2 z2 G,2 z2 | C,2 z2 C,2 z2 | D,2 D,2 D,2 z2 | G,4 G,2 z2 :|
+% Voice 5: Snare Drum - Triumphant snare rolls
+V:5 name="Snare" clef=percussion
+|: x4 x4 | x2 z2 x4 | x4 x4 | xxxxxxxx |
+   x2 z2 x2 z2 | x4 x4 | xxxxxxxx | x4 x2 z2 :|
+|: xxxx x2x2 | x2 z2 x2 z2 | x2 z2 x2 z2 | xxxxxxxx |
+   x2 z2 x2 z2 | x2 z2 x2 z2 | xxxx x2 z2 | xxxxxxxx :|
