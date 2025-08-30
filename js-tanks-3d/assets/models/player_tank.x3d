@@ -3,7 +3,7 @@
 <X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd">
     <Scene>
         <!-- 玩家坦克模型 - 绿色涂装 -->
-        <Transform DEF="PlayerTank" rotation="0 1 0 3.14">
+        <Transform DEF="PlayerTank">
             <!-- 坦克底盘（加强细节） -->
             <Transform DEF="Chassis">
                 <!-- 主底盘 -->

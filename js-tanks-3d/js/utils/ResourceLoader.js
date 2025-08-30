@@ -166,8 +166,7 @@ export default class ResourceLoader {
     
     async loadModels() {
         const modelList = {
-            // Using duck.glb for player tank!
-            playerTank: 'assets/models/duck.glb',  // Duck as player tank
+            playerTank: 'assets/models/player_tank.x3d',
             enemyTank: 'assets/models/enemy_tank.x3d',
             bullet: 'assets/models/bullet.x3d',
             brickWall: 'assets/models/brick_wall.x3d',

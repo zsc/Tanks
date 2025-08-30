@@ -34,16 +34,7 @@ export default class Model3DManager {
             this.applyColorToModel(tankModel, color);
         }
         
-        // Scale the model appropriately for the game
-        // Duck model needs different scaling
-        if (type === 'player1' || type === 'player2') {
-            // Duck is likely a different size, adjust scale
-            tankModel.scale.set(1.5, 1.5, 1.5);
-            // Duck might need rotation adjustment
-            // tankModel.rotation.y = 0; // Math.Pi / 2;
-        } else {
-            tankModel.scale.set(0.4, 0.4, 0.4);
-        }
+        tankModel.scale.set(0.4, 0.4, 0.4);
         
         return tankModel;
     }
