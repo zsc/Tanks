@@ -398,30 +398,32 @@ export default class GameView3D {
     }
     
     addBonus(id, type, position) {
-        // Create bonus mesh using 3D model or simple geometry
-        const bonusGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-        const bonusMaterial = new THREE.MeshPhongMaterial({
-            color: this.getBonusColor(type),
-            emissive: this.getBonusColor(type),
-            emissiveIntensity: 0.3
-        });
+        // Create 3D model based on bonus type
+        const bonusGroup = this.createBonus3DModel(type);
         
-        const bonus = new THREE.Mesh(bonusGeometry, bonusMaterial);
-        bonus.position.set(
+        bonusGroup.position.set(
             position.x - 13,
             0.4,  // Float slightly above ground
             position.z - 13
         );
         
         // Add rotation animation
-        bonus.userData = { type: type, rotationSpeed: 0.02 };
+        bonusGroup.userData = { 
+            type: type, 
+            rotationSpeed: 0.02,
+            floatOffset: Math.random() * Math.PI * 2  // Random float phase
+        };
         
-        // Enable shadows
-        bonus.castShadow = true;
-        bonus.receiveShadow = true;
+        // Enable shadows for all children
+        bonusGroup.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
         
-        this.scene.add(bonus);
-        this.bonusMeshes.set(id, bonus);
+        this.scene.add(bonusGroup);
+        this.bonusMeshes.set(id, bonusGroup);
     }
     
     updateBonus(id, visible) {
@@ -429,10 +431,27 @@ export default class GameView3D {
         if (bonus) {
             bonus.visible = visible;
             
-            // Rotate for animation
+            // Animate when visible
             if (visible) {
+                // Rotation animation
                 bonus.rotation.y += bonus.userData.rotationSpeed;
-                bonus.position.y = 0.4 + Math.sin(Date.now() * 0.003) * 0.1; // Float animation
+                
+                // Float animation with phase offset
+                const floatTime = Date.now() * 0.003 + bonus.userData.floatOffset;
+                bonus.position.y = 0.4 + Math.sin(floatTime) * 0.1;
+                
+                // Special animations for specific types
+                if (bonus.userData.type === 'star') {
+                    // Star pulses
+                    const pulse = 1 + Math.sin(floatTime * 2) * 0.1;
+                    bonus.scale.set(pulse, pulse, pulse);
+                } else if (bonus.userData.type === 'clock') {
+                    // Clock hands rotate
+                    const hourHand = bonus.getObjectByName('hourHand');
+                    const minuteHand = bonus.getObjectByName('minuteHand');
+                    if (hourHand) hourHand.rotation.z -= 0.005;
+                    if (minuteHand) minuteHand.rotation.z -= 0.02;
+                }
             }
         }
     }
@@ -445,16 +464,252 @@ export default class GameView3D {
         }
     }
     
+    createBonus3DModel(type) {
+        const group = new THREE.Group();
+        const scale = 0.5; // Scale down to fit game world
+        
+        switch(type) {
+            case 'grenade':
+                // Grenade body
+                const grenadeGeom = new THREE.SphereGeometry(0.8 * scale, 16, 12);
+                const grenadeMat = new THREE.MeshPhongMaterial({ 
+                    color: 0x4a5c2a,
+                    roughness: 0.8,
+                    metalness: 0.2
+                });
+                const grenade = new THREE.Mesh(grenadeGeom, grenadeMat);
+                group.add(grenade);
+                
+                // Pull ring
+                const ringGeom = new THREE.TorusGeometry(0.3 * scale, 0.05 * scale, 8, 16);
+                const ringMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xc0c0c0,
+                    metalness: 0.9,
+                    roughness: 0.1
+                });
+                const ring = new THREE.Mesh(ringGeom, ringMat);
+                ring.position.y = 0.9 * scale;
+                group.add(ring);
+                break;
+                
+            case 'helmet':
+                // Helmet dome
+                const helmetGeom = new THREE.SphereGeometry(1 * scale, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.6);
+                const helmetMat = new THREE.MeshPhongMaterial({ 
+                    color: 0x5a5a5a,
+                    metalness: 0.7,
+                    roughness: 0.3
+                });
+                const helmet = new THREE.Mesh(helmetGeom, helmetMat);
+                group.add(helmet);
+                
+                // Chin strap
+                const strapGeom = new THREE.TorusGeometry(0.95 * scale, 0.05 * scale, 8, 24);
+                const strapMat = new THREE.MeshPhongMaterial({ color: 0x3a3a3a });
+                const strap = new THREE.Mesh(strapGeom, strapMat);
+                strap.position.y = -0.2 * scale;
+                group.add(strap);
+                break;
+                
+            case 'clock':
+                // Clock face
+                const clockGeom = new THREE.CylinderGeometry(1 * scale, 1 * scale, 0.3 * scale, 16);
+                const clockMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xf0f0f0,
+                    metalness: 0.3
+                });
+                const clock = new THREE.Mesh(clockGeom, clockMat);
+                group.add(clock);
+                
+                // Clock rim
+                const rimGeom = new THREE.TorusGeometry(1 * scale, 0.1 * scale, 8, 24);
+                const rimMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xd4af37,
+                    metalness: 0.8,
+                    roughness: 0.2
+                });
+                const rim = new THREE.Mesh(rimGeom, rimMat);
+                group.add(rim);
+                
+                // Hour hand
+                const hourGeom = new THREE.BoxGeometry(0.5 * scale, 0.05 * scale, 0.05 * scale);
+                const handMat = new THREE.MeshPhongMaterial({ color: 0x1a1a1a });
+                const hourHand = new THREE.Mesh(hourGeom, handMat);
+                hourHand.name = 'hourHand';
+                hourHand.position.set(0.25 * scale, 0.16 * scale, 0);
+                group.add(hourHand);
+                
+                // Minute hand
+                const minuteGeom = new THREE.BoxGeometry(0.7 * scale, 0.04 * scale, 0.04 * scale);
+                const minuteHand = new THREE.Mesh(minuteGeom, handMat);
+                minuteHand.name = 'minuteHand';
+                minuteHand.position.set(0.35 * scale, 0.17 * scale, 0);
+                minuteHand.rotation.z = -0.3;
+                group.add(minuteHand);
+                break;
+                
+            case 'shovel':
+                // Shovel handle
+                const handleGeom = new THREE.CylinderGeometry(0.08 * scale, 0.08 * scale, 2 * scale);
+                const handleMat = new THREE.MeshPhongMaterial({ color: 0x8b6f47 });
+                const handle = new THREE.Mesh(handleGeom, handleMat);
+                handle.position.y = -0.2 * scale;
+                group.add(handle);
+                
+                // Shovel blade
+                const bladeGeom = new THREE.BoxGeometry(0.6 * scale, 0.8 * scale, 0.1 * scale);
+                const bladeMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xc0c0c0,
+                    metalness: 0.8,
+                    roughness: 0.3
+                });
+                const blade = new THREE.Mesh(bladeGeom, bladeMat);
+                blade.position.y = 0.6 * scale;
+                group.add(blade);
+                
+                // Rotate shovel for digging pose
+                group.rotation.z = 0.3;
+                break;
+                
+            case 'tank':
+                // Mini tank body
+                const tankBodyGeom = new THREE.BoxGeometry(1.5 * scale, 0.5 * scale, 2 * scale);
+                const tankMat = new THREE.MeshPhongMaterial({ color: 0x2a6a2a });
+                const tankBody = new THREE.Mesh(tankBodyGeom, tankMat);
+                group.add(tankBody);
+                
+                // Turret
+                const turretGeom = new THREE.CylinderGeometry(0.6 * scale, 0.6 * scale, 0.5 * scale);
+                const turret = new THREE.Mesh(turretGeom, tankMat);
+                turret.position.y = 0.5 * scale;
+                group.add(turret);
+                
+                // Cannon
+                const cannonGeom = new THREE.CylinderGeometry(0.1 * scale, 0.1 * scale, 1.5 * scale);
+                const cannon = new THREE.Mesh(cannonGeom, tankMat);
+                cannon.rotation.x = Math.PI / 2;
+                cannon.position.set(0, 0.5 * scale, 0.75 * scale);
+                group.add(cannon);
+                break;
+                
+            case 'star':
+                // Create star shape using cones for points
+                const starMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xffd700,
+                    emissive: 0xffaa00,
+                    emissiveIntensity: 0.3,
+                    metalness: 0.8,
+                    roughness: 0.2
+                });
+                
+                // Center sphere
+                const centerGeom = new THREE.SphereGeometry(0.5 * scale, 16, 12);
+                const center = new THREE.Mesh(centerGeom, starMat);
+                group.add(center);
+                
+                // Create 5 star points
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 72 - 90) * Math.PI / 180;
+                    const pointGeom = new THREE.ConeGeometry(0.3 * scale, 0.8 * scale, 8);
+                    const point = new THREE.Mesh(pointGeom, starMat);
+                    point.position.x = Math.cos(angle) * 0.6 * scale;
+                    point.position.y = Math.sin(angle) * 0.6 * scale;
+                    point.rotation.z = angle + Math.PI;
+                    group.add(point);
+                }
+                break;
+                
+            case 'gun':
+                // Gun body
+                const gunBodyGeom = new THREE.BoxGeometry(0.3 * scale, 0.4 * scale, 2 * scale);
+                const gunMat = new THREE.MeshPhongMaterial({ 
+                    color: 0x3a3a3a,
+                    metalness: 0.7,
+                    roughness: 0.3
+                });
+                const gunBody = new THREE.Mesh(gunBodyGeom, gunMat);
+                group.add(gunBody);
+                
+                // Three barrels
+                const barrelGeom = new THREE.CylinderGeometry(0.08 * scale, 0.08 * scale, 1.5 * scale);
+                const barrelMat = new THREE.MeshPhongMaterial({ 
+                    color: 0x2a2a2a,
+                    metalness: 0.9,
+                    roughness: 0.1
+                });
+                
+                [-0.15, 0, 0.15].forEach(offset => {
+                    const barrel = new THREE.Mesh(barrelGeom, barrelMat);
+                    barrel.rotation.x = Math.PI / 2;
+                    barrel.position.set(offset * scale, 0, 0.75 * scale);
+                    group.add(barrel);
+                });
+                
+                // Handle
+                const gunHandleGeom = new THREE.CylinderGeometry(0.1 * scale, 0.1 * scale, 0.5 * scale);
+                const gunHandleMat = new THREE.MeshPhongMaterial({ color: 0x5a3a1a });
+                const gunHandle = new THREE.Mesh(gunHandleGeom, gunHandleMat);
+                gunHandle.position.set(0, -0.3 * scale, -0.5 * scale);
+                gunHandle.rotation.x = 0.3;
+                group.add(gunHandle);
+                
+                // Tilt gun
+                group.rotation.z = -0.5;
+                break;
+                
+            case 'boat':
+                // Boat hull
+                const hullGeom = new THREE.BoxGeometry(1.5 * scale, 0.5 * scale, 3 * scale);
+                const hullMat = new THREE.MeshPhongMaterial({ color: 0x8b6f47 });
+                const hull = new THREE.Mesh(hullGeom, hullMat);
+                group.add(hull);
+                
+                // Mast
+                const mastGeom = new THREE.CylinderGeometry(0.05 * scale, 0.05 * scale, 2.5 * scale);
+                const mastMat = new THREE.MeshPhongMaterial({ color: 0x5a4a3a });
+                const mast = new THREE.Mesh(mastGeom, mastMat);
+                mast.position.y = 1.2 * scale;
+                group.add(mast);
+                
+                // Sail
+                const sailGeom = new THREE.PlaneGeometry(1.5 * scale, 1.8 * scale);
+                const sailMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                const sail = new THREE.Mesh(sailGeom, sailMat);
+                sail.position.set(0.02 * scale, 1.2 * scale, 0);
+                sail.rotation.y = Math.PI / 2;
+                group.add(sail);
+                break;
+                
+            default:
+                // Fallback to simple cube
+                const defaultGeom = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+                const defaultMat = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    emissive: 0x404040
+                });
+                const defaultMesh = new THREE.Mesh(defaultGeom, defaultMat);
+                group.add(defaultMesh);
+        }
+        
+        return group;
+    }
+    
     getBonusColor(type) {
+        // Kept for backward compatibility
         const colors = {
-            'grenade': 0xff0000,  // Red
-            'helmet': 0x00ff00,   // Green
-            'clock': 0xffff00,    // Yellow
-            'shovel': 0x8b4513,   // Brown
-            'tank': 0x808080,     // Gray
+            'grenade': 0x4a5c2a,  // Military green
+            'helmet': 0x5a5a5a,   // Steel gray
+            'clock': 0xf0f0f0,    // White/silver
+            'shovel': 0x8b6f47,   // Wood brown
+            'tank': 0x2a6a2a,     // Tank green
             'star': 0xffd700,     // Gold
-            'gun': 0xff00ff,      // Magenta
-            'boat': 0x0000ff      // Blue
+            'gun': 0x3a3a3a,      // Gun metal
+            'boat': 0x8b6f47      // Wood brown
         };
         return colors[type] || 0xffffff;
     }

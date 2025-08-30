@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanks 3D - Powerup Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #0f0;
+            overflow: hidden;
+        }
+        
+        #game-frame {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            display: block;
+        }
+        
+        #controls {
+            height: 20vh;
+            padding: 10px;
+            background: #0a0a0a;
+            border-top: 2px solid #0f0;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background: #1a3a1a;
+            color: #0f0;
+            border: 1px solid #0f0;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #2a4a2a;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+            border: 1px solid #0a0;
+            background: #0a1a0a;
+        }
+        
+        .section-title {
+            color: #5f5;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        
+        #log {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #0f0;
+            padding: 10px;
+            max-width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px;
+        }
+        
+        .log-success { color: #0f0; }
+        .log-error { color: #f00; }
+        .log-info { color: #ff0; }
+    </style>
+</head>
+<body>
+    <iframe id="game-frame" src="index.html"></iframe>
+    
+    <div id="controls">
+        <div class="section">
+            <div class="section-title">Spawn Powerups</div>
+            <button onclick="spawnPowerup('grenade')">🧨 Grenade</button>
+            <button onclick="spawnPowerup('helmet')">🪖 Helmet</button>
+            <button onclick="spawnPowerup('clock')">🕐 Clock</button>
+            <button onclick="spawnPowerup('shovel')">🔨 Shovel</button>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">More Powerups</div>
+            <button onclick="spawnPowerup('tank')">🎖️ Extra Life</button>
+            <button onclick="spawnPowerup('star')">⭐ Star</button>
+            <button onclick="spawnPowerup('gun')">🔫 Gun</button>
+            <button onclick="spawnPowerup('boat')">⛵ Boat</button>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Spawn Control</div>
+            <button onclick="spawnRandomPowerup()">🎲 Random Powerup</button>
+            <button onclick="spawnAllPowerups()">🎁 All Powerups</button>
+            <button onclick="clearPowerups()">🗑️ Clear All</button>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Enemy Control</div>
+            <button onclick="spawnEnemyWithBonus()">👾 Enemy + Bonus</button>
+            <button onclick="killAllEnemies()">💀 Kill All Enemies</button>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Game Control</div>
+            <button onclick="togglePause()">⏸️ Pause/Resume</button>
+            <button onclick="reloadGame()">🔄 Reload</button>
+        </div>
+    </div>
+    
+    <div id="log"></div>
+    
+    <script>
+        const iframe = document.getElementById('game-frame');
+        const logDiv = document.getElementById('log');
+        let gameWindow = null;
+        let gameApp = null;
+        
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.insertBefore(entry, logDiv.firstChild);
+            
+            // Keep only last 10 entries
+            while (logDiv.children.length > 10) {
+                logDiv.removeChild(logDiv.lastChild);
+            }
+        }
+        
+        iframe.onload = function() {
+            gameWindow = iframe.contentWindow;
+            
+            // Wait for game to initialize
+            setTimeout(() => {
+                try {
+                    gameApp = gameWindow.game;
+                    if (gameApp) {
+                        log('Game loaded successfully', 'success');
+                        
+                        // Add debug flag to show enemy bonuses
+                        if (gameApp.model && gameApp.model.logger) {
+                            gameApp.model.logger.debugFlags.BONUS_SPAWN = true;
+                        }
+                    } else {
+                        log('Game not found, retrying...', 'error');
+                        setTimeout(() => {
+                            gameApp = gameWindow.game;
+                            if (gameApp) {
+                                log('Game found on retry', 'success');
+                            }
+                        }, 2000);
+                    }
+                } catch (e) {
+                    log('Error accessing game: ' + e.message, 'error');
+                }
+            }, 1000);
+        };
+        
+        function spawnPowerup(type) {
+            try {
+                if (!gameApp || !gameApp.model) {
+                    log('Game not ready', 'error');
+                    return;
+                }
+                
+                // Find a random position near the center
+                const x = 10 + Math.random() * 6;
+                const z = 10 + Math.random() * 6;
+                
+                const bonusId = `bonus_test_${Date.now()}`;
+                const bonus = new gameWindow.BonusModel(bonusId, type, {x, z});
+                
+                gameApp.model.bonuses.push(bonus);
+                log(`Spawned ${type} at (${x.toFixed(1)}, ${z.toFixed(1)})`, 'success');
+                
+                // Also log in game console
+                gameWindow.console.log(`[TEST] Spawned ${type} powerup`);
+            } catch (e) {
+                log('Error spawning powerup: ' + e.message, 'error');
+            }
+        }
+        
+        function spawnRandomPowerup() {
+            const types = ['grenade', 'helmet', 'clock', 'shovel', 'tank', 'star', 'gun', 'boat'];
+            const randomType = types[Math.floor(Math.random() * types.length)];
+            spawnPowerup(randomType);
+        }
+        
+        function spawnAllPowerups() {
+            const types = ['grenade', 'helmet', 'clock', 'shovel', 'tank', 'star', 'gun', 'boat'];
+            types.forEach((type, index) => {
+                setTimeout(() => spawnPowerup(type), index * 200);
+            });
+        }
+        
+        function clearPowerups() {
+            try {
+                if (!gameApp || !gameApp.model) {
+                    log('Game not ready', 'error');
+                    return;
+                }
+                
+                const count = gameApp.model.bonuses.length;
+                gameApp.model.bonuses = [];
+                log(`Cleared ${count} powerups`, 'success');
+            } catch (e) {
+                log('Error clearing powerups: ' + e.message, 'error');
+            }
+        }
+        
+        function spawnEnemyWithBonus() {
+            try {
+                if (!gameApp || !gameApp.model) {
+                    log('Game not ready', 'error');
+                    return;
+                }
+                
+                // Force spawn an enemy with a bonus
+                const enemyId = `enemy_bonus_${Date.now()}`;
+                const spawnPoint = gameApp.model.map.getEnemySpawnPoint(0);
+                const enemy = new gameWindow.TankModel(enemyId, 'enemy_d', spawnPoint);
+                enemy.hasBonus = true;
+                enemy.livesCount = 1; // Easy to kill
+                
+                gameApp.model.enemies.push(enemy);
+                log('Spawned enemy with bonus', 'success');
+            } catch (e) {
+                log('Error spawning enemy: ' + e.message, 'error');
+            }
+        }
+        
+        function killAllEnemies() {
+            try {
+                if (!gameApp || !gameApp.model) {
+                    log('Game not ready', 'error');
+                    return;
+                }
+                
+                const count = gameApp.model.enemies.length;
+                gameApp.model.enemies.forEach(enemy => {
+                    if (enemy.alive) {
+                        // Check if enemy has bonus before destroying
+                        if (enemy.hasBonus) {
+                            gameApp.model.generateBonus();
+                        }
+                        enemy.destroy();
+                    }
+                });
+                
+                log(`Killed ${count} enemies`, 'success');
+            } catch (e) {
+                log('Error killing enemies: ' + e.message, 'error');
+            }
+        }
+        
+        function togglePause() {
+            try {
+                if (!gameApp || !gameApp.controller) {
+                    log('Game not ready', 'error');
+                    return;
+                }
+                
+                gameApp.controller.togglePause();
+                const isPaused = gameApp.model.gameState === 'paused';
+                log(isPaused ? 'Game paused' : 'Game resumed', 'info');
+            } catch (e) {
+                log('Error toggling pause: ' + e.message, 'error');
+            }
+        }
+        
+        function reloadGame() {
+            iframe.src = iframe.src;
+            log('Reloading game...', 'info');
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'r':
+                case 'R':
+                    if (!e.ctrlKey) spawnRandomPowerup();
+                    break;
+                case 'a':
+                case 'A':
+                    spawnAllPowerups();
+                    break;
+                case 'c':
+                case 'C':
+                    clearPowerups();
+                    break;
+                case 'e':
+                case 'E':
+                    spawnEnemyWithBonus();
+                    break;
+                case 'k':
+                case 'K':
+                    killAllEnemies();
+                    break;
+                case 'p':
+                case 'P':
+                    togglePause();
+                    break;
+            }
+        });
+        
+        log('Powerup test ready. Use buttons or keys (R=random, A=all, C=clear, E=enemy, K=kill, P=pause)', 'info');
+    </script>
+</body>
+</html>
