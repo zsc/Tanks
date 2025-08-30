@@ -21,13 +21,16 @@ export default class GameController {
         // Initialize input controller
         this.inputController.init();
         
-        // Initialize game model
-        this.model.init();
+        // Initialize game model with level 1
+        await this.model.init(1);
+        
+        // Render the initial map
+        this.view.renderMap(this.model.map);
         
         // Setup event listeners
         this.setupEventListeners();
         
-        console.log('GameController initialized');
+        console.log('GameController initialized with level', this.model.level);
     }
     
     setupEventListeners() {

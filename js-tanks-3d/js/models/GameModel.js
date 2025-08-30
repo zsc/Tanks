@@ -53,9 +53,9 @@ export default class GameModel {
         this.enemySpawnInterval = 3000; // ms
     }
     
-    init(levelIndex = 0) {
+    async init(levelNumber = 1) {
         this.reset();
-        this.loadLevel(levelIndex);
+        await this.loadLevel(levelNumber);
         this.spawnPlayers();
     }
     
@@ -68,13 +68,24 @@ export default class GameModel {
         this.enemiesRemaining = 20;
         this.nextBulletId = 1;
         this.nextEnemyId = 1;
+        this.nextBonusId = 1;
         this.enemySpawnPosition = 0;
         this.enemySpawnTimer = 0;
     }
     
-    loadLevel(levelIndex) {
-        // Create map (using default for now)
-        this.map = new MapModel(null);
+    async loadLevel(levelNumber) {
+        // Ensure level number is valid (1-35 like C++)
+        if (levelNumber < 1 || levelNumber > 35) {
+            levelNumber = 1;
+        }
+        
+        this.level = levelNumber;
+        
+        // Create map with level data
+        this.map = new MapModel(null, levelNumber);
+        
+        // Wait for async level loading
+        await this.map.loadLevelFromFile(levelNumber);
     }
     
     spawnPlayers() {
@@ -383,9 +394,20 @@ export default class GameModel {
         }
     }
     
-    nextLevel() {
+    async nextLevel() {
         this.level++;
-        this.gameState = 'levelComplete';
+        
+        // Wrap around levels (1-35 like C++)
+        if (this.level > 35) {
+            this.level = 1;
+        }
+        
+        // Reset for new level
+        this.reset();
+        await this.loadLevel(this.level);
+        this.spawnPlayers();
+        
+        this.gameState = 'playing';
         // Trigger level complete event
     }
     

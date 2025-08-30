@@ -1,7 +1,8 @@
 import BrickModel from './BrickModel.js';
+import LevelLoader from '../utils/LevelLoader.js';
 
 export default class MapModel {
-    constructor(levelData = null) {
+    constructor(levelData = null, levelNumber = 1) {
         this.width = 26;  // Standard map width in tiles
         this.height = 26; // Standard map height in tiles
         this.tileSize = 1; // Size of each tile in world units
@@ -47,11 +48,53 @@ export default class MapModel {
             bottom: this.height
         };
         
+        // Store bushes separately (rendered above tanks)
+        this.bushes = [];
+        
+        this.levelNumber = levelNumber;
+        
         if (levelData) {
-            this.loadLevel(levelData);
+            this.loadLevelData(levelData);
         } else {
+            // Initialize with empty map first
+            this.generateDefaultMap();
+            // Level will be loaded asynchronously later
+        }
+    }
+    
+    async loadLevelFromFile(levelNumber) {
+        const levelData = await LevelLoader.loadLevel(levelNumber);
+        if (levelData) {
+            this.loadLevelData(levelData);
+        } else {
+            // Fallback to generated map
             this.generateDefaultMap();
         }
+    }
+    
+    loadLevelData(levelData) {
+        // Load tiles from parsed level data
+        if (levelData.tiles) {
+            this.tiles = levelData.tiles;
+        }
+        
+        // Load bushes (rendered above tanks)
+        if (levelData.bushes) {
+            this.bushes = levelData.bushes;
+        }
+        
+        // Create brick models for partial destruction
+        for (let z = 0; z < this.height; z++) {
+            for (let x = 0; x < this.width; x++) {
+                if (this.tiles[z][x] === this.TILE_TYPES.BRICK) {
+                    const key = `${x},${z}`;
+                    this.bricks.set(key, new BrickModel(x, z));
+                }
+            }
+        }
+        
+        // Always add eagle fortress (hardcoded like C++)
+        this.createEagleFortress();
     }
     
     generateDefaultMap() {
