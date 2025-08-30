@@ -191,31 +191,34 @@ def generate_timpani_tone(frequency, duration, sample_rate=44100, amplitude=0.5)
     
     return amp_envelope * timpani
 
-def generate_snare_tone(duration, sample_rate=44100, amplitude=0.6):
-    """Generate snare drum sound with crisp attack."""
+def generate_snare_tone(duration, sample_rate=44100, amplitude=0.7):
+    """Generate snare drum sound with crisp attack and enhanced punch."""
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     
     # Snare has sharp attack and quick decay
-    amp_envelope = amplitude * np.exp(-20 * t)
+    amp_envelope = amplitude * np.exp(-25 * t)  # Faster decay for crispness
     
     # Mix of tonal component and noise
     tone_freq = 200  # Snare fundamental
-    tonal = 0.3 * np.sin(2 * np.pi * tone_freq * t)
+    tonal = 0.25 * np.sin(2 * np.pi * tone_freq * t)
+    
+    # Add harmonic for body
+    tonal += 0.1 * np.sin(2 * np.pi * tone_freq * 1.5 * t)
     
     # High frequency noise for snare rattle
-    noise = 0.7 * np.random.normal(0, 1, len(t))
+    noise = 0.75 * np.random.normal(0, 1, len(t))
     
     # Apply high-pass filter effect (crude but effective)
-    # Emphasize high frequencies
+    # Emphasize high frequencies for crispness
     for i in range(1, len(noise)):
-        noise[i] = noise[i] - 0.95 * noise[i-1]
+        noise[i] = noise[i] - 0.92 * noise[i-1]  # Less filtering = more high freq
     
     snare = amp_envelope * (tonal + noise)
     
-    # Add initial attack transient
-    attack_samples = int(0.002 * sample_rate)  # 2ms attack
+    # Add initial attack transient for punch
+    attack_samples = int(0.001 * sample_rate)  # 1ms sharp attack
     if attack_samples < len(snare):
-        snare[:attack_samples] *= np.linspace(0, 2, attack_samples)
+        snare[:attack_samples] *= np.linspace(0, 3, attack_samples)  # Stronger attack
     
     return snare
 
@@ -314,7 +317,16 @@ def convert_abc_to_ogg(abc_file, output_name=None):
     
     # Mix tracks with appropriate levels
     mixed = np.zeros(max_len)
-    mix_levels = [1.0, 0.6, 0.7, 0.5, 0.7]  # Melody, Chords, Bass, Timpani, Snare
+    
+    # Dynamic mix levels - boost if snare track exists
+    has_snare = len(tracks) >= 5 and np.max(np.abs(tracks[4])) > 0.01
+    
+    if has_snare:
+        # Increased intensity when snare drums are present
+        mix_levels = [1.1, 0.7, 0.8, 0.6, 0.9]  # Melody, Chords, Bass, Timpani, Snare
+    else:
+        # Normal levels for tracks without snare
+        mix_levels = [1.0, 0.6, 0.7, 0.5, 0.5]  # Melody, Chords, Bass, Timpani, (no snare)
     
     for i, track in enumerate(tracks):
         level = mix_levels[i] if i < len(mix_levels) else 0.5
@@ -331,7 +343,11 @@ def convert_abc_to_ogg(abc_file, output_name=None):
     # Normalize
     max_val = np.max(np.abs(mixed))
     if max_val > 0:
-        mixed = mixed / max_val * 0.85
+        # Lower volume for game over theme
+        if 'game_over' in abc_file.lower():
+            mixed = mixed / max_val * 0.6  # Lower volume for game over
+        else:
+            mixed = mixed / max_val * 0.85
     
     # Save as WAV
     wav_file = f"{output_name}.wav"

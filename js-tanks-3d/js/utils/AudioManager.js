@@ -205,7 +205,7 @@ export default class AudioManager {
     
     playGameOver() {
         this.stop(); // Stop current music
-        this.play('gameOver', { loop: false });
+        this.play('gameOver', { loop: false, volume: 0.4 }); // Lower volume for game over
     }
     
     playTitleMusic() {
