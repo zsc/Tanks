@@ -272,4 +272,9 @@ export default class MapModel {
         const index = Math.floor(Math.random() * this.enemySpawnPoints.length);
         return this.enemySpawnPoints[index];
     }
+    
+    getEnemySpawnPoint(index) {
+        // Return spawn point by index (cycles through 0, 1, 2)
+        return this.enemySpawnPoints[index % this.enemySpawnPoints.length];
+    }
 }

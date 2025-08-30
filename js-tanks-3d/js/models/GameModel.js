@@ -37,6 +37,9 @@ export default class GameModel {
         this.nextBulletId = 1;
         this.nextEnemyId = 1;
         
+        // Enemy spawn management
+        this.enemySpawnPosition = 0; // Cycles through spawn points like C++
+        
         // Timing
         this.lastUpdateTime = 0;
         this.enemySpawnTimer = 0;
@@ -58,6 +61,7 @@ export default class GameModel {
         this.enemiesRemaining = 20;
         this.nextBulletId = 1;
         this.nextEnemyId = 1;
+        this.enemySpawnPosition = 0;
         this.enemySpawnTimer = 0;
     }
     
@@ -192,8 +196,9 @@ export default class GameModel {
             
             this.enemySpawnTimer = 0;
             
-            // Choose random spawn point
-            const spawnPoint = this.map.getRandomEnemySpawnPoint();
+            // Use rotating spawn point like C++ to avoid clustering
+            const spawnPoint = this.map.getEnemySpawnPoint(this.enemySpawnPosition);
+            this.enemySpawnPosition = (this.enemySpawnPosition + 1) % 3; // Cycle through 3 spawn points
             
             // Choose enemy type
             const types = ['enemy_a', 'enemy_b', 'enemy_c', 'enemy_d'];
