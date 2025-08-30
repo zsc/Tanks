@@ -288,6 +288,11 @@ export default class TankModel {
         this.velocity = { x: 0, z: 0 };
         this.toRemove = false; // Don't immediately remove, wait for explosion animation
         
+        // Trigger tank destroyed callback if set
+        if (this.onDestroy) {
+            this.onDestroy(this);
+        }
+        
         // For players, trigger respawn after explosion
         if (this.type.startsWith('player')) {
             this.needsRespawn = true;

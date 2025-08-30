@@ -114,12 +114,17 @@ export default class GameController {
             this.audioManager.playPowerup();
         };
         
-        // Setup tank fire sound callbacks
+        // Setup tank fire and destroy sound callbacks
         const setupTankSounds = (tank) => {
             tank.onFire = (position) => {
                 // Get player 1 position as listener (camera follows player)
                 const listener = this.model.players[0] ? this.model.players[0].position : { x: 0, z: 0 };
                 this.audioManager.playBulletFire(position, listener);
+            };
+            
+            tank.onDestroy = (destroyedTank) => {
+                const listener = this.model.players[0] ? this.model.players[0].position : { x: 0, z: 0 };
+                this.audioManager.playTankExplode(destroyedTank.position, listener);
             };
         };
         
@@ -251,8 +256,14 @@ export default class GameController {
         }
         
         if (input.mute) {
-            const enabled = this.audioManager.toggleMute();
-            console.log(`Audio ${enabled ? 'enabled' : 'muted'}`);
+            const musicMuted = this.audioManager.toggleMusicMute();
+            console.log(`Music ${musicMuted ? 'muted' : 'enabled'} (sound effects still active)`);
+            
+            // Show visual feedback
+            const gameState = document.getElementById('game-state');
+            gameState.textContent = musicMuted ? '♫ Music Muted' : '♫ Music Enabled';
+            gameState.classList.add('show');
+            setTimeout(() => gameState.classList.remove('show'), 1500);
         }
     }
     

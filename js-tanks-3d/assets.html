@@ -176,38 +176,70 @@ Tempo: 180 BPM | Key: C Major
     <h2>Sound Effects</h2>
 
     <div class="audio-container">
-        <div class="audio-title">🔫 Bullet Fire</div>
+        <div class="audio-title">💥 Cannon Fire (WAV)</div>
         <audio id="bullet_fire" controls>
-            <source src="audio/bullet_fire.ogg?v=1756546200" type="audio/ogg">
+            <source src="audio/bullet_fire.wav" type="audio/wav">
             Your browser does not support the audio element.
         </audio>
         <button onclick="toggleABC('bullet_fire_abc')">Show/Hide ABC Notation</button>
         <div id="bullet_fire_abc" class="abc-notation" style="display:none;">
-[Multi-Track Arrangement]
-- Voice 1: Sharp firing sound (Gunshot pop)
-- Voice 2: Low frequency thump (Bass impact)
-- Voice 3: Percussion hit (White noise burst)
+[Crisp Cannon Fire - Multi-Track Arrangement]
+- Voice 1: Main cannon blast with powerful harmonics
+- Voice 2: Deep cannon boom with extended sub-bass
+- Voice 3: Mid-range resonance for barrel echo
+- Voice 4: Sharp metallic ring with crisp attack
+- Voice 5: Heavy percussion with cannon mechanism
+- Voice 6: Smoke and pressure release
 
-Tempo: 240 BPM | Key: C Major
-Duration: ~0.25 seconds
+Tempo: 220 BPM | Key: C Major
+Duration: ~0.3 seconds
+Features: Crisp cannon synthesis with deep boom, barrel resonance, metallic overtones, mechanism clunk, pressure release, and shell ejection ring
         </div>
     </div>
 
     <div class="audio-container">
-        <div class="audio-title">💥 Bullet Hit</div>
+        <div class="audio-title">💥 Bullet Hit (WAV)</div>
         <audio id="bullet_hit" controls>
-            <source src="audio/bullet_hit.ogg?v=1756546200" type="audio/ogg">
+            <source src="audio/bullet_hit.wav" type="audio/wav">
             Your browser does not support the audio element.
         </audio>
         <button onclick="toggleABC('bullet_hit_abc')">Show/Hide ABC Notation</button>
         <div id="bullet_hit_abc" class="abc-notation" style="display:none;">
-[Multi-Track Arrangement]
-- Voice 1: Impact sound (Descending pitch)
-- Voice 2: Explosion bass (Low rumble)
-- Voice 3: Metallic hit (Sharp clang)
+[Enhanced Multi-Track Arrangement]
+- Voice 1: Explosive impact with harmonic cascade
+- Voice 2: Deep explosion rumble with sub-bass
+- Voice 3: Mid-range explosive burst
+- Voice 4: High frequency shrapnel and debris
+- Voice 5: Metallic crash with reverb
+- Voice 6: Sub-bass aftershock
 
 Tempo: 240 BPM | Key: C Major
 Duration: ~0.5 seconds
+Features: Multi-stage explosion with pitch sweep, sub-bass rumble, harmonic layers, debris noise, aftershock thump, and soft clipping
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">🔥 Tank Explosion (WAV)</div>
+        <audio id="tank_explode" controls>
+            <source src="audio/tank_explode.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('tank_explode_abc')">Show/Hide Description</button>
+        <div id="tank_explode_abc" class="abc-notation" style="display:none;">
+[Dedicated Tank Destruction Sound]
+This powerful explosion sound is specifically designed for tank destruction.
+Features a more dramatic and extended explosion compared to bullet hits:
+- Massive initial blast
+- Deep rumbling explosion with extended sustain
+- Multiple layers of metallic debris
+- Secondary explosions and cascading effects
+- Heavy sub-bass that shakes the battlefield
+- Extended reverb tail for epic feel
+
+The dedicated tank_explode.wav provides a more impactful experience
+when tanks are destroyed, distinguishing it from regular bullet impacts.
+The 3D positioning system automatically adjusts volume and panning based on distance.
         </div>
     </div>
 
@@ -215,14 +247,15 @@ Duration: ~0.5 seconds
     <div class="audio-container">
         <h3>Test 3D Audio Positioning</h3>
         <div style="margin: 20px 0;">
-            <button onclick="test3DAudio('left')">▶️ Play Left</button>
-            <button onclick="test3DAudio('center')">▶️ Play Center</button>
-            <button onclick="test3DAudio('right')">▶️ Play Right</button>
-            <button onclick="test3DAudio('far')">▶️ Play Far</button>
-            <button onclick="test3DAudio('sequence')">▶️ Play Sequence</button>
+            <button onclick="test3DAudio('left')">▶️ Fire Left</button>
+            <button onclick="test3DAudio('center')">▶️ Fire Center</button>
+            <button onclick="test3DAudio('right')">▶️ Fire Right</button>
+            <button onclick="test3DAudio('explode')">💥 Tank Explode</button>
+            <button onclick="test3DAudio('far')">▶️ Hit Far</button>
+            <button onclick="test3DAudio('sequence')">🎵 Play Sequence</button>
         </div>
         <div id="3d-audio-info" style="color: #0a0; margin-top: 10px;">
-            Click buttons to test 3D audio positioning with bullet sounds
+            Click buttons to test 3D audio positioning with combat sounds
         </div>
     </div>
 
@@ -232,13 +265,17 @@ Duration: ~0.5 seconds
 // Example JavaScript usage:
 const audioManager = {
     tracks: {
+        // Background music (OGG for better compression)
         title: new Audio('audio/title_theme.ogg'),
         battle: new Audio('audio/battle_theme.ogg'),
         victory: new Audio('audio/victory_theme.ogg'),
         gameOver: new Audio('audio/game_over_theme.ogg'),
         powerup: new Audio('audio/powerup_jingle.ogg'),
-        bulletFire: new Audio('audio/bullet_fire.ogg'),
-        bulletHit: new Audio('audio/bullet_hit.ogg')
+        
+        // Sound effects (WAV for better quality and lower latency)
+        bulletFire: new Audio('audio/bullet_fire.wav'),
+        bulletHit: new Audio('audio/bullet_hit.wav'),
+        tankExplode: new Audio('audio/tank_explode.wav')  // Dedicated tank explosion sound
     },
     
     play(trackName, loop = false) {
@@ -330,72 +367,135 @@ audioManager.play3D('bulletFire',
             }
         });
         
+        // Audio buffers for 3D demo
+        window.audioBuffers = {};
+        
+        // Load audio files as buffers for 3D audio demo
+        async function loadAudioBuffer(url, name) {
+            if (!window.audioContext) return;
+            
+            try {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                window.audioBuffers[name] = audioBuffer;
+            } catch (e) {
+                console.warn('Failed to load audio buffer:', name, e);
+            }
+        }
+        
+        // Load audio buffers on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (window.audioContext) {
+                await loadAudioBuffer('audio/bullet_fire.wav', 'bulletFire');
+                await loadAudioBuffer('audio/bullet_hit.wav', 'bulletHit');
+                await loadAudioBuffer('audio/tank_explode.wav', 'tankExplode');
+            }
+        });
+        
         // 3D Audio Testing Functions
         function test3DAudio(position) {
             const info = document.getElementById('3d-audio-info');
-            const bulletFire = document.getElementById('bullet_fire');
-            const bulletHit = document.getElementById('bullet_hit');
             
             if (!window.audioContext) {
                 info.textContent = 'Web Audio API not supported - playing without positioning';
-                bulletFire.play();
+                document.getElementById('bullet_fire').play();
                 return;
             }
             
             // Resume audio context if suspended
             if (audioContext.state === 'suspended') {
-                audioContext.resume();
+                audioContext.resume().then(() => {
+                    // Load buffers if not already loaded
+                    if (!window.audioBuffers.bulletFire) {
+                        loadAudioBuffer('audio/bullet_fire.wav', 'bulletFire');
+                        loadAudioBuffer('audio/bullet_hit.wav', 'bulletHit');
+                        loadAudioBuffer('audio/tank_explode.wav', 'tankExplode');
+                        info.textContent = 'Loading audio buffers... Please try again in a moment.';
+                        return;
+                    }
+                });
+            }
+            
+            if (!window.audioBuffers.bulletFire || !window.audioBuffers.bulletHit || !window.audioBuffers.tankExplode) {
+                info.textContent = 'Audio buffers not loaded yet. Please wait...';
+                // Try to load them now
+                Promise.all([
+                    loadAudioBuffer('audio/bullet_fire.wav', 'bulletFire'),
+                    loadAudioBuffer('audio/bullet_hit.wav', 'bulletHit'),
+                    loadAudioBuffer('audio/tank_explode.wav', 'tankExplode')
+                ]).then(() => {
+                    info.textContent = 'Audio loaded! Try clicking again.';
+                });
+                return;
             }
             
             switch(position) {
                 case 'left':
-                    play3DSound(bulletFire, -1, 1.0);
+                    play3DSound('bulletFire', -1, 1.0);
                     info.innerHTML = '🔊 Playing LEFT - Pan: -1.0, Volume: 100%';
                     break;
                 case 'right':
-                    play3DSound(bulletFire, 1, 1.0);
+                    play3DSound('bulletFire', 1, 1.0);
                     info.innerHTML = '🔊 Playing RIGHT - Pan: +1.0, Volume: 100%';
                     break;
                 case 'center':
-                    play3DSound(bulletFire, 0, 1.0);
+                    play3DSound('bulletFire', 0, 1.0);
                     info.innerHTML = '🔊 Playing CENTER - Pan: 0.0, Volume: 100%';
                     break;
+                case 'explode':
+                    play3DSound('tankExplode', 0, 1.0);
+                    info.innerHTML = '💥 Tank EXPLOSION - Pan: 0.0, Volume: 100%';
+                    break;
                 case 'far':
-                    play3DSound(bulletHit, 0, 0.3);
+                    play3DSound('bulletHit', 0, 0.3);
                     info.innerHTML = '🔊 Playing FAR (Hit sound) - Pan: 0.0, Volume: 30%';
                     break;
                 case 'sequence':
-                    info.innerHTML = '🎵 Playing sequence: Left → Center → Right → Far';
-                    play3DSound(bulletFire, -1, 1.0);
-                    setTimeout(() => play3DSound(bulletFire, 0, 1.0), 500);
-                    setTimeout(() => play3DSound(bulletFire, 1, 1.0), 1000);
-                    setTimeout(() => play3DSound(bulletHit, 0, 0.3), 1500);
+                    info.innerHTML = '🎵 Playing sequence: Fire Left → Center → Right → Tank Explosion';
+                    play3DSound('bulletFire', -1, 1.0);
+                    setTimeout(() => play3DSound('bulletFire', 0, 1.0), 500);
+                    setTimeout(() => play3DSound('bulletFire', 1, 1.0), 1000);
+                    setTimeout(() => play3DSound('tankExplode', 0, 1.0), 1500);
                     break;
             }
         }
         
-        function play3DSound(audioElement, pan, volume) {
-            // Clone the audio for multiple simultaneous plays
-            const audio = audioElement.cloneNode();
-            audio.volume = volume;
+        function play3DSound(bufferName, pan, volume) {
+            if (!window.audioContext || !window.audioBuffers[bufferName]) {
+                console.warn('Audio not ready:', bufferName);
+                return;
+            }
             
             try {
-                const source = audioContext.createMediaElementSource(audio);
+                // Create a new buffer source for each playback
+                const source = audioContext.createBufferSource();
+                source.buffer = window.audioBuffers[bufferName];
+                
+                // Create gain node for volume control
+                const gainNode = audioContext.createGain();
+                gainNode.gain.value = volume;
+                
+                // Create stereo panner for positioning
                 const panner = audioContext.createStereoPanner();
                 panner.pan.value = pan;
                 
-                source.connect(panner);
+                // Connect the audio graph
+                source.connect(gainNode);
+                gainNode.connect(panner);
                 panner.connect(audioContext.destination);
                 
-                audio.play();
+                // Start playback
+                source.start(0);
                 
-                // Clean up after playback
-                audio.addEventListener('ended', () => {
-                    audio.remove();
-                });
+                // Clean up when done (buffer sources are one-time use)
+                source.onended = () => {
+                    source.disconnect();
+                    gainNode.disconnect();
+                    panner.disconnect();
+                };
             } catch(e) {
-                // Fallback to regular playback
-                audio.play();
+                console.error('3D audio playback error:', e);
             }
         }
     </script>

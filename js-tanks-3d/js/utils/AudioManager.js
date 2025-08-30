@@ -3,6 +3,7 @@ export default class AudioManager {
         this.tracks = {};
         this.currentTrack = null;
         this.enabled = true;
+        this.musicMuted = false;  // Separate mute for music
         this.musicVolume = 0.5;
         this.sfxVolume = 0.7;
         
@@ -20,19 +21,23 @@ export default class AudioManager {
     }
     
     loadTracks() {
-        // Music tracks
-        const musicTracks = {
+        // Music tracks (OGG) and sound effects (WAV)
+        const audioTracks = {
+            // Background music - use OGG for better compression
             title: 'audio/title_theme.ogg',
             battle: 'audio/battle_theme.ogg',
             victory: 'audio/victory_theme.ogg',
             gameOver: 'audio/game_over_theme.ogg',
             powerup: 'audio/powerup_jingle.ogg',
-            bulletFire: 'audio/bullet_fire.ogg',
-            bulletHit: 'audio/bullet_hit.ogg'
+            
+            // Sound effects - use WAV for better quality and lower latency
+            bulletFire: 'audio/bullet_fire.wav',
+            bulletHit: 'audio/bullet_hit.wav',
+            tankExplode: 'audio/tank_explode.wav'  // Dedicated tank explosion sound
         };
         
         // Load each track
-        for (const [name, path] of Object.entries(musicTracks)) {
+        for (const [name, path] of Object.entries(audioTracks)) {
             const audio = new Audio(path);
             audio.volume = this.musicVolume;
             
@@ -65,8 +70,13 @@ export default class AudioManager {
         
         // Set options
         track.loop = options.loop || false;
-        track.volume = (options.volume || 1.0) * 
-                      (options.sfx ? this.sfxVolume : this.musicVolume);
+        
+        // Apply volume based on type and mute state
+        if (options.sfx) {
+            track.volume = (options.volume || 1.0) * this.sfxVolume;
+        } else {
+            track.volume = this.musicMuted ? 0 : (options.volume || 1.0) * this.musicVolume;
+        }
         
         // Reset and play
         track.currentTime = 0;
@@ -173,14 +183,25 @@ export default class AudioManager {
     setMusicVolume(volume) {
         this.musicVolume = Math.max(0, Math.min(1, volume));
         
-        // Update current track volume
-        if (this.currentTrack) {
+        // Update current track volume if not muted
+        if (this.currentTrack && !this.musicMuted) {
             this.currentTrack.volume = this.musicVolume;
         }
     }
     
     setSFXVolume(volume) {
         this.sfxVolume = Math.max(0, Math.min(1, volume));
+    }
+    
+    toggleMusicMute() {
+        this.musicMuted = !this.musicMuted;
+        
+        // Update current track volume
+        if (this.currentTrack) {
+            this.currentTrack.volume = this.musicMuted ? 0 : this.musicVolume;
+        }
+        
+        return this.musicMuted;
     }
     
     toggleMute() {
@@ -198,6 +219,15 @@ export default class AudioManager {
     // Play specific sound effects
     playPowerup() {
         this.play('powerup', { sfx: true, volume: 0.8 });
+    }
+    
+    playTankExplode(position, listenerPosition) {
+        // Play tank explosion with 3D positioning
+        this.play3D('tankExplode', position, listenerPosition, {
+            volume: 1.0,
+            maxDistance: 25,
+            refDistance: 2
+        });
     }
     
     playVictory() {

@@ -191,49 +191,146 @@ def generate_timpani_tone(frequency, duration, sample_rate=44100, amplitude=0.5)
     
     return amp_envelope * timpani
 
-def generate_explosion_tone(frequency, duration, sample_rate=44100, amplitude=0.8):
-    """Generate explosion/impact sound."""
+def generate_explosion_tone(frequency, duration, sample_rate=44100, amplitude=0.9):
+    """Generate spectacular explosion/impact sound with multiple layers."""
     if frequency == 0:
         return np.zeros(int(sample_rate * duration))
     
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     
-    # Quick pitch drop for explosion
-    pitch_envelope = frequency * np.exp(-15 * t)
+    # Multi-stage pitch envelope - initial high pitch drop to deep rumble
+    pitch_envelope = frequency * (1 + 2 * np.exp(-50 * t)) * np.exp(-8 * t)
     
-    # Sharp attack, quick decay
-    amp_envelope = amplitude * np.exp(-10 * t)
+    # Complex amplitude envelope with initial spike
+    amp_envelope = amplitude * (0.5 + 0.5 * np.exp(-100 * t)) * np.exp(-5 * t)
     
-    # Mix of low frequency rumble and noise
-    explosion = (
-        0.7 * np.sin(2 * np.pi * pitch_envelope * t) +  # Pitched component
-        0.3 * np.random.normal(0, 1, len(t)) * np.exp(-20 * t)  # Noise burst
+    # Layer 1: Main explosion with pitch sweep
+    main_explosion = 0.4 * np.sin(2 * np.pi * pitch_envelope * t)
+    
+    # Layer 2: Sub-bass rumble
+    sub_bass = 0.3 * np.sin(2 * np.pi * pitch_envelope * 0.5 * t)
+    
+    # Layer 3: Mid-range harmonics for body
+    harmonics = (
+        0.15 * np.sin(2 * np.pi * pitch_envelope * 2 * t) +
+        0.1 * np.sin(2 * np.pi * pitch_envelope * 3 * t)
     )
+    
+    # Layer 4: Initial crack/burst noise
+    crack_envelope = np.exp(-30 * t)
+    crack_noise = 0.4 * np.random.normal(0, 1, len(t)) * crack_envelope
+    
+    # Layer 5: Debris/shrapnel (filtered white noise)
+    debris_noise = 0.2 * np.random.normal(0, 1, len(t)) * np.exp(-12 * t)
+    # Apply band-pass filter effect for metallic sound
+    for i in range(2, len(debris_noise)):
+        debris_noise[i] = debris_noise[i] - 0.5 * debris_noise[i-1] + 0.3 * debris_noise[i-2]
+    
+    # Layer 6: Aftershock thump
+    aftershock_delay = int(0.05 * sample_rate)  # 50ms delay
+    aftershock = np.zeros(len(t))
+    if aftershock_delay < len(t) - int(0.1 * sample_rate):
+        aftershock_t = t[:int(0.1 * sample_rate)]
+        aftershock_wave = 0.3 * np.sin(2 * np.pi * 30 * aftershock_t) * np.exp(-20 * aftershock_t)
+        aftershock[aftershock_delay:aftershock_delay + len(aftershock_wave)] = aftershock_wave
+    
+    # Combine all layers
+    explosion = main_explosion + sub_bass + harmonics + crack_noise + debris_noise + aftershock
+    
+    # Add initial transient pop for impact
+    pop_samples = int(0.002 * sample_rate)
+    if pop_samples < len(explosion):
+        explosion[:pop_samples] *= np.linspace(0.5, 2, pop_samples)
+    
+    # Apply soft clipping to prevent harsh distortion
+    explosion = np.tanh(explosion * 0.8) * 1.25
     
     return amp_envelope * explosion
 
-def generate_gunshot_tone(frequency, duration, sample_rate=44100, amplitude=0.9):
-    """Generate gunshot/firing sound."""
+def generate_gunshot_tone(frequency, duration, sample_rate=44100, amplitude=1.2):
+    """Generate crisp cannon firing sound with heavy, powerful characteristics."""
     if frequency == 0:
         return np.zeros(int(sample_rate * duration))
     
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     
-    # Very sharp attack
-    amp_envelope = amplitude * np.exp(-30 * t)
+    # Cannon-style envelope - sharp initial blast with longer resonance
+    amp_envelope = amplitude * (0.8 * np.exp(-35 * t) + 0.2 * np.exp(-8 * t))
     
-    # Mix of pop and white noise
-    gunshot = (
-        0.4 * np.sin(2 * np.pi * frequency * t) +  # Pop
-        0.6 * np.random.normal(0, 1, len(t))  # White noise burst
-    )
+    # Layer 1: Main cannon blast - deeper and more powerful
+    blast_freq = frequency * 0.5  # Lower frequency for cannon
+    cannon_blast = (
+        0.4 * np.sin(2 * np.pi * blast_freq * t) +
+        0.25 * np.sin(2 * np.pi * blast_freq * 1.5 * t) +
+        0.15 * np.sin(2 * np.pi * blast_freq * 2 * t) +
+        0.1 * np.sin(2 * np.pi * blast_freq * 3 * t)
+    ) * np.exp(-30 * t)
     
-    # Add click at start
-    click_samples = int(0.0005 * sample_rate)  # 0.5ms click
-    if click_samples < len(gunshot):
-        gunshot[:click_samples] *= 5
+    # Layer 2: Deep boom - very low frequency for cannon thump
+    boom_freq = frequency * 0.15  # Very deep boom
+    deep_boom = 0.5 * np.sin(2 * np.pi * boom_freq * t) * np.exp(-12 * t)
     
-    return amp_envelope * gunshot
+    # Layer 3: Barrel resonance - metallic ring unique to cannons
+    resonance_envelope = np.exp(-25 * t)
+    barrel_resonance = 0.3 * np.sin(2 * np.pi * frequency * 2.5 * t) * resonance_envelope
+    # Add metallic overtones
+    for harmonic in [3.7, 5.2, 7.1]:  # Non-harmonic overtones for metallic sound
+        barrel_resonance += 0.1 * np.sin(2 * np.pi * frequency * harmonic * t) * resonance_envelope
+    
+    # Layer 4: Crisp crack - sharp attack for clarity
+    crack_envelope = np.exp(-50 * t)
+    crisp_crack = 0.3 * np.random.normal(0, 1, len(t)) * crack_envelope
+    # Band-pass filter for crisp cannon crack
+    for i in range(2, len(crisp_crack)):
+        crisp_crack[i] = crisp_crack[i] - 0.6 * crisp_crack[i-1] + 0.2 * crisp_crack[i-2]
+    
+    # Layer 5: Mechanism clunk - heavier mechanical sound for cannon
+    mechanism_samples = int(0.002 * sample_rate)  # 2ms mechanism sound
+    mechanism_sound = np.zeros(len(t))
+    if mechanism_samples < len(t):
+        mechanism_t = t[:mechanism_samples]
+        # Heavy metallic clunk
+        mechanism_sound[:mechanism_samples] = (
+            0.35 * np.sin(2 * np.pi * 800 * mechanism_t) * 
+            np.exp(-80 * mechanism_t)
+        )
+        # Add click transient
+        mechanism_sound[:int(0.0002 * sample_rate)] *= 2
+    
+    # Layer 6: Smoke/pressure release - cannon-specific
+    pressure_delay = int(0.01 * sample_rate)  # 10ms delay
+    pressure_release = np.zeros(len(t))
+    if pressure_delay < len(t):
+        pressure_length = min(int(0.05 * sample_rate), len(t) - pressure_delay)
+        pressure_t = t[:pressure_length]
+        # Hissing pressure release
+        pressure_release[pressure_delay:pressure_delay + pressure_length] = (
+            0.2 * np.random.normal(0, 1, pressure_length) * np.exp(-15 * pressure_t)
+        )
+    
+    # Layer 7: Shell ejection ring (for tank cannon effect)
+    shell_delay = int(0.03 * sample_rate)  # 30ms delay
+    shell_ring = np.zeros(len(t))
+    if shell_delay < len(t):
+        shell_length = min(int(0.02 * sample_rate), len(t) - shell_delay)
+        shell_t = t[:shell_length]
+        shell_ring[shell_delay:shell_delay + shell_length] = (
+            0.15 * np.sin(2 * np.pi * 1200 * shell_t) * np.exp(-40 * shell_t)
+        )
+    
+    # Combine all layers for cannon sound
+    cannon_shot = (cannon_blast + deep_boom + barrel_resonance + 
+                   crisp_crack + mechanism_sound + pressure_release + shell_ring)
+    
+    # Add powerful initial transient for cannon punch
+    punch_samples = int(0.0005 * sample_rate)  # 0.5ms punch
+    if punch_samples < len(cannon_shot):
+        cannon_shot[:punch_samples] *= np.linspace(1, 2.5, punch_samples)
+    
+    # Apply soft clipping with more headroom for cannon dynamics
+    cannon_shot = np.tanh(cannon_shot * 0.6) * 1.6
+    
+    return amp_envelope * cannon_shot
 
 def generate_snare_tone(duration, sample_rate=44100, amplitude=0.7):
     """Generate snare drum sound with crisp attack and enhanced punch."""

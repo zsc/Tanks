@@ -4,12 +4,21 @@ M:2/4
 L:1/32
 Q:1/4=240
 K:C
-% Voice 1: Impact sound (descending)
+% Voice 1: Explosive impact with harmonic cascade
 V:1 name="Impact" clef=treble
-g4 e4 | c4 z4 |
-% Voice 2: Explosion bass
+[GBdg]4 [FAce]4 | [EGBd]4 [DFAc]4 | [CEGb]2 [B,DFa]2 z4 |
+% Voice 2: Deep explosion rumble with sub-bass
 V:2 name="Bass" clef=bass
-C,4 G,,4 | C,,4 z4 |
-% Voice 3: Metallic hit
-V:3 name="Metal" clef=percussion
-x4 x4 | x2 z6 |
+C,,8 | G,,4C,4 | E,2G,2C2z2 |
+% Voice 3: Mid-range explosive burst
+V:3 name="Burst" clef=bass
+[C,E,G,]4 [B,,D,F,]4 | [A,,C,E,]4 [G,,B,,D,]4 | F,,2G,,2z4 |
+% Voice 4: High frequency shrapnel and debris
+V:4 name="Debris" clef=treble
+g2f2e2d2 | c2d2e2f2 | g2a2b2z2 |
+% Voice 5: Metallic crash with reverb
+V:5 name="Metal" clef=percussion
+xxxx xxxx | xxxx xxx2 | x2x2z4 |
+% Voice 6: Sub-bass aftershock
+V:6 name="Aftershock" clef=bass
+z8 | C,,,4z4 | C,,,2z6 |

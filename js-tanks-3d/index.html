@@ -31,8 +31,22 @@
                     </div>
                 </div>
                 <div>
-                    Pause: P | Restart: R
+                    Pause: P | Restart: R | Mute Music: M
                 </div>
+            </div>
+            <div id="audio-controls">
+                <h3>Audio Settings</h3>
+                <div class="volume-control">
+                    <label for="music-volume">🎵 Music:</label>
+                    <input type="range" id="music-volume" min="0" max="100" value="50">
+                    <span id="music-volume-display">50%</span>
+                </div>
+                <div class="volume-control">
+                    <label for="sfx-volume">🔊 Effects:</label>
+                    <input type="range" id="sfx-volume" min="0" max="100" value="70">
+                    <span id="sfx-volume-display">70%</span>
+                </div>
+                <button id="mute-toggle">🔇 Mute All</button>
             </div>
             <div id="camera-controls">
                 <h3>3D View</h3>
