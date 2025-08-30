@@ -1,14 +1,12 @@
 import GameController from './controllers/GameController.js';
 import GameModel from './models/GameModel.js';
 import GameView3D from './views/GameView3D.js';
-import AudioUI from './utils/AudioUI.js';
 
 class App {
     constructor() {
         this.model = null;
         this.view = null;
         this.controller = null;
-        this.audioUI = null;
     }
 
     async init() {
@@ -18,9 +16,6 @@ class App {
         this.model = new GameModel();
         this.view = new GameView3D();
         this.controller = new GameController(this.model, this.view);
-        
-        // Initialize audio UI controls
-        this.audioUI = new AudioUI();
         
         // Initialize view (Three.js scene)
         await this.view.init();

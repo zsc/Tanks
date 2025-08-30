@@ -1,9 +1,10 @@
 export default class AudioManager {
     constructor() {
         this.tracks = {};
+        this.sfxCache = {};  // Cache for sound effects to reuse
         this.currentTrack = null;
         this.enabled = true;
-        this.musicMuted = false;  // Separate mute for music
+        this.musicMuted = true;  // Music OFF by default
         this.musicVolume = 0.5;
         this.sfxVolume = 0.7;
         
@@ -292,37 +293,66 @@ export default class AudioManager {
         let pan = Math.sin(relativeAngle);
         pan = Math.max(-1, Math.min(1, pan)); // Clamp to -1 to 1
         
-        // Clone the audio for multiple simultaneous sounds
-        const audioClone = sound.cloneNode();
-        audioClone.volume = volume;
+        // Reuse or clone audio element for sound effects
+        let audioToPlay;
+        
+        // For sound effects, try to reuse from cache
+        if (!this.sfxCache[soundName]) {
+            this.sfxCache[soundName] = [];
+        }
+        
+        // Find an available (ended) sound in cache or create new clone
+        audioToPlay = this.sfxCache[soundName].find(audio => audio.ended || audio.paused);
+        
+        if (!audioToPlay) {
+            // No available sound, clone a new one
+            audioToPlay = sound.cloneNode();
+            this.sfxCache[soundName].push(audioToPlay);
+            
+            // Limit cache size to prevent memory leaks
+            if (this.sfxCache[soundName].length > 10) {
+                // Remove the oldest one
+                const removed = this.sfxCache[soundName].shift();
+                removed.pause();
+                removed.src = '';
+            }
+        }
+        
+        // Reset and configure the audio
+        audioToPlay.currentTime = 0;
+        audioToPlay.volume = volume;
         
         // Apply panning if Web Audio API is available
         if (this.audioContext) {
             try {
-                const source = this.audioContext.createMediaElementSource(audioClone);
-                const panner = this.audioContext.createStereoPanner();
-                panner.pan.value = pan;
+                // Only create audio source if not already created for this element
+                if (!audioToPlay.audioSourceCreated) {
+                    const source = this.audioContext.createMediaElementSource(audioToPlay);
+                    const panner = this.audioContext.createStereoPanner();
+                    audioToPlay.pannerNode = panner;
+                    
+                    source.connect(panner);
+                    panner.connect(this.audioContext.destination);
+                    audioToPlay.audioSourceCreated = true;
+                }
                 
-                source.connect(panner);
-                panner.connect(this.audioContext.destination);
+                // Update panning value
+                if (audioToPlay.pannerNode) {
+                    audioToPlay.pannerNode.pan.value = pan;
+                }
             } catch (e) {
                 // Fallback: just play with volume
-                console.warn('3D audio panning failed:', e);
+                // Silently fail - don't spam console
             }
         }
         
         // Play the sound
-        audioClone.play().catch(e => {
-            console.warn(`Failed to play 3D audio: ${soundName}`, e);
-        });
-        
-        // Clean up after playback
-        audioClone.addEventListener('ended', () => {
-            audioClone.remove();
+        audioToPlay.play().catch(e => {
+            // Silently fail - audio playback can fail due to browser policies
         });
         
         return {
-            audio: audioClone,
+            audio: audioToPlay,
             volume: volume,
             pan: pan,
             distance: distance

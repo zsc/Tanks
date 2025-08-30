@@ -28,6 +28,7 @@ export default class ScreenManager {
         this.createScoreScreen();
         this.createPauseScreen();
         this.createLevelSelectScreen();
+        this.createSettingsScreen();
     }
     
     createMenuScreen() {
@@ -110,6 +111,19 @@ export default class ScreenManager {
                             opacity: 0;
                         ">▶</span>
                         SELECT LEVEL
+                    </div>
+                    <div class="menu-item" data-option="settings" style="
+                        padding: 10px 40px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        position: relative;
+                    ">
+                        <span class="menu-indicator" style="
+                            position: absolute;
+                            left: -40px;
+                            opacity: 0;
+                        ">▶</span>
+                        SETTINGS
                     </div>
                     <div class="menu-item" data-option="exit" style="
                         padding: 10px 40px;
@@ -380,6 +394,354 @@ export default class ScreenManager {
         this.container.appendChild(screen);
     }
     
+    createSettingsScreen() {
+        const screen = document.createElement('div');
+        screen.id = 'settings-screen';
+        screen.className = 'game-screen';
+        screen.style.cssText = `
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            font-family: 'Courier New', monospace;
+            pointer-events: auto;
+        `;
+        
+        screen.innerHTML = `
+            <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 50px;
+                height: 100%;
+            ">
+                <div style="
+                    font-size: 48px;
+                    font-weight: bold;
+                    color: #ffcc00;
+                    margin-bottom: 40px;
+                    letter-spacing: 4px;
+                ">SETTINGS</div>
+                
+                <div style="
+                    background: rgba(0, 0, 0, 0.7);
+                    padding: 30px;
+                    border-radius: 10px;
+                    border: 2px solid #444;
+                    max-width: 500px;
+                    width: 100%;
+                ">
+                    <h3 style="
+                        margin: 0 0 20px 0;
+                        font-size: 24px;
+                        color: #4CAF50;
+                        border-bottom: 2px solid #4CAF50;
+                        padding-bottom: 10px;
+                    ">Audio Settings</h3>
+                    
+                    <div class="settings-item" style="margin-bottom: 25px;">
+                        <label style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                        ">
+                            <span>🎵 Music Volume</span>
+                            <span id="settings-music-display" style="color: #4CAF50; min-width: 60px; text-align: right;">50%</span>
+                        </label>
+                        <input type="range" id="settings-music-volume" min="0" max="100" value="50" style="
+                            width: 100%;
+                            height: 6px;
+                            background: rgba(255, 255, 255, 0.2);
+                            outline: none;
+                            -webkit-appearance: none;
+                            border-radius: 3px;
+                        ">
+                    </div>
+                    
+                    <div class="settings-item" style="margin-bottom: 25px;">
+                        <label style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                        ">
+                            <span>🔊 Sound Effects</span>
+                            <span id="settings-sfx-display" style="color: #4CAF50; min-width: 60px; text-align: right;">70%</span>
+                        </label>
+                        <input type="range" id="settings-sfx-volume" min="0" max="100" value="70" style="
+                            width: 100%;
+                            height: 6px;
+                            background: rgba(255, 255, 255, 0.2);
+                            outline: none;
+                            -webkit-appearance: none;
+                            border-radius: 3px;
+                        ">
+                    </div>
+                    
+                    <div style="
+                        display: flex;
+                        gap: 20px;
+                        margin-top: 30px;
+                    ">
+                        <button id="settings-music-toggle" style="
+                            flex: 1;
+                            padding: 12px;
+                            background: rgba(244, 67, 54, 0.8);
+                            color: white;
+                            border: 2px solid rgba(244, 67, 54, 1);
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 16px;
+                            font-family: 'Courier New', monospace;
+                            transition: all 0.3s;
+                        ">🔇 Music OFF</button>
+                        
+                        <button id="settings-mute-all" style="
+                            flex: 1;
+                            padding: 12px;
+                            background: rgba(76, 175, 80, 0.8);
+                            color: white;
+                            border: 2px solid rgba(76, 175, 80, 1);
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 16px;
+                            font-family: 'Courier New', monospace;
+                            transition: all 0.3s;
+                        ">🔊 Sound ON</button>
+                    </div>
+                </div>
+                
+                <div style="
+                    margin-top: 40px;
+                    font-size: 16px;
+                    color: #888;
+                ">
+                    Press ESC to return to menu
+                </div>
+            </div>
+            
+            <style>
+                #settings-music-volume::-webkit-slider-thumb,
+                #settings-sfx-volume::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    width: 18px;
+                    height: 18px;
+                    background: #4CAF50;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+                
+                #settings-music-volume::-moz-range-thumb,
+                #settings-sfx-volume::-moz-range-thumb {
+                    width: 18px;
+                    height: 18px;
+                    background: #4CAF50;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    border: none;
+                }
+                
+                #settings-music-toggle:hover,
+                #settings-mute-all:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                }
+                
+                #settings-music-toggle.on {
+                    background: rgba(76, 175, 80, 0.8);
+                    border-color: rgba(76, 175, 80, 1);
+                }
+                
+                #settings-mute-all.muted {
+                    background: rgba(244, 67, 54, 0.8);
+                    border-color: rgba(244, 67, 54, 1);
+                }
+            </style>
+        `;
+        
+        this.screens.settings = screen;
+        this.container.appendChild(screen);
+        
+        // Setup settings controls
+        this.setupSettingsControls(screen);
+    }
+    
+    setupSettingsControls(screen) {
+        // Get AudioManager instance
+        const getAudioManager = () => {
+            if (window.game && window.game.controller && window.game.controller.audioManager) {
+                return window.game.controller.audioManager;
+            }
+            return null;
+        };
+        
+        // Music volume slider
+        const musicSlider = screen.querySelector('#settings-music-volume');
+        const musicDisplay = screen.querySelector('#settings-music-display');
+        
+        musicSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            musicDisplay.textContent = `${e.target.value}%`;
+            
+            const audioManager = getAudioManager();
+            if (audioManager) {
+                audioManager.setMusicVolume(volume);
+                this.saveAudioSettings();
+            }
+        });
+        
+        // SFX volume slider
+        const sfxSlider = screen.querySelector('#settings-sfx-volume');
+        const sfxDisplay = screen.querySelector('#settings-sfx-display');
+        
+        sfxSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            sfxDisplay.textContent = `${e.target.value}%`;
+            
+            const audioManager = getAudioManager();
+            if (audioManager) {
+                audioManager.setSFXVolume(volume);
+                this.saveAudioSettings();
+            }
+        });
+        
+        // Music toggle button
+        const musicToggle = screen.querySelector('#settings-music-toggle');
+        
+        musicToggle.addEventListener('click', () => {
+            const audioManager = getAudioManager();
+            if (audioManager) {
+                const muted = audioManager.toggleMusicMute();
+                if (muted) {
+                    musicToggle.textContent = '🔇 Music OFF';
+                    musicToggle.classList.remove('on');
+                    musicDisplay.innerHTML = '<span style="color: #f44336;">MUTED</span>';
+                } else {
+                    musicToggle.textContent = '🎵 Music ON';
+                    musicToggle.classList.add('on');
+                    musicDisplay.textContent = `${musicSlider.value}%`;
+                }
+                this.saveAudioSettings();
+            }
+        });
+        
+        // Mute all button
+        const muteAllButton = screen.querySelector('#settings-mute-all');
+        
+        muteAllButton.addEventListener('click', () => {
+            const audioManager = getAudioManager();
+            if (audioManager) {
+                const enabled = audioManager.toggleMute();
+                if (enabled) {
+                    muteAllButton.textContent = '🔊 Sound ON';
+                    muteAllButton.classList.remove('muted');
+                } else {
+                    muteAllButton.textContent = '🔇 Sound OFF';
+                    muteAllButton.classList.add('muted');
+                }
+                this.saveAudioSettings();
+            }
+        });
+        
+        // ESC to return
+        const handleKeydown = (e) => {
+            if (this.currentScreen !== 'settings') return;
+            
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                this.hide('settings');
+                this.show('menu');
+            }
+        };
+        
+        document.removeEventListener('keydown', this.settingsKeyHandler);
+        this.settingsKeyHandler = handleKeydown;
+        document.addEventListener('keydown', handleKeydown);
+    }
+    
+    loadAudioSettings() {
+        const settings = localStorage.getItem('tankGameAudioSettings');
+        if (!settings) return;
+        
+        const parsed = JSON.parse(settings);
+        const getAudioManager = () => {
+            if (window.game && window.game.controller && window.game.controller.audioManager) {
+                return window.game.controller.audioManager;
+            }
+            return null;
+        };
+        
+        const audioManager = getAudioManager();
+        if (!audioManager) return;
+        
+        // Update UI to match saved settings
+        const musicSlider = document.querySelector('#settings-music-volume');
+        const musicDisplay = document.querySelector('#settings-music-display');
+        const sfxSlider = document.querySelector('#settings-sfx-volume');
+        const sfxDisplay = document.querySelector('#settings-sfx-display');
+        const musicToggle = document.querySelector('#settings-music-toggle');
+        const muteAllButton = document.querySelector('#settings-mute-all');
+        
+        if (parsed.musicVolume !== undefined && musicSlider) {
+            musicSlider.value = Math.round(parsed.musicVolume * 100);
+            musicDisplay.textContent = `${musicSlider.value}%`;
+        }
+        
+        if (parsed.sfxVolume !== undefined && sfxSlider) {
+            sfxSlider.value = Math.round(parsed.sfxVolume * 100);
+            sfxDisplay.textContent = `${sfxSlider.value}%`;
+        }
+        
+        if (parsed.musicMuted !== undefined && musicToggle) {
+            if (parsed.musicMuted) {
+                musicToggle.textContent = '🔇 Music OFF';
+                musicToggle.classList.remove('on');
+                if (musicDisplay) musicDisplay.innerHTML = '<span style="color: #f44336;">MUTED</span>';
+            } else {
+                musicToggle.textContent = '🎵 Music ON';
+                musicToggle.classList.add('on');
+            }
+        }
+        
+        if (parsed.muted !== undefined && muteAllButton) {
+            if (parsed.muted) {
+                muteAllButton.textContent = '🔇 Sound OFF';
+                muteAllButton.classList.add('muted');
+            } else {
+                muteAllButton.textContent = '🔊 Sound ON';
+                muteAllButton.classList.remove('muted');
+            }
+        }
+    }
+    
+    saveAudioSettings() {
+        const getAudioManager = () => {
+            if (window.game && window.game.controller && window.game.controller.audioManager) {
+                return window.game.controller.audioManager;
+            }
+            return null;
+        };
+        
+        const audioManager = getAudioManager();
+        if (!audioManager) return;
+        
+        const settings = {
+            musicVolume: audioManager.musicVolume,
+            sfxVolume: audioManager.sfxVolume,
+            musicMuted: audioManager.musicMuted,
+            muted: !audioManager.enabled
+        };
+        
+        localStorage.setItem('tankGameAudioSettings', JSON.stringify(settings));
+    }
+    
     createLevelSelectScreen() {
         const screen = document.createElement('div');
         screen.id = 'level-select-screen';
@@ -636,6 +998,12 @@ export default class ScreenManager {
             case 'level':
                 this.hide('menu');
                 this.show('levelSelect');
+                break;
+                
+            case 'settings':
+                this.hide('menu');
+                this.show('settings');
+                this.loadAudioSettings();
                 break;
                 
             case 'exit':

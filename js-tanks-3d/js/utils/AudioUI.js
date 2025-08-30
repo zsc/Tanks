@@ -86,7 +86,12 @@ export default class AudioUI {
                 }
             }
             
-            // Apply mute state
+            // Apply music mute state (separate from overall mute)
+            if (parsed.musicMuted !== undefined) {
+                this.audioManager.musicMuted = parsed.musicMuted;
+            }
+            
+            // Apply overall mute state
             if (parsed.muted !== undefined) {
                 this.audioManager.enabled = !parsed.muted;
                 const muteButton = document.getElementById('mute-toggle');
@@ -101,6 +106,16 @@ export default class AudioUI {
                 }
             }
         }
+        
+        // Update UI to reflect music muted state (default or loaded)
+        const musicSlider = document.getElementById('music-volume');
+        const musicDisplay = document.getElementById('music-volume-display');
+        if (this.audioManager.musicMuted && musicSlider) {
+            musicSlider.classList.add('music-muted');
+            if (musicDisplay) {
+                musicDisplay.innerHTML = `<span style="color: #f44336;">MUTED</span>`;
+            }
+        }
     }
     
     saveSettings() {
@@ -108,6 +123,7 @@ export default class AudioUI {
         const settings = {
             musicVolume: this.audioManager.musicVolume,
             sfxVolume: this.audioManager.sfxVolume,
+            musicMuted: this.audioManager.musicMuted,
             muted: !this.audioManager.enabled
         };
         
