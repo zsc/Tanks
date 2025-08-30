@@ -219,6 +219,20 @@ export default class GameController {
         // Remove inactive bullets from array
         this.model.bullets = this.model.bullets.filter(b => b.active);
         
+        // Sync bonuses
+        this.model.bonuses.forEach(bonus => {
+            if (bonus.active) {
+                if (!this.view.bonusMeshes.has(bonus.id)) {
+                    this.view.addBonus(bonus.id, bonus.type, bonus.position);
+                }
+                this.view.updateBonus(bonus.id, bonus.visible);
+            } else {
+                if (this.view.bonusMeshes.has(bonus.id)) {
+                    this.view.removeBonus(bonus.id);
+                }
+            }
+        });
+        
         // Update map tiles if destroyed
         if (this.model.destroyedTiles && this.model.destroyedTiles.length > 0) {
             this.model.destroyedTiles.forEach(tile => {

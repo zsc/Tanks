@@ -342,5 +342,19 @@ export default class CollisionModel {
                 bullet.destroy();
             }
         });
+        
+        // Player vs Bonus collisions
+        players.forEach(player => {
+            if (!player.alive) return;
+            
+            bonuses.forEach(bonus => {
+                if (this.checkBonusCollision(player, bonus)) {
+                    // Apply bonus effect
+                    bonus.applyEffect(player, gameModel);
+                    
+                    gameModel.logger.log('INFO', `Player ${player.id} collected ${bonus.type} bonus`);
+                }
+            });
+        });
     }
 }

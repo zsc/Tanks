@@ -20,6 +20,7 @@ export default class GameView3D {
         // Game object meshes
         this.tankMeshes = new Map();
         this.bulletMeshes = new Map();
+        this.bonusMeshes = new Map();
         this.explosions = [];
         
         // Camera settings for 45-degree 2.5D view
@@ -394,6 +395,68 @@ export default class GameView3D {
             this.scene.remove(bullet);
             this.bulletMeshes.delete(id);
         }
+    }
+    
+    addBonus(id, type, position) {
+        // Create bonus mesh using 3D model or simple geometry
+        const bonusGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+        const bonusMaterial = new THREE.MeshPhongMaterial({
+            color: this.getBonusColor(type),
+            emissive: this.getBonusColor(type),
+            emissiveIntensity: 0.3
+        });
+        
+        const bonus = new THREE.Mesh(bonusGeometry, bonusMaterial);
+        bonus.position.set(
+            position.x - 13,
+            0.4,  // Float slightly above ground
+            position.z - 13
+        );
+        
+        // Add rotation animation
+        bonus.userData = { type: type, rotationSpeed: 0.02 };
+        
+        // Enable shadows
+        bonus.castShadow = true;
+        bonus.receiveShadow = true;
+        
+        this.scene.add(bonus);
+        this.bonusMeshes.set(id, bonus);
+    }
+    
+    updateBonus(id, visible) {
+        const bonus = this.bonusMeshes.get(id);
+        if (bonus) {
+            bonus.visible = visible;
+            
+            // Rotate for animation
+            if (visible) {
+                bonus.rotation.y += bonus.userData.rotationSpeed;
+                bonus.position.y = 0.4 + Math.sin(Date.now() * 0.003) * 0.1; // Float animation
+            }
+        }
+    }
+    
+    removeBonus(id) {
+        const bonus = this.bonusMeshes.get(id);
+        if (bonus) {
+            this.scene.remove(bonus);
+            this.bonusMeshes.delete(id);
+        }
+    }
+    
+    getBonusColor(type) {
+        const colors = {
+            'grenade': 0xff0000,  // Red
+            'helmet': 0x00ff00,   // Green
+            'clock': 0xffff00,    // Yellow
+            'shovel': 0x8b4513,   // Brown
+            'tank': 0x808080,     // Gray
+            'star': 0xffd700,     // Gold
+            'gun': 0xff00ff,      // Magenta
+            'boat': 0x0000ff      // Blue
+        };
+        return colors[type] || 0xffffff;
     }
     
     updateExplosions(deltaTime) {
