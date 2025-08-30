@@ -173,6 +173,59 @@ Tempo: 180 BPM | Key: C Major
         </div>
     </div>
 
+    <h2>Sound Effects</h2>
+
+    <div class="audio-container">
+        <div class="audio-title">🔫 Bullet Fire</div>
+        <audio id="bullet_fire" controls>
+            <source src="audio/bullet_fire.ogg?v=1756546200" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('bullet_fire_abc')">Show/Hide ABC Notation</button>
+        <div id="bullet_fire_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Sharp firing sound (Gunshot pop)
+- Voice 2: Low frequency thump (Bass impact)
+- Voice 3: Percussion hit (White noise burst)
+
+Tempo: 240 BPM | Key: C Major
+Duration: ~0.25 seconds
+        </div>
+    </div>
+
+    <div class="audio-container">
+        <div class="audio-title">💥 Bullet Hit</div>
+        <audio id="bullet_hit" controls>
+            <source src="audio/bullet_hit.ogg?v=1756546200" type="audio/ogg">
+            Your browser does not support the audio element.
+        </audio>
+        <button onclick="toggleABC('bullet_hit_abc')">Show/Hide ABC Notation</button>
+        <div id="bullet_hit_abc" class="abc-notation" style="display:none;">
+[Multi-Track Arrangement]
+- Voice 1: Impact sound (Descending pitch)
+- Voice 2: Explosion bass (Low rumble)
+- Voice 3: Metallic hit (Sharp clang)
+
+Tempo: 240 BPM | Key: C Major
+Duration: ~0.5 seconds
+        </div>
+    </div>
+
+    <h2>3D Positional Audio Demo</h2>
+    <div class="audio-container">
+        <h3>Test 3D Audio Positioning</h3>
+        <div style="margin: 20px 0;">
+            <button onclick="test3DAudio('left')">▶️ Play Left</button>
+            <button onclick="test3DAudio('center')">▶️ Play Center</button>
+            <button onclick="test3DAudio('right')">▶️ Play Right</button>
+            <button onclick="test3DAudio('far')">▶️ Play Far</button>
+            <button onclick="test3DAudio('sequence')">▶️ Play Sequence</button>
+        </div>
+        <div id="3d-audio-info" style="color: #0a0; margin-top: 10px;">
+            Click buttons to test 3D audio positioning with bullet sounds
+        </div>
+    </div>
+
     <h2>Usage in Game</h2>
     <div class="audio-container">
         <pre style="color: #0f0;">
@@ -183,7 +236,9 @@ const audioManager = {
         battle: new Audio('audio/battle_theme.ogg'),
         victory: new Audio('audio/victory_theme.ogg'),
         gameOver: new Audio('audio/game_over_theme.ogg'),
-        powerup: new Audio('audio/powerup_jingle.ogg')
+        powerup: new Audio('audio/powerup_jingle.ogg'),
+        bulletFire: new Audio('audio/bullet_fire.ogg'),
+        bulletHit: new Audio('audio/bullet_hit.ogg')
     },
     
     play(trackName, loop = false) {
@@ -211,6 +266,21 @@ audioManager.play('battle', true);
 
 // Play powerup sound effect
 audioManager.play('powerup', false);
+
+// 3D Positional Audio Example
+audioManager.play3D('bulletFire', 
+    {x: 10, z: 5},      // Sound position
+    {x: 0, z: 0},       // Listener position
+    {
+        volume: 0.8,
+        maxDistance: 20,
+        refDistance: 2
+    }
+);
+
+// Distance-based volume calculation
+// volume = refDistance / distance (when distance > refDistance)
+// Stereo panning based on angle between listener and source
         </pre>
     </div>
 
@@ -249,7 +319,85 @@ audioManager.play('powerup', false);
         // Set initial volume
         window.addEventListener('DOMContentLoaded', () => {
             setVolume(0.5);
+            
+            // Initialize Web Audio API for 3D audio demo
+            window.audioContext = null;
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                window.audioContext = new AudioContext();
+            } catch(e) {
+                console.warn('Web Audio API not supported');
+            }
         });
+        
+        // 3D Audio Testing Functions
+        function test3DAudio(position) {
+            const info = document.getElementById('3d-audio-info');
+            const bulletFire = document.getElementById('bullet_fire');
+            const bulletHit = document.getElementById('bullet_hit');
+            
+            if (!window.audioContext) {
+                info.textContent = 'Web Audio API not supported - playing without positioning';
+                bulletFire.play();
+                return;
+            }
+            
+            // Resume audio context if suspended
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            switch(position) {
+                case 'left':
+                    play3DSound(bulletFire, -1, 1.0);
+                    info.innerHTML = '🔊 Playing LEFT - Pan: -1.0, Volume: 100%';
+                    break;
+                case 'right':
+                    play3DSound(bulletFire, 1, 1.0);
+                    info.innerHTML = '🔊 Playing RIGHT - Pan: +1.0, Volume: 100%';
+                    break;
+                case 'center':
+                    play3DSound(bulletFire, 0, 1.0);
+                    info.innerHTML = '🔊 Playing CENTER - Pan: 0.0, Volume: 100%';
+                    break;
+                case 'far':
+                    play3DSound(bulletHit, 0, 0.3);
+                    info.innerHTML = '🔊 Playing FAR (Hit sound) - Pan: 0.0, Volume: 30%';
+                    break;
+                case 'sequence':
+                    info.innerHTML = '🎵 Playing sequence: Left → Center → Right → Far';
+                    play3DSound(bulletFire, -1, 1.0);
+                    setTimeout(() => play3DSound(bulletFire, 0, 1.0), 500);
+                    setTimeout(() => play3DSound(bulletFire, 1, 1.0), 1000);
+                    setTimeout(() => play3DSound(bulletHit, 0, 0.3), 1500);
+                    break;
+            }
+        }
+        
+        function play3DSound(audioElement, pan, volume) {
+            // Clone the audio for multiple simultaneous plays
+            const audio = audioElement.cloneNode();
+            audio.volume = volume;
+            
+            try {
+                const source = audioContext.createMediaElementSource(audio);
+                const panner = audioContext.createStereoPanner();
+                panner.pan.value = pan;
+                
+                source.connect(panner);
+                panner.connect(audioContext.destination);
+                
+                audio.play();
+                
+                // Clean up after playback
+                audio.addEventListener('ended', () => {
+                    audio.remove();
+                });
+            } catch(e) {
+                // Fallback to regular playback
+                audio.play();
+            }
+        }
     </script>
 </body>
 </html>
