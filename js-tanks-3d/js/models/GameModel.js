@@ -1,5 +1,6 @@
 import TankModel from './TankModel.js';
 import BulletModel from './BulletModel.js';
+import BonusModel from './BonusModel.js';
 import MapModel from './MapModel.js';
 import CollisionModel from './CollisionModel.js';
 import GameLogger from '../utils/GameLogger.js';
@@ -25,6 +26,11 @@ export default class GameModel {
         this.enemies = [];
         this.bullets = [];
         this.bonuses = [];
+        
+        // Eagle protection (shovel bonus)
+        this.protectEagle = false;
+        this.protectEagleTime = 0;
+        this.maxProtectEagleTime = 20000;
         this.map = null;
         this.collisionModel = new CollisionModel();
         
@@ -36,6 +42,7 @@ export default class GameModel {
         // ID counters
         this.nextBulletId = 1;
         this.nextEnemyId = 1;
+        this.nextBonusId = 1;
         
         // Enemy spawn management
         this.enemySpawnPosition = 0; // Cycles through spawn points like C++
@@ -178,8 +185,19 @@ export default class GameModel {
     updateBonuses(deltaTime) {
         this.bonuses = this.bonuses.filter(bonus => {
             bonus.update(deltaTime);
-            return bonus.active;
+            return !bonus.toRemove;
         });
+        
+        // Update eagle protection timer
+        if (this.protectEagle) {
+            this.protectEagleTime += deltaTime;
+            if (this.protectEagleTime >= this.maxProtectEagleTime) {
+                this.protectEagle = false;
+                this.protectEagleTime = 0;
+                // Restore brick walls around eagle
+                this.restoreEagleWalls();
+            }
+        }
     }
     
     checkCollisions() {
@@ -218,6 +236,11 @@ export default class GameModel {
                 enemy.livesCount = 3; // 15% chance
             } else {
                 enemy.livesCount = 4; // 10% chance - strongest armor
+            }
+            
+            // 12% chance to carry a bonus (like C++)
+            if (Math.random() < 0.12) {
+                enemy.hasBonus = true;
             }
             
             // Start enemy moving immediately (like C++)
@@ -298,6 +321,51 @@ export default class GameModel {
             } else {
                 console.log(`[DEBUG] Player ${playerIndex} fire() returned null`);
             }
+        }
+    }
+    
+    generateBonus() {
+        // Choose random bonus type
+        const types = Object.values(BonusModel.TYPES);
+        const type = types[Math.floor(Math.random() * types.length)];
+        
+        // Find random position avoiding eagle
+        let position;
+        let attempts = 0;
+        do {
+            position = {
+                x: Math.random() * (this.map.width - 2) + 1,
+                z: Math.random() * (this.map.height - 6) + 3  // Avoid spawn areas
+            };
+            attempts++;
+        } while (this.map.isSolid(Math.floor(position.x), Math.floor(position.z)) && attempts < 50);
+        
+        const bonusId = `bonus_${this.nextBonusId++}`;
+        const bonus = new BonusModel(bonusId, type, position);
+        this.bonuses.push(bonus);
+        
+        this.logger.logSpawn('Bonus', bonusId, {
+            ...position,
+            type: type
+        });
+    }
+    
+    restoreEagleWalls() {
+        // Restore brick walls around eagle
+        const eagleX = 12;
+        const eagleZ = 24;
+        
+        // Top wall
+        for (let x = eagleX - 2; x <= eagleX + 2; x++) {
+            if (x !== eagleX) {
+                this.map.setTile(x, eagleZ - 2, this.map.TILE_TYPES.BRICK);
+            }
+        }
+        
+        // Side walls
+        for (let z = eagleZ - 1; z <= eagleZ + 1; z++) {
+            this.map.setTile(eagleX - 2, z, this.map.TILE_TYPES.BRICK);
+            this.map.setTile(eagleX + 2, z, this.map.TILE_TYPES.BRICK);
         }
     }
     

@@ -18,6 +18,15 @@ export default class TankModel {
         this.maxPowerLevel = this.type.startsWith('player') ? 4 : 1;
         this.livesCount = this.type.startsWith('player') ? 10 : 1; // Player has 10 lives, enemies have 1-4 armor
         
+        // Bonus properties
+        this.hasBonus = false; // For enemies - drops bonus when destroyed
+        this.canCrossWater = false; // Boat bonus
+        this.boatTime = 0;
+        this.maxBoatTime = 30000;
+        this.frozen = false; // Clock bonus effect
+        this.frozenTime = 0;
+        this.maxFrozenTime = 10000;
+        
         // Shield properties (for players)
         this.hasShield = false;
         this.shieldTime = 0;
@@ -40,11 +49,11 @@ export default class TankModel {
         // AI properties (for enemies)
         this.aiState = 'patrol';
         this.targetPosition = null;
-        this.lastDirectionChange = 0;
+        this.lastDirectionChange = Date.now();  // Initialize to current time
         this.directionChangeInterval = this.getRandomDirectionInterval(); // ms
-        this.lastSpeedChange = 0;
+        this.lastSpeedChange = Date.now();  // Initialize to current time
         this.speedChangeInterval = Math.random() * 300; // 0-300ms like C++
-        this.lastFireTime = 0;
+        this.lastFireTime = Date.now();  // Initialize to current time
         this.fireInterval = this.getFireInterval(); // ms
         this.isBlocked = false;
         this.blockCheckTimer = 0;
@@ -80,6 +89,17 @@ export default class TankModel {
     update(deltaTime) {
         if (!this.alive) return;
         
+        // Check if frozen (clock bonus effect)
+        if (this.frozen) {
+            this.frozenTime += deltaTime;
+            if (this.frozenTime >= this.maxFrozenTime) {
+                this.frozen = false;
+                this.frozenTime = 0;
+            }
+            // Skip movement/AI when frozen
+            return;
+        }
+        
         this.previousPosition = { ...this.position };
         
         // Update position based on velocity
@@ -98,6 +118,15 @@ export default class TankModel {
             if (this.shieldTime >= this.maxShieldTime) {
                 this.hasShield = false;
                 this.shieldTime = 0;
+            }
+        }
+        
+        // Update boat timer
+        if (this.canCrossWater) {
+            this.boatTime += deltaTime;
+            if (this.boatTime >= this.maxBoatTime) {
+                this.canCrossWater = false;
+                this.boatTime = 0;
             }
         }
         
@@ -296,12 +325,9 @@ export default class TankModel {
     // AI methods for enemy tanks
     updateAI(deltaTime, playerPositions, map) {
         if (!this.type.startsWith('enemy')) return;
+        if (this.frozen) return; // Skip AI when frozen
         
         const now = Date.now();
-        
-        // Store previous position to detect if blocked
-        const prevX = this.position.x;
-        const prevZ = this.position.z;
         
         // Check if blocked (hasn't moved much)
         if (Math.abs(this.position.x - this.previousPosition.x) < 0.01 && 
@@ -317,7 +343,7 @@ export default class TankModel {
             this.isBlocked = false;
         }
         
-        // Change direction periodically or when blocked
+        // Change direction periodically or when blocked (C++ m_direction_time)
         if (now - this.lastDirectionChange > this.directionChangeInterval || this.isBlocked) {
             this.lastDirectionChange = now;
             this.directionChangeInterval = this.getRandomDirectionInterval();
@@ -329,21 +355,19 @@ export default class TankModel {
             }
             
             this.chooseNewDirection(playerPositions);
-            this.isBlocked = false;
         }
         
-        // Change speed periodically (like C++ m_try_to_go_time)
+        // Update speed periodically (C++ m_speed_time/m_try_to_go_time)
         if (now - this.lastSpeedChange > this.speedChangeInterval) {
             this.lastSpeedChange = now;
             this.speedChangeInterval = Math.random() * 300;
-            // Always try to move (speed = default_speed in C++)
-            this.move(this.direction);
+            // Set speed to default (like C++ speed = default_speed)
+            this.speed = this.getSpeedByType(this.type);
         }
         
-        // Keep moving continuously (important!)
-        if (!this.isBlocked) {
-            this.move(this.direction);
-        }
+        // Always try to move! (C++ always sets speed, and stop=false at end)
+        // This is crucial - enemies should always be trying to move
+        this.move(this.direction);
         
         // Fire based on timing (like C++)
         if (now - this.lastFireTime > this.fireInterval) {

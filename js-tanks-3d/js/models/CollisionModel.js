@@ -191,9 +191,15 @@ export default class CollisionModel {
         tank.bounds = tank.calculateBounds();
     }
     
+    // Check bonus collision
+    checkBonusCollision(player, bonus) {
+        if (!player.alive || !bonus.active) return false;
+        return this.checkAABB(player.bounds, bonus.bounds);
+    }
+    
     // Process all collisions for current frame
     processCollisions(gameModel) {
-        const { players, enemies, bullets, map } = gameModel;
+        const { players, enemies, bullets, map, bonuses } = gameModel;
         const allTanks = [...players, ...enemies];
         
         // Clear and rebuild spatial grid
@@ -261,6 +267,11 @@ export default class CollisionModel {
                             const playerNum = bullet.owner.includes('1') ? 'player1' : 'player2';
                             gameModel.score[playerNum] += 100;
                             gameModel.enemiesKilled++;
+                            
+                            // Generate bonus if enemy had one
+                            if (tank.hasBonus) {
+                                gameModel.generateBonus();
+                            }
                             
                             gameModel.logger.logScore(playerNum, 100, gameModel.score[playerNum]);
                             gameModel.logger.logDestroy('Enemy', tank.id, bullet.owner);
